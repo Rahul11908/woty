@@ -27,13 +27,15 @@ interface Panel {
 }
 
 // Speaker Photo Component
-const SpeakerPhoto = ({ name, photo }: { name: string; photo?: string }) => {
+const SpeakerPhoto = ({ name, photo, size = "normal" }: { name: string; photo?: string; size?: "small" | "normal" }) => {
+  const sizeClasses = size === "small" ? "w-6 h-6" : "w-16 h-16";
+  
   if (photo) {
     return (
       <img 
         src={photo} 
         alt={name}
-        className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
+        className={`${sizeClasses} rounded-full object-cover border-2 border-gray-200`}
         onError={(e) => {
           // Fallback to initials if image fails to load
           const target = e.target as HTMLImageElement;
@@ -66,8 +68,10 @@ const SpeakerPhoto = ({ name, photo }: { name: string; photo?: string }) => {
   
   const colorIndex = name.length % colors.length;
   
+  const textSize = size === "small" ? "text-xs" : "text-sm";
+  
   return (
-    <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${colors[colorIndex]} flex items-center justify-center border-2 border-gray-200 text-white font-semibold text-sm`}>
+    <div className={`${sizeClasses} rounded-full bg-gradient-to-br ${colors[colorIndex]} flex items-center justify-center border-2 border-gray-200 text-white font-semibold ${textSize}`}>
       {initials}
     </div>
   );
@@ -285,6 +289,19 @@ export default function Profile() {
           <Card>
             <CardContent className="pt-6">
               <h3 className="font-semibold text-gray-900 mb-4">Today's Schedule</h3>
+              
+              {/* MC Section */}
+              <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <h4 className="font-medium text-blue-900 mb-2">Master of Ceremonies</h4>
+                <div className="flex items-center space-x-3">
+                  <SpeakerPhoto name="Lance Chung" photo={speakerPhotos["Lance Chung"]} />
+                  <div>
+                    <p className="font-medium text-sm text-blue-900">Lance Chung</p>
+                    <p className="text-xs text-blue-700">Editor-in-Chief, GLORY Media</p>
+                  </div>
+                </div>
+              </div>
+
               <div className="space-y-3 text-sm">
                 <div className="flex items-center space-x-3">
                   <Clock className="w-4 h-4 text-gray-400" />
@@ -319,6 +336,24 @@ export default function Profile() {
                       </div>
                       <h4 className="font-semibold text-gray-900 mb-2">{panel.title}</h4>
                       <p className="text-sm text-gray-600 mb-3">{panel.description}</p>
+                      
+                      {/* Speaker Preview - Horizontal Layout */}
+                      {expandedPanel !== panel.id && (
+                        <div className="flex items-center space-x-2 mt-3">
+                          <span className="text-xs text-gray-500">Speakers:</span>
+                          <div className="flex space-x-1">
+                            <SpeakerPhoto name={panel.moderator.name} photo={panel.moderator.photo} size="small" />
+                            {panel.panelists.slice(0, 3).map((panelist) => (
+                              <SpeakerPhoto key={panelist.name} name={panelist.name} photo={panelist.photo} size="small" />
+                            ))}
+                            {panel.panelists.length > 3 && (
+                              <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
+                                <span className="text-xs text-gray-600">+{panel.panelists.length - 3}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <Button
                       variant="ghost"
