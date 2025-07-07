@@ -27,8 +27,8 @@ interface Panel {
 }
 
 // Speaker Photo Component
-const SpeakerPhoto = ({ name, photo, size = "normal" }: { name: string; photo?: string; size?: "small" | "normal" }) => {
-  const sizeClasses = size === "small" ? "w-6 h-6" : "w-16 h-16";
+const SpeakerPhoto = ({ name, photo, size = "normal" }: { name: string; photo?: string; size?: "small" | "normal" | "preview" }) => {
+  const sizeClasses = size === "small" ? "w-6 h-6" : size === "preview" ? "w-12 h-12" : "w-16 h-16";
   
   if (photo) {
     return (
@@ -68,7 +68,7 @@ const SpeakerPhoto = ({ name, photo, size = "normal" }: { name: string; photo?: 
   
   const colorIndex = name.length % colors.length;
   
-  const textSize = size === "small" ? "text-xs" : "text-sm";
+  const textSize = size === "small" ? "text-xs" : size === "preview" ? "text-sm" : "text-sm";
   
   return (
     <div className={`${sizeClasses} rounded-full bg-gradient-to-br ${colors[colorIndex]} flex items-center justify-center border-2 border-gray-200 text-white font-semibold ${textSize}`}>
@@ -339,16 +339,16 @@ export default function Profile() {
                       
                       {/* Speaker Preview - Horizontal Layout */}
                       {expandedPanel !== panel.id && (
-                        <div className="flex items-center space-x-2 mt-3">
-                          <span className="text-xs text-gray-500">Speakers:</span>
-                          <div className="flex space-x-1">
-                            <SpeakerPhoto name={panel.moderator.name} photo={panel.moderator.photo} size="small" />
+                        <div className="flex items-center space-x-3 mt-3">
+                          <span className="text-sm text-gray-500 font-medium">Speakers:</span>
+                          <div className="flex space-x-2">
+                            <SpeakerPhoto name={panel.moderator.name} photo={panel.moderator.photo} size="preview" />
                             {panel.panelists.slice(0, 3).map((panelist) => (
-                              <SpeakerPhoto key={panelist.name} name={panelist.name} photo={panelist.photo} size="small" />
+                              <SpeakerPhoto key={panelist.name} name={panelist.name} photo={panelist.photo} size="preview" />
                             ))}
                             {panel.panelists.length > 3 && (
-                              <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
-                                <span className="text-xs text-gray-600">+{panel.panelists.length - 3}</span>
+                              <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                                <span className="text-sm text-gray-600 font-medium">+{panel.panelists.length - 3}</span>
                               </div>
                             )}
                           </div>
