@@ -32,6 +32,22 @@ function Router() {
       }
     }
     setIsLoading(false);
+
+    // Listen for storage changes (when user is created in another tab/component)
+    const handleStorageChange = () => {
+      const newStoredUser = localStorage.getItem("currentUser");
+      if (newStoredUser) {
+        try {
+          const user = JSON.parse(newStoredUser);
+          setCurrentUser(user);
+        } catch (error) {
+          console.error("Error parsing new stored user:", error);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   if (isLoading) {
