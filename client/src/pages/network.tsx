@@ -127,44 +127,46 @@ export default function Network() {
               </CardTitle>
             </CardHeader>
             <CardContent className="flex-1 flex flex-col">
-              {/* Messages Area */}
-              <div className="flex-1 overflow-y-auto space-y-3 mb-4">
-                {messagesLoading ? (
-                  <div className="flex justify-center py-8">
-                    <div className="text-gray-500">Loading messages...</div>
-                  </div>
-                ) : groupMessages.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-8 text-gray-500">
-                    <MessageSquare className="w-12 h-12 mb-2 text-gray-300" />
-                    <p className="text-sm">No messages yet. Start the conversation!</p>
-                  </div>
-                ) : (
-                  groupMessages.map((message) => (
-                    <div key={message.id} className="flex space-x-3">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage 
-                          src={getUserPhoto(message.sender.fullName)} 
-                          alt={message.sender.fullName}
-                        />
-                        <AvatarFallback className={`text-xs bg-gradient-to-br ${getUserAvatarColor(message.sender.fullName)} text-white`}>
-                          {getUserInitials(message.sender.fullName)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <span className="text-sm font-medium text-gray-900">
-                            {message.sender.fullName}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {formatMessageTime(message.createdAt || new Date())}
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-700">{message.content}</p>
-                      </div>
+              {/* Messages Area with Fixed Height and Scrolling */}
+              <div className="h-80 overflow-y-auto mb-4 pr-2">
+                <div className="space-y-3">
+                  {messagesLoading ? (
+                    <div className="flex justify-center py-8">
+                      <div className="text-gray-500">Loading messages...</div>
                     </div>
-                  ))
-                )}
-                <div ref={messagesEndRef} />
+                  ) : groupMessages.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-8 text-gray-500">
+                      <MessageSquare className="w-12 h-12 mb-2 text-gray-300" />
+                      <p className="text-sm">No messages yet. Start the conversation!</p>
+                    </div>
+                  ) : (
+                    groupMessages.map((message) => (
+                      <div key={message.id} className="flex space-x-3">
+                        <Avatar className="w-8 h-8 flex-shrink-0">
+                          <AvatarImage 
+                            src={getUserPhoto(message.sender.fullName)} 
+                            alt={message.sender.fullName}
+                          />
+                          <AvatarFallback className={`text-xs bg-gradient-to-br ${getUserAvatarColor(message.sender.fullName)} text-white`}>
+                            {getUserInitials(message.sender.fullName)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-2 mb-1">
+                            <span className="text-sm font-medium text-gray-900 truncate">
+                              {message.sender.fullName}
+                            </span>
+                            <span className="text-xs text-gray-500 flex-shrink-0">
+                              {formatMessageTime(message.createdAt || new Date())}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-700 break-words">{message.content}</p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
               </div>
 
             </CardContent>
@@ -217,29 +219,33 @@ export default function Network() {
                   <div className="text-gray-500">Loading attendees...</div>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {eventAttendees.map((attendee) => (
-                    <div key={attendee.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <Avatar className="w-10 h-10">
-                        <AvatarImage 
-                          src={getUserPhoto(attendee.fullName)} 
-                          alt={attendee.fullName}
-                        />
-                        <AvatarFallback className={`bg-gradient-to-br ${getUserAvatarColor(attendee.fullName)} text-white font-semibold`}>
-                          {getUserInitials(attendee.fullName)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-900">{attendee.fullName}</p>
-                        <p className="text-sm text-gray-500">@{attendee.username}</p>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        {attendee.isOnline && (
-                          <Circle className="w-2 h-2 text-green-500 fill-current" />
-                        )}
-                        <span className="text-xs text-gray-500">
-                          {attendee.isOnline ? "Online" : "Offline"}
-                        </span>
+                    <div key={attendee.id} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-start space-x-3">
+                        <div className="relative">
+                          <Avatar className="w-12 h-12">
+                            <AvatarImage 
+                              src={getUserPhoto(attendee.fullName)} 
+                              alt={attendee.fullName}
+                            />
+                            <AvatarFallback className={`bg-gradient-to-br ${getUserAvatarColor(attendee.fullName)} text-white font-semibold`}>
+                              {getUserInitials(attendee.fullName)}
+                            </AvatarFallback>
+                          </Avatar>
+                          {attendee.isOnline && (
+                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-gray-900 truncate">{attendee.fullName}</h4>
+                          <p className="text-sm text-gray-600 mb-1">{attendee.title}</p>
+                          <div className="flex items-center space-x-2">
+                            <Badge variant={attendee.isOnline ? "default" : "secondary"} className="text-xs">
+                              {attendee.isOnline ? "Online" : "Offline"}
+                            </Badge>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   ))}
