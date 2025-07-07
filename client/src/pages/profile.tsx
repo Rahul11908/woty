@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calendar, Clock, Users, MessageSquare, Send, ChevronDown, ChevronUp } from "lucide-react";
+import { Calendar, Clock, Users, MessageSquare, Send, ChevronDown, ChevronUp, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,13 +16,88 @@ interface Panel {
     name: string;
     title: string;
     bio: string;
+    photo?: string;
   }>;
   moderator: {
     name: string;
     title: string;
     bio: string;
+    photo?: string;
   };
 }
+
+// Speaker Photo Component
+const SpeakerPhoto = ({ name, photo }: { name: string; photo?: string }) => {
+  if (photo) {
+    return (
+      <img 
+        src={photo} 
+        alt={name}
+        className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
+        onError={(e) => {
+          // Fallback to initials if image fails to load
+          const target = e.target as HTMLImageElement;
+          target.style.display = 'none';
+          target.nextElementSibling?.classList.remove('hidden');
+        }}
+      />
+    );
+  }
+  
+  // Generate initials from name
+  const initials = name
+    .split(' ')
+    .map(part => part.charAt(0))
+    .join('')
+    .substring(0, 2)
+    .toUpperCase();
+    
+  // Generate consistent color based on name
+  const colors = [
+    'from-blue-500 to-blue-600',
+    'from-purple-500 to-purple-600', 
+    'from-green-500 to-green-600',
+    'from-orange-500 to-orange-600',
+    'from-red-500 to-red-600',
+    'from-teal-500 to-teal-600',
+    'from-indigo-500 to-indigo-600',
+    'from-pink-500 to-pink-600'
+  ];
+  
+  const colorIndex = name.length % colors.length;
+  
+  return (
+    <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${colors[colorIndex]} flex items-center justify-center border-2 border-gray-200 text-white font-semibold text-sm`}>
+      {initials}
+    </div>
+  );
+};
+
+// Speaker photo URLs - Replace these with actual photos when available
+const speakerPhotos: Record<string, string> = {
+  // Panel 1
+  "Dwayne De Rosario": "/photos/dwayne-de-rosario.jpg",
+  "Sharon Bollenbach": "/photos/sharon-bollenbach.jpg", 
+  "Marcus Hanson": "/photos/marcus-hanson.jpg",
+  "Ellen Hyslop": "/photos/ellen-hyslop.jpg",
+  
+  // Panel 2
+  "Diana Matheson": "/photos/diana-matheson.jpg",
+  "Anastasia Bucsis": "/photos/anastasia-bucsis.jpg",
+  "Lance Chung": "/photos/lance-chung.jpg",
+  
+  // Panel 3
+  "Teresa Resch": "/photos/teresa-resch.jpg",
+  "Kyle McMann": "/photos/kyle-mcmann.jpg",
+  "Saroya Tinker": "/photos/saroya-tinker.jpg",
+  "Alyson Walker": "/photos/alyson-walker.jpg",
+  
+  // Panel 4
+  "Jesse Marsch": "/photos/jesse-marsch.jpg",
+  "Bob Park": "/photos/bob-park.jpg",
+  "Kevin Blue": "/photos/kevin-blue.jpg",
+  "Andi Petrillo": "/photos/andi-petrillo.jpg"
+};
 
 const panels: Panel[] = [
   {
@@ -34,23 +109,27 @@ const panels: Panel[] = [
       {
         name: "Dwayne De Rosario",
         title: "Former Player",
-        bio: "Dwayne 'DeRo' De Rosario is a proud Scarborough native and one of Canada's most decorated and influential soccer figures, with a career spanning nearly two decades at the highest levels."
+        bio: "Dwayne 'DeRo' De Rosario is a proud Scarborough native and one of Canada's most decorated and influential soccer figures, with a career spanning nearly two decades at the highest levels.",
+        photo: speakerPhotos["Dwayne De Rosario"]
       },
       {
         name: "Sharon Bollenbach",
         title: "Executive Director, FIFA World Cup at the City of Toronto",
-        bio: "With over 30 years of leadership experience in sport administration and event management, Sharon leads Toronto's preparations for hosting the FIFA World Cup 2026™."
+        bio: "With over 30 years of leadership experience in sport administration and event management, Sharon leads Toronto's preparations for hosting the FIFA World Cup 2026™.",
+        photo: speakerPhotos["Sharon Bollenbach"]
       },
       {
         name: "Marcus Hanson",
         title: "CEO, First Touch Football",
-        bio: "Marcus is the founder and CEO of First Touch Football Canada, helping Canadian soccer players earn scholarships and opportunities with top clubs."
+        bio: "Marcus is the founder and CEO of First Touch Football Canada, helping Canadian soccer players earn scholarships and opportunities with top clubs.",
+        photo: speakerPhotos["Marcus Hanson"]
       }
     ],
     moderator: {
       name: "Ellen Hyslop",
       title: "Co-Founder, The Gist",
-      bio: "Ellen is a co-founder and head of content at The GIST, a fan-first sports media brand that has reinvented the dialogue around sports."
+      bio: "Ellen is a co-founder and head of content at The GIST, a fan-first sports media brand that has reinvented the dialogue around sports.",
+      photo: speakerPhotos["Ellen Hyslop"]
     }
   },
   {
@@ -62,18 +141,21 @@ const panels: Panel[] = [
       {
         name: "Diana Matheson",
         title: "Former Player, Co-founder Project 8",
-        bio: "Two-time Olympic bronze medalist and co-founder of Project 8 Sports, now Founder and Chief Growth Officer at the Northern Super League."
+        bio: "Two-time Olympic bronze medalist and co-founder of Project 8 Sports, now Founder and Chief Growth Officer at the Northern Super League.",
+        photo: speakerPhotos["Diana Matheson"]
       },
       {
         name: "Anastasia Bucsis",
         title: "Former Olympian, CBC Sports journalist",
-        bio: "Two-time Olympic Speedskater and CBC Sports journalist who launched and hosted the podcast 'Player's Own Voice.'"
+        bio: "Two-time Olympic Speedskater and CBC Sports journalist who launched and hosted the podcast 'Player's Own Voice.'",
+        photo: speakerPhotos["Anastasia Bucsis"]
       }
     ],
     moderator: {
       name: "Lance Chung",
       title: "Editor-in-Chief, GLORY Media",
-      bio: "Lance is the Editor-in-Chief of GLORY Media and master of ceremonies for the Summit with years of experience interviewing today's top minds."
+      bio: "Lance is the Editor-in-Chief of GLORY Media and master of ceremonies for the Summit with years of experience interviewing today's top minds.",
+      photo: speakerPhotos["Lance Chung"]
     }
   },
   {
@@ -85,23 +167,27 @@ const panels: Panel[] = [
       {
         name: "Teresa Resch",
         title: "President, Toronto Tempo",
-        bio: "Inaugural President of the Toronto Tempo, the first WNBA franchise outside of the USA, beginning play in 2026 season."
+        bio: "Inaugural President of the Toronto Tempo, the first WNBA franchise outside of the USA, beginning play in 2026 season.",
+        photo: speakerPhotos["Teresa Resch"]
       },
       {
         name: "Kyle McMann",
         title: "SVP, Global Business Development, NHL",
-        bio: "Responsible for generating revenue through strategic partnerships and helping the NHL on its path to upwards of $6 billion in annual revenues."
+        bio: "Responsible for generating revenue through strategic partnerships and helping the NHL on its path to upwards of $6 billion in annual revenues.",
+        photo: speakerPhotos["Kyle McMann"]
       },
       {
         name: "Saroya Tinker",
         title: "DEI, PWHL",
-        bio: "Former professional hockey player who sparks change, pushes limits, breaks barriers, and creates a more equitable future in hockey."
+        bio: "Former professional hockey player who sparks change, pushes limits, breaks barriers, and creates a more equitable future in hockey.",
+        photo: speakerPhotos["Saroya Tinker"]
       }
     ],
     moderator: {
       name: "Alyson Walker",
       title: "SVP, Wasserman",
-      bio: "Sports, media, and entertainment executive with extensive experience across amateur & professional sports, driving revenue and audience growth."
+      bio: "Sports, media, and entertainment executive with extensive experience across amateur & professional sports, driving revenue and audience growth.",
+      photo: speakerPhotos["Alyson Walker"]
     }
   },
   {
@@ -113,18 +199,21 @@ const panels: Panel[] = [
       {
         name: "Jesse Marsch",
         title: "Head Coach, Men's National Team",
-        bio: "Current head coach of the Canadian men's national soccer team, known for his high-tempo, high-press coaching style."
+        bio: "Current head coach of the Canadian men's national soccer team, known for his high-tempo, high-press coaching style.",
+        photo: speakerPhotos["Jesse Marsch"]
       },
       {
         name: "Bob Park",
         title: "Chief Brand Officer, GE Appliances Canada",
-        bio: "Leads corporate communications, branding, and digital strategy across a billion-dollar portfolio of appliance brands."
+        bio: "Leads corporate communications, branding, and digital strategy across a billion-dollar portfolio of appliance brands.",
+        photo: speakerPhotos["Bob Park"]
       }
     ],
     moderator: {
       name: "Andi Petrillo",
       title: "CBC Sports Journalist",
-      bio: "Host of CBC Sports each weekend, known for her work as part of the studio team for CBC's Hockey Night in Canada."
+      bio: "Host of CBC Sports each weekend, known for her work as part of the studio team for CBC's Hockey Night in Canada.",
+      photo: speakerPhotos["Andi Petrillo"]
     }
   }
 ];
@@ -250,9 +339,14 @@ export default function Profile() {
                       <div>
                         <h5 className="font-medium text-gray-900 mb-2">Moderator</h5>
                         <div className="bg-gray-50 p-3 rounded-lg">
-                          <p className="font-medium text-sm">{panel.moderator.name}</p>
-                          <p className="text-xs text-gray-600 mb-1">{panel.moderator.title}</p>
-                          <p className="text-xs text-gray-600">{panel.moderator.bio}</p>
+                          <div className="flex items-start space-x-3">
+                            <SpeakerPhoto name={panel.moderator.name} photo={panel.moderator.photo} />
+                            <div className="flex-1">
+                              <p className="font-medium text-sm">{panel.moderator.name}</p>
+                              <p className="text-xs text-gray-600 mb-1">{panel.moderator.title}</p>
+                              <p className="text-xs text-gray-600">{panel.moderator.bio}</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
@@ -262,9 +356,14 @@ export default function Profile() {
                         <div className="space-y-2">
                           {panel.panelists.map((panelist, idx) => (
                             <div key={idx} className="bg-gray-50 p-3 rounded-lg">
-                              <p className="font-medium text-sm">{panelist.name}</p>
-                              <p className="text-xs text-gray-600 mb-1">{panelist.title}</p>
-                              <p className="text-xs text-gray-600">{panelist.bio}</p>
+                              <div className="flex items-start space-x-3">
+                                <SpeakerPhoto name={panelist.name} photo={panelist.photo} />
+                                <div className="flex-1">
+                                  <p className="font-medium text-sm">{panelist.name}</p>
+                                  <p className="text-xs text-gray-600 mb-1">{panelist.title}</p>
+                                  <p className="text-xs text-gray-600">{panelist.bio}</p>
+                                </div>
+                              </div>
                             </div>
                           ))}
                         </div>
