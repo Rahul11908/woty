@@ -25,6 +25,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   updateUserOnlineStatus(id: number, isOnline: boolean): Promise<void>;
   getSuggestedConnections(userId: number, limit?: number): Promise<User[]>;
+  getEventAttendees(limit?: number): Promise<User[]>;
 
   // Conversations
   getConversationsForUser(userId: number): Promise<ConversationWithParticipant[]>;
@@ -35,6 +36,10 @@ export interface IStorage {
   getMessagesForConversation(conversationId: number, limit?: number): Promise<MessageWithSender[]>;
   createMessage(message: InsertMessage): Promise<Message>;
   updateConversationLastMessage(conversationId: number): Promise<void>;
+
+  // Group Chat
+  getGroupChatMessages(limit?: number): Promise<MessageWithSender[]>;
+  createGroupChatMessage(message: Omit<InsertMessage, 'conversationId'>): Promise<Message>;
 
   // Connections
   createConnection(connection: InsertConnection): Promise<Connection>;
@@ -54,11 +59,13 @@ export class MemStorage implements IStorage {
   private messages: Map<number, Message>;
   private connections: Map<number, Connection>;
   private questions: Map<number, Question>;
+  private groupChatMessages: Map<number, Message>;
   private currentUserId: number;
   private currentConversationId: number;
   private currentMessageId: number;
   private currentConnectionId: number;
   private currentQuestionId: number;
+  private groupChatId: number;
 
   constructor() {
     this.users = new Map();
@@ -66,14 +73,17 @@ export class MemStorage implements IStorage {
     this.messages = new Map();
     this.connections = new Map();
     this.questions = new Map();
+    this.groupChatMessages = new Map();
     this.currentUserId = 1;
     this.currentConversationId = 1;
     this.currentMessageId = 1;
     this.currentConnectionId = 1;
     this.currentQuestionId = 1;
+    this.groupChatId = 9999; // Special ID for group chat
 
     // Initialize with some sample users
     this.initializeSampleData();
+    this.initializeGroupChat();
   }
 
   private async initializeSampleData() {
@@ -314,6 +324,63 @@ export class MemStorage implements IStorage {
 
   async getQuestionsByUser(userId: number): Promise<Question[]> {
     return Array.from(this.questions.values()).filter(q => q.userId === userId);
+  }
+
+  private async initializeGroupChat() {
+    // Add welcome messages to group chat
+    const welcomeMessages = [
+      {
+        content: "Welcome to the GLORY Sports Summit 2025! Looking forward to connecting with everyone today. 🏆",
+        senderId: 2
+      },
+      {
+        content: "Excited to be here! Can't wait for the panel discussions, especially the one on Canadian soccer identity.",
+        senderId: 3
+      },
+      {
+        content: "Great to see so many industry leaders gathered in one place. This should be an amazing day of insights!",
+        senderId: 4
+      }
+    ];
+
+    for (const messageData of welcomeMessages) {
+      await this.createGroupChatMessage(messageData);
+    }
+  }
+
+  async getEventAttendees(limit = 50): Promise<User[]> {
+    return Array.from(this.users.values()).slice(0, limit);
+  }
+
+  async getGroupChatMessages(limit = 100): Promise<MessageWithSender[]> {
+    const allMessages = Array.from(this.groupChatMessages.values())
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0))
+      .slice(0, limit);
+
+    const messagesWithSender = await Promise.all(
+      allMessages.map(async (message) => {
+        const sender = await this.getUser(message.senderId);
+        return {
+          ...message,
+          sender: sender!
+        };
+      })
+    );
+
+    return messagesWithSender.reverse(); // Return in chronological order
+  }
+
+  async createGroupChatMessage(messageData: Omit<InsertMessage, 'conversationId'>): Promise<Message> {
+    const id = this.currentMessageId++;
+    const message: Message = {
+      ...messageData,
+      id,
+      conversationId: this.groupChatId,
+      createdAt: new Date()
+    };
+
+    this.groupChatMessages.set(id, message);
+    return message;
   }
 }
 

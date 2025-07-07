@@ -93,6 +93,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get event attendees
+  app.get("/api/event-attendees", async (req, res) => {
+    try {
+      const attendees = await storage.getEventAttendees();
+      res.json(attendees);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch event attendees" });
+    }
+  });
+
+  // Get group chat messages
+  app.get("/api/group-chat/messages", async (req, res) => {
+    try {
+      const messages = await storage.getGroupChatMessages();
+      res.json(messages);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch group chat messages" });
+    }
+  });
+
+  // Send group chat message
+  app.post("/api/group-chat/messages", async (req, res) => {
+    try {
+      const messageData = insertMessageSchema.omit({ conversationId: true }).parse(req.body);
+      const message = await storage.createGroupChatMessage(messageData);
+      res.json(message);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid message data" });
+    }
+  });
+
   // Submit a question for a panel
   app.post("/api/questions", async (req, res) => {
     try {
