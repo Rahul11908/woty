@@ -108,7 +108,16 @@ The application uses four main entities:
 - **Session Configuration**: PostgreSQL-based session storage
 
 ## Changelog
-- July 07, 2025. Initial setup
+- July 07, 2025: Initial setup
+- July 07, 2025: Modified navigation - renamed "Profile" tab to "Program" with calendar icon, created comprehensive program page with GLORY Sports Summit 2025 panel details, added question submission functionality for all 4 panels, implemented backend question storage and API endpoints
+
+## Recent Changes
+✓ Transformed Profile tab into Program tab showing GLORY Sports Summit 2025 schedule
+✓ Added all 4 panel discussions with detailed speaker bios and panel descriptions
+✓ Implemented question submission feature allowing attendees to submit questions for any panel
+✓ Added backend question storage with API endpoints for creating and retrieving questions
+✓ Fixed DOM nesting warnings in bottom navigation component
+✓ Enhanced mobile-first UI with expandable panel details and interactive question forms
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.

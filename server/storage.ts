@@ -3,6 +3,7 @@ import {
   conversations, 
   messages, 
   connections,
+  questions,
   type User, 
   type InsertUser,
   type Conversation,
@@ -11,6 +12,8 @@ import {
   type InsertMessage,
   type Connection,
   type InsertConnection,
+  type Question,
+  type InsertQuestion,
   type ConversationWithParticipant,
   type MessageWithSender
 } from "@shared/schema";
@@ -38,6 +41,11 @@ export interface IStorage {
   getConnectionStatus(requesterId: number, addresseeId: number): Promise<Connection | undefined>;
   updateConnectionStatus(connectionId: number, status: string): Promise<void>;
   getConnections(userId: number, status?: string): Promise<Connection[]>;
+
+  // Questions
+  createQuestion(question: InsertQuestion): Promise<Question>;
+  getQuestions(panelName?: string): Promise<Question[]>;
+  getQuestionsByUser(userId: number): Promise<Question[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -45,20 +53,24 @@ export class MemStorage implements IStorage {
   private conversations: Map<number, Conversation>;
   private messages: Map<number, Message>;
   private connections: Map<number, Connection>;
+  private questions: Map<number, Question>;
   private currentUserId: number;
   private currentConversationId: number;
   private currentMessageId: number;
   private currentConnectionId: number;
+  private currentQuestionId: number;
 
   constructor() {
     this.users = new Map();
     this.conversations = new Map();
     this.messages = new Map();
     this.connections = new Map();
+    this.questions = new Map();
     this.currentUserId = 1;
     this.currentConversationId = 1;
     this.currentMessageId = 1;
     this.currentConnectionId = 1;
+    this.currentQuestionId = 1;
 
     // Initialize with some sample users
     this.initializeSampleData();
@@ -120,6 +132,9 @@ export class MemStorage implements IStorage {
     const user: User = { 
       ...insertUser, 
       id,
+      title: insertUser.title || null,
+      avatar: insertUser.avatar || null,
+      isOnline: insertUser.isOnline || false,
       createdAt: new Date()
     };
     this.users.set(id, user);
@@ -246,6 +261,7 @@ export class MemStorage implements IStorage {
     const connection: Connection = {
       ...insertConnection,
       id,
+      status: insertConnection.status || "pending",
       createdAt: new Date()
     };
 
@@ -273,6 +289,31 @@ export class MemStorage implements IStorage {
       (conn.requesterId === userId || conn.addresseeId === userId) &&
       (!status || conn.status === status)
     );
+  }
+
+  async createQuestion(insertQuestion: InsertQuestion): Promise<Question> {
+    const id = this.currentQuestionId++;
+    const question: Question = {
+      ...insertQuestion,
+      id,
+      isAnswered: insertQuestion.isAnswered || false,
+      createdAt: new Date()
+    };
+
+    this.questions.set(id, question);
+    return question;
+  }
+
+  async getQuestions(panelName?: string): Promise<Question[]> {
+    const allQuestions = Array.from(this.questions.values());
+    if (panelName) {
+      return allQuestions.filter(q => q.panelName === panelName);
+    }
+    return allQuestions;
+  }
+
+  async getQuestionsByUser(userId: number): Promise<Question[]> {
+    return Array.from(this.questions.values()).filter(q => q.userId === userId);
   }
 }
 

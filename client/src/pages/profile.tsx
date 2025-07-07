@@ -1,9 +1,160 @@
-import { User, Mail, Phone, MapPin, Calendar, Trophy, Star } from "lucide-react";
+import { useState } from "react";
+import { Calendar, Clock, Users, MessageSquare, Send, ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+
+interface Panel {
+  id: string;
+  title: string;
+  time: string;
+  description: string;
+  panelists: Array<{
+    name: string;
+    title: string;
+    bio: string;
+  }>;
+  moderator: {
+    name: string;
+    title: string;
+    bio: string;
+  };
+}
+
+const panels: Panel[] = [
+  {
+    id: "panel1",
+    title: "Breaking Through: The Canadian Soccer Identity",
+    time: "2:10 PM – 2:50 PM",
+    description: "From grassroots leagues to the global pitch, Canadian soccer has come a long way—but the journey is far from over. As Toronto prepares to become a host city for the 2026 FIFA World Cup, this panel explores the evolution of soccer in Canada.",
+    panelists: [
+      {
+        name: "Dwayne De Rosario",
+        title: "Former Player",
+        bio: "Dwayne 'DeRo' De Rosario is a proud Scarborough native and one of Canada's most decorated and influential soccer figures, with a career spanning nearly two decades at the highest levels."
+      },
+      {
+        name: "Sharon Bollenbach",
+        title: "Executive Director, FIFA World Cup at the City of Toronto",
+        bio: "With over 30 years of leadership experience in sport administration and event management, Sharon leads Toronto's preparations for hosting the FIFA World Cup 2026™."
+      },
+      {
+        name: "Marcus Hanson",
+        title: "CEO, First Touch Football",
+        bio: "Marcus is the founder and CEO of First Touch Football Canada, helping Canadian soccer players earn scholarships and opportunities with top clubs."
+      }
+    ],
+    moderator: {
+      name: "Ellen Hyslop",
+      title: "Co-Founder, The Gist",
+      bio: "Ellen is a co-founder and head of content at The GIST, a fan-first sports media brand that has reinvented the dialogue around sports."
+    }
+  },
+  {
+    id: "panel2",
+    title: "More Than a Game: Partnership, Purpose, and Canadian Sports",
+    time: "2:55 PM – 3:30 PM",
+    description: "Diana Matheson and Anastasia Bucsis discuss the power of soccer to drive cultural change, the urgency of professionalizing the women's game in Canada, and leadership in sports.",
+    panelists: [
+      {
+        name: "Diana Matheson",
+        title: "Former Player, Co-founder Project 8",
+        bio: "Two-time Olympic bronze medalist and co-founder of Project 8 Sports, now Founder and Chief Growth Officer at the Northern Super League."
+      },
+      {
+        name: "Anastasia Bucsis",
+        title: "Former Olympian, CBC Sports journalist",
+        bio: "Two-time Olympic Speedskater and CBC Sports journalist who launched and hosted the podcast 'Player's Own Voice.'"
+      }
+    ],
+    moderator: {
+      name: "Lance Chung",
+      title: "Editor-in-Chief, GLORY Media",
+      bio: "Lance is the Editor-in-Chief of GLORY Media and master of ceremonies for the Summit with years of experience interviewing today's top minds."
+    }
+  },
+  {
+    id: "panel3",
+    title: "From The Ground Up: How To Build a Global Sports Nation",
+    time: "4:00 PM - 4:40 PM",
+    description: "Leaders building Toronto's sports future explore what it means to turn a city into a global sports hub through major league expansion, global partnerships, and grassroots development.",
+    panelists: [
+      {
+        name: "Teresa Resch",
+        title: "President, Toronto Tempo",
+        bio: "Inaugural President of the Toronto Tempo, the first WNBA franchise outside of the USA, beginning play in 2026 season."
+      },
+      {
+        name: "Kyle McMann",
+        title: "SVP, Global Business Development, NHL",
+        bio: "Responsible for generating revenue through strategic partnerships and helping the NHL on its path to upwards of $6 billion in annual revenues."
+      },
+      {
+        name: "Saroya Tinker",
+        title: "DEI, PWHL",
+        bio: "Former professional hockey player who sparks change, pushes limits, breaks barriers, and creates a more equitable future in hockey."
+      }
+    ],
+    moderator: {
+      name: "Alyson Walker",
+      title: "SVP, Wasserman",
+      bio: "Sports, media, and entertainment executive with extensive experience across amateur & professional sports, driving revenue and audience growth."
+    }
+  },
+  {
+    id: "panel4",
+    title: "Canada Soccer Preparation for FIFA World Cup",
+    time: "4:45 PM - 5:30 PM",
+    description: "Head Coach Jesse Marsch shares what it's like to lead a national team with the hopes of a country behind it, joined by key supporters discussing investment in sport.",
+    panelists: [
+      {
+        name: "Jesse Marsch",
+        title: "Head Coach, Men's National Team",
+        bio: "Current head coach of the Canadian men's national soccer team, known for his high-tempo, high-press coaching style."
+      },
+      {
+        name: "Bob Park",
+        title: "Chief Brand Officer, GE Appliances Canada",
+        bio: "Leads corporate communications, branding, and digital strategy across a billion-dollar portfolio of appliance brands."
+      }
+    ],
+    moderator: {
+      name: "Andi Petrillo",
+      title: "CBC Sports Journalist",
+      bio: "Host of CBC Sports each weekend, known for her work as part of the studio team for CBC's Hockey Night in Canada."
+    }
+  }
+];
 
 export default function Profile() {
+  const [expandedPanel, setExpandedPanel] = useState<string | null>(null);
+  const [questions, setQuestions] = useState<{ [key: string]: string }>({});
+  const queryClient = useQueryClient();
+
+  const submitQuestionMutation = useMutation({
+    mutationFn: async ({ panelName, question }: { panelName: string; question: string }) => {
+      await apiRequest("POST", "/api/questions", {
+        userId: 1, // In real app, get from auth context
+        panelName,
+        question
+      });
+    },
+    onSuccess: (_, variables) => {
+      setQuestions(prev => ({ ...prev, [variables.panelName]: "" }));
+      queryClient.invalidateQueries({ queryKey: ["/api/questions"] });
+    }
+  });
+
+  const handleQuestionSubmit = (panelId: string, panelTitle: string) => {
+    const question = questions[panelId];
+    if (question?.trim()) {
+      submitQuestionMutation.mutate({ panelName: panelTitle, question: question.trim() });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
@@ -11,11 +162,11 @@ export default function Profile() {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <User className="w-4 h-4 text-white" />
+              <Calendar className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-gray-900">My Profile</h1>
-              <p className="text-xs text-gray-500">Summit Attendee</p>
+              <h1 className="text-lg font-semibold text-gray-900">Program</h1>
+              <p className="text-xs text-gray-500">GLORY Sports Summit 2025</p>
             </div>
           </div>
         </div>
@@ -23,117 +174,133 @@ export default function Profile() {
 
       <main className="pt-4 px-4">
         <div className="space-y-6">
-          {/* Profile Header */}
+          {/* Event Overview */}
           <Card>
             <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="relative inline-block">
-                  <img 
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"
-                    alt="Profile"
-                    className="w-24 h-24 rounded-full object-cover mx-auto mb-4"
-                  />
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"></div>
-                </div>
-                <h2 className="text-xl font-semibold text-gray-900">John Doe</h2>
-                <p className="text-gray-600 mb-2">Sports Analytics Director</p>
-                <div className="flex justify-center space-x-2 mb-4">
-                  <Badge variant="secondary">VIP Attendee</Badge>
-                  <Badge variant="outline">Speaker</Badge>
-                </div>
-                <Button variant="outline" size="sm">Edit Profile</Button>
+              <div className="text-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                  GLORY Sports Summit 2025
+                </h2>
+                <p className="text-gray-600 mb-3">
+                  July 15th • Sutton Place Hotel, Toronto
+                </p>
+                <Badge variant="secondary" className="mb-4">4 Panel Discussions</Badge>
+                <p className="text-sm text-gray-600">
+                  Exploring the intersection of sports and culture through a distinctly Canadian lens
+                </p>
               </div>
             </CardContent>
           </Card>
 
-          {/* Contact Information */}
+          {/* Schedule Overview */}
           <Card>
             <CardContent className="pt-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Contact Information</h3>
-              <div className="space-y-3">
+              <h3 className="font-semibold text-gray-900 mb-4">Today's Schedule</h3>
+              <div className="space-y-3 text-sm">
                 <div className="flex items-center space-x-3">
-                  <Mail className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-600">john.doe@email.com</span>
+                  <Clock className="w-4 h-4 text-gray-400" />
+                  <span className="font-medium">1:00 PM - 2:00 PM</span>
+                  <span className="text-gray-600">Arrivals + Networking</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <Phone className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-600">+1 (555) 123-4567</span>
+                  <Clock className="w-4 h-4 text-gray-400" />
+                  <span className="font-medium">3:30 PM - 3:55 PM</span>
+                  <span className="text-gray-600">Networking Break</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <MapPin className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-600">New York, NY</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Calendar className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-600">Joined March 2024</span>
+                  <Clock className="w-4 h-4 text-gray-400" />
+                  <span className="font-medium">6:00 PM - 8:00 PM</span>
+                  <span className="text-gray-600">Cocktail Reception</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Summit Activity */}
-          <Card>
-            <CardContent className="pt-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Summit Activity</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center">
-                  <Trophy className="w-8 h-8 text-primary mx-auto mb-2" />
-                  <h4 className="font-semibold">5</h4>
-                  <p className="text-sm text-gray-600">Sessions Attended</p>
-                </div>
-                <div className="text-center">
-                  <User className="w-8 h-8 text-primary mx-auto mb-2" />
-                  <h4 className="font-semibold">12</h4>
-                  <p className="text-sm text-gray-600">Connections Made</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Interests */}
-          <Card>
-            <CardContent className="pt-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Interests & Expertise</h3>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">Sports Analytics</Badge>
-                <Badge variant="secondary">Data Science</Badge>
-                <Badge variant="secondary">Performance Metrics</Badge>
-                <Badge variant="secondary">AI/ML</Badge>
-                <Badge variant="secondary">Fan Experience</Badge>
-                <Badge variant="secondary">Technology Innovation</Badge>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Recent Activity */}
-          <Card>
-            <CardContent className="pt-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Recent Activity</h3>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                  <Star className="w-5 h-5 text-yellow-500" />
-                  <div>
-                    <p className="font-medium">Rated "AI in Sports" session</p>
-                    <p className="text-sm text-gray-600">2 hours ago</p>
+          {/* Panel Discussions */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-gray-900">Panel Discussions</h3>
+            {panels.map((panel, index) => (
+              <Card key={panel.id}>
+                <CardContent className="pt-6">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Badge variant="outline">Panel #{index + 1}</Badge>
+                        <span className="text-sm text-gray-500">{panel.time}</span>
+                      </div>
+                      <h4 className="font-semibold text-gray-900 mb-2">{panel.title}</h4>
+                      <p className="text-sm text-gray-600 mb-3">{panel.description}</p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setExpandedPanel(expandedPanel === panel.id ? null : panel.id)}
+                    >
+                      {expandedPanel === panel.id ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4" />
+                      )}
+                    </Button>
                   </div>
-                </div>
-                <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                  <User className="w-5 h-5 text-primary" />
-                  <div>
-                    <p className="font-medium">Connected with Sarah Johnson</p>
-                    <p className="text-sm text-gray-600">4 hours ago</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                  <Trophy className="w-5 h-5 text-green-500" />
-                  <div>
-                    <p className="font-medium">Attended GE Innovation Showcase</p>
-                    <p className="text-sm text-gray-600">Yesterday</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+
+                  {expandedPanel === panel.id && (
+                    <div className="space-y-4 border-t pt-4">
+                      {/* Moderator */}
+                      <div>
+                        <h5 className="font-medium text-gray-900 mb-2">Moderator</h5>
+                        <div className="bg-gray-50 p-3 rounded-lg">
+                          <p className="font-medium text-sm">{panel.moderator.name}</p>
+                          <p className="text-xs text-gray-600 mb-1">{panel.moderator.title}</p>
+                          <p className="text-xs text-gray-600">{panel.moderator.bio}</p>
+                        </div>
+                      </div>
+
+                      {/* Panelists */}
+                      <div>
+                        <h5 className="font-medium text-gray-900 mb-2">Panelists</h5>
+                        <div className="space-y-2">
+                          {panel.panelists.map((panelist, idx) => (
+                            <div key={idx} className="bg-gray-50 p-3 rounded-lg">
+                              <p className="font-medium text-sm">{panelist.name}</p>
+                              <p className="text-xs text-gray-600 mb-1">{panelist.title}</p>
+                              <p className="text-xs text-gray-600">{panelist.bio}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Question Submission */}
+                      <div className="border-t pt-4">
+                        <h5 className="font-medium text-gray-900 mb-2 flex items-center">
+                          <MessageSquare className="w-4 h-4 mr-2" />
+                          Submit a Question
+                        </h5>
+                        <div className="space-y-3">
+                          <Textarea
+                            placeholder={`Ask a question for "${panel.title}"...`}
+                            value={questions[panel.id] || ""}
+                            onChange={(e) => setQuestions(prev => ({ ...prev, [panel.id]: e.target.value }))}
+                            className="resize-none"
+                            rows={3}
+                          />
+                          <Button
+                            onClick={() => handleQuestionSubmit(panel.id, panel.title)}
+                            disabled={!questions[panel.id]?.trim() || submitQuestionMutation.isPending}
+                            size="sm"
+                            className="w-full"
+                          >
+                            <Send className="w-4 h-4 mr-2" />
+                            {submitQuestionMutation.isPending ? "Submitting..." : "Submit Question"}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </main>
     </div>

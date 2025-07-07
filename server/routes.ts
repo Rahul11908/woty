@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertMessageSchema, insertConnectionSchema } from "@shared/schema";
+import { insertMessageSchema, insertConnectionSchema, insertQuestionSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get conversations for current user
@@ -90,6 +90,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(users);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch users" });
+    }
+  });
+
+  // Submit a question for a panel
+  app.post("/api/questions", async (req, res) => {
+    try {
+      const questionData = insertQuestionSchema.parse(req.body);
+      const question = await storage.createQuestion(questionData);
+      res.json(question);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid question data" });
+    }
+  });
+
+  // Get questions for a panel
+  app.get("/api/questions", async (req, res) => {
+    try {
+      const panelName = req.query.panelName as string;
+      const questions = await storage.getQuestions(panelName);
+      res.json(questions);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch questions" });
+    }
+  });
+
+  // Get questions by user
+  app.get("/api/questions/user/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const questions = await storage.getQuestionsByUser(userId);
+      res.json(questions);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch user questions" });
     }
   });
 

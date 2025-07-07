@@ -37,6 +37,15 @@ export const connections = pgTable("connections", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const questions = pgTable("questions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  panelName: text("panel_name").notNull(),
+  question: text("question").notNull(),
+  isAnswered: boolean("is_answered").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -58,6 +67,11 @@ export const insertConnectionSchema = createInsertSchema(connections).omit({
   createdAt: true,
 });
 
+export const insertQuestionSchema = createInsertSchema(questions).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertConversation = z.infer<typeof insertConversationSchema>;
@@ -66,6 +80,8 @@ export type InsertMessage = z.infer<typeof insertMessageSchema>;
 export type Message = typeof messages.$inferSelect;
 export type InsertConnection = z.infer<typeof insertConnectionSchema>;
 export type Connection = typeof connections.$inferSelect;
+export type InsertQuestion = z.infer<typeof insertQuestionSchema>;
+export type Question = typeof questions.$inferSelect;
 
 export type ConversationWithParticipant = Conversation & {
   participant: User;
