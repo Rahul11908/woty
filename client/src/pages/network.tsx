@@ -167,21 +167,32 @@ export default function Network() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Message Input */}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Message Input Section */}
+        <div className="px-4 pb-4">
+          <Card className="border-blue-200 bg-blue-50/50">
+            <CardContent className="pt-4">
+              <div className="flex items-center space-x-2 mb-2">
+                <MessageSquare className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-900">Join the Conversation</span>
+              </div>
               <div className="flex space-x-2">
                 <Textarea
                   placeholder="Share your thoughts with fellow attendees..."
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="flex-1 resize-none"
+                  className="flex-1 resize-none border-blue-200 focus:border-blue-400"
                   rows={2}
                 />
                 <Button
                   onClick={handleSendMessage}
                   disabled={!newMessage.trim() || sendMessageMutation.isPending}
                   size="sm"
-                  className="self-end"
+                  className="self-end bg-blue-600 hover:bg-blue-700"
                 >
                   <Send className="w-4 h-4" />
                 </Button>
