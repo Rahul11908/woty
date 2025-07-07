@@ -1,18 +1,13 @@
-import { useState } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 
 export default function Login() {
   const [, setLocation] = useLocation();
-  const [selectedOption, setSelectedOption] = useState<string>("");
 
-  const handleContinue = () => {
-    if (selectedOption === "create") {
-      setLocation("/create-profile");
-    }
+  const handleEnterEvent = () => {
+    setLocation("/create-profile");
   };
 
   return (
@@ -32,26 +27,12 @@ export default function Login() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="space-y-4">
-            <label className="text-sm font-medium text-gray-700">
-              How would you like to proceed?
-            </label>
-            <Select value={selectedOption} onValueChange={setSelectedOption}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select an option" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="create">Create a new profile</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          
           <Button 
-            onClick={handleContinue}
-            disabled={!selectedOption}
+            onClick={handleEnterEvent}
             className="w-full"
+            size="lg"
           >
-            Continue
+            Enter Event
           </Button>
         </CardContent>
       </Card>
