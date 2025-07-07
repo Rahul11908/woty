@@ -12,8 +12,6 @@ export default function Login() {
   const handleContinue = () => {
     if (selectedOption === "create") {
       setLocation("/create-profile");
-    } else if (selectedOption === "existing") {
-      setLocation("/existing-profile");
     }
   };
 
@@ -44,7 +42,6 @@ export default function Login() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="create">Create a new profile</SelectItem>
-                <SelectItem value="existing">Sign in with existing profile</SelectItem>
               </SelectContent>
             </Select>
           </div>

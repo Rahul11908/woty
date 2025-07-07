@@ -21,7 +21,6 @@ import {
 export interface IStorage {
   // Users
   getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUserOnlineStatus(id: number, isOnline: boolean): Promise<void>;
@@ -90,8 +89,6 @@ export class MemStorage implements IStorage {
   private async initializeSampleData() {
     const sampleUsers = [
       {
-        username: "michael.chen",
-        password: "password123",
         fullName: "Michael Chen",
         email: "michael.chen@example.com",
         company: "SportsTech Corp",
@@ -101,8 +98,6 @@ export class MemStorage implements IStorage {
         hasAcceptedTerms: true
       },
       {
-        username: "dwayne.derosario",
-        password: "password123",
         fullName: "Dwayne De Rosario",
         email: "dwayne.derosario@example.com",
         company: "Independent",
@@ -112,8 +107,6 @@ export class MemStorage implements IStorage {
         hasAcceptedTerms: true
       },
       {
-        username: "diana.matheson",
-        password: "password123",
         fullName: "Diana Matheson",
         email: "diana.matheson@project8.com",
         company: "Project 8",
@@ -123,8 +116,6 @@ export class MemStorage implements IStorage {
         hasAcceptedTerms: true
       },
       {
-        username: "jesse.marsch",
-        password: "password123",
         fullName: "Jesse Marsch",
         email: "jesse.marsch@ussoccer.com",
         company: "US Soccer",
@@ -134,8 +125,6 @@ export class MemStorage implements IStorage {
         hasAcceptedTerms: true
       },
       {
-        username: "teresa.resch",
-        password: "password123",
         fullName: "Teresa Resch",
         email: "teresa.resch@torontotempo.com",
         company: "Toronto Tempo",
@@ -145,8 +134,6 @@ export class MemStorage implements IStorage {
         hasAcceptedTerms: true
       },
       {
-        username: "anastasia.bucsis",
-        password: "password123",
         fullName: "Anastasia Bucsis",
         email: "anastasia.bucsis@cbc.ca",
         company: "CBC Sports",
@@ -156,8 +143,6 @@ export class MemStorage implements IStorage {
         hasAcceptedTerms: true
       },
       {
-        username: "kyle.mcmann",
-        password: "password123",
         fullName: "Kyle McMann",
         email: "kyle.mcmann@nhl.com",
         company: "NHL",
@@ -167,8 +152,6 @@ export class MemStorage implements IStorage {
         hasAcceptedTerms: true
       },
       {
-        username: "lance.chung",
-        password: "password123",
         fullName: "Lance Chung",
         email: "lance.chung@glory.media",
         company: "GLORY Media",
@@ -178,8 +161,6 @@ export class MemStorage implements IStorage {
         hasAcceptedTerms: true
       },
       {
-        username: "sarah.johnson",
-        password: "password123",
         fullName: "Sarah Johnson",
         email: "sarah.johnson@example.com",
         company: "Independent",
@@ -197,12 +178,6 @@ export class MemStorage implements IStorage {
 
   async getUser(id: number): Promise<User | undefined> {
     return this.users.get(id);
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {

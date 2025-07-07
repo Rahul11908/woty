@@ -11,7 +11,6 @@ import Admin from "@/pages/admin";
 import Conversation from "@/pages/conversation";
 import Login from "@/pages/login";
 import CreateProfile from "@/pages/create-profile";
-import ExistingProfile from "@/pages/existing-profile";
 import BottomNavigation from "@/components/bottom-navigation";
 import { useState, useEffect } from "react";
 import { User } from "@shared/schema";
@@ -53,7 +52,6 @@ function Router() {
           <Route path="/" component={Login} />
           <Route path="/login" component={Login} />
           <Route path="/create-profile" component={CreateProfile} />
-          <Route path="/existing-profile" component={ExistingProfile} />
           <Route component={Login} />
         </Switch>
       </div>

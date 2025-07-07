@@ -16,12 +16,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertUserSchema } from "@shared/schema";
 
-const createProfileSchema = insertUserSchema.extend({
-  confirmPassword: z.string().min(8, "Password must be at least 8 characters"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+const createProfileSchema = insertUserSchema;
 
 type CreateProfileData = z.infer<typeof createProfileSchema>;
 
@@ -35,9 +30,6 @@ export default function CreateProfile() {
   const form = useForm<CreateProfileData>({
     resolver: zodResolver(createProfileSchema),
     defaultValues: {
-      username: "",
-      password: "",
-      confirmPassword: "",
       fullName: "",
       email: "",
       company: "",
@@ -49,8 +41,7 @@ export default function CreateProfile() {
 
   const createUserMutation = useMutation({
     mutationFn: async (data: CreateProfileData) => {
-      const { confirmPassword, ...userData } = data;
-      return await apiRequest("/api/users", "POST", userData);
+      return await apiRequest("/api/users", "POST", data);
     },
     onSuccess: (user) => {
       toast({
@@ -171,47 +162,7 @@ export default function CreateProfile() {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Choose a username" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="Enter password" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="Confirm password" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
