@@ -22,6 +22,7 @@ export interface IStorage {
   // Users
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUserOnlineStatus(id: number, isOnline: boolean): Promise<void>;
   getSuggestedConnections(userId: number, limit?: number): Promise<User[]>;
@@ -92,73 +93,100 @@ export class MemStorage implements IStorage {
         username: "michael.chen",
         password: "password123",
         fullName: "Michael Chen",
-        title: "Sports Analytics Director",
+        email: "michael.chen@example.com",
+        company: "SportsTech Corp",
+        jobTitle: "Sports Analytics Director",
         avatar: "",
-        isOnline: true
+        isOnline: true,
+        hasAcceptedTerms: true
       },
       {
         username: "dwayne.derosario",
         password: "password123",
         fullName: "Dwayne De Rosario",
-        title: "Former Player",
+        email: "dwayne.derosario@example.com",
+        company: "Independent",
+        jobTitle: "Former Player",
         avatar: "",
-        isOnline: true
+        isOnline: true,
+        hasAcceptedTerms: true
       },
       {
         username: "diana.matheson",
         password: "password123",
         fullName: "Diana Matheson",
-        title: "Former Player, Co-founder Project 8",
+        email: "diana.matheson@project8.com",
+        company: "Project 8",
+        jobTitle: "Former Player, Co-founder",
         avatar: "",
-        isOnline: true
+        isOnline: true,
+        hasAcceptedTerms: true
       },
       {
         username: "jesse.marsch",
         password: "password123",
         fullName: "Jesse Marsch",
-        title: "Head Coach, Men's National Team",
+        email: "jesse.marsch@ussoccer.com",
+        company: "US Soccer",
+        jobTitle: "Head Coach, Men's National Team",
         avatar: "",
-        isOnline: false
+        isOnline: false,
+        hasAcceptedTerms: true
       },
       {
         username: "teresa.resch",
         password: "password123",
         fullName: "Teresa Resch",
-        title: "President, Toronto Tempo",
+        email: "teresa.resch@torontotempo.com",
+        company: "Toronto Tempo",
+        jobTitle: "President",
         avatar: "",
-        isOnline: true
+        isOnline: true,
+        hasAcceptedTerms: true
       },
       {
         username: "anastasia.bucsis",
         password: "password123",
         fullName: "Anastasia Bucsis",
-        title: "Former Olympian, CBC Sports journalist",
+        email: "anastasia.bucsis@cbc.ca",
+        company: "CBC Sports",
+        jobTitle: "Former Olympian, CBC Sports journalist",
         avatar: "",
-        isOnline: false
+        isOnline: false,
+        hasAcceptedTerms: true
       },
       {
         username: "kyle.mcmann",
         password: "password123",
         fullName: "Kyle McMann",
-        title: "SVP, Global Business Development, NHL",
+        email: "kyle.mcmann@nhl.com",
+        company: "NHL",
+        jobTitle: "SVP, Global Business Development",
         avatar: "",
-        isOnline: true
+        isOnline: true,
+        hasAcceptedTerms: true
       },
       {
         username: "lance.chung",
         password: "password123",
         fullName: "Lance Chung",
-        title: "Editor-in-Chief, GLORY Media",
+        email: "lance.chung@glory.media",
+        company: "GLORY Media",
+        jobTitle: "Editor-in-Chief",
         avatar: "",
-        isOnline: true
+        isOnline: true,
+        hasAcceptedTerms: true
       },
       {
         username: "sarah.johnson",
         password: "password123",
         fullName: "Sarah Johnson",
-        title: "Summit Attendee",
+        email: "sarah.johnson@example.com",
+        company: "Independent",
+        jobTitle: "Summit Attendee",
         avatar: "",
-        isOnline: false
+        isOnline: false,
+        hasAcceptedTerms: true
       }
     ];
 
@@ -177,14 +205,22 @@ export class MemStorage implements IStorage {
     );
   }
 
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(
+      (user) => user.email === email,
+    );
+  }
+
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
     const user: User = { 
       ...insertUser, 
       id,
-      title: insertUser.title || null,
+      company: insertUser.company || null,
+      jobTitle: insertUser.jobTitle || null,
       avatar: insertUser.avatar || null,
       isOnline: insertUser.isOnline || false,
+      hasAcceptedTerms: insertUser.hasAcceptedTerms || false,
       createdAt: new Date()
     };
     this.users.set(id, user);

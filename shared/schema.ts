@@ -7,9 +7,12 @@ export const users = pgTable("users", {
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
   fullName: text("full_name").notNull(),
-  title: text("title"),
+  email: text("email").notNull().unique(),
+  company: text("company"),
+  jobTitle: text("job_title"),
   avatar: text("avatar"),
   isOnline: boolean("is_online").default(false),
+  hasAcceptedTerms: boolean("has_accepted_terms").default(false),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
