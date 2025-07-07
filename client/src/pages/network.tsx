@@ -72,6 +72,29 @@ export default function Network() {
       .toUpperCase();
   };
 
+  // Get user photo URL based on their name
+  const getUserPhoto = (fullName: string) => {
+    // Convert full name to expected photo filename format
+    const photoFileName = fullName.toLowerCase().replace(/\s+/g, '-') + '.jpg';
+    return `/photos/${photoFileName}`;
+  };
+
+  // Generate consistent color for user avatars
+  const getUserAvatarColor = (name: string) => {
+    const colors = [
+      'from-blue-500 to-blue-600',
+      'from-purple-500 to-purple-600', 
+      'from-green-500 to-green-600',
+      'from-orange-500 to-orange-600',
+      'from-red-500 to-red-600',
+      'from-teal-500 to-teal-600',
+      'from-indigo-500 to-indigo-600',
+      'from-pink-500 to-pink-600'
+    ];
+    const colorIndex = name.length % colors.length;
+    return colors[colorIndex];
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
@@ -119,7 +142,11 @@ export default function Network() {
                   groupMessages.map((message) => (
                     <div key={message.id} className="flex space-x-3">
                       <Avatar className="w-8 h-8">
-                        <AvatarFallback className="text-xs bg-blue-500 text-white">
+                        <AvatarImage 
+                          src={getUserPhoto(message.sender.fullName)} 
+                          alt={message.sender.fullName}
+                        />
+                        <AvatarFallback className={`text-xs bg-gradient-to-br ${getUserAvatarColor(message.sender.fullName)} text-white`}>
                           {getUserInitials(message.sender.fullName)}
                         </AvatarFallback>
                       </Avatar>
@@ -183,7 +210,11 @@ export default function Network() {
                   {eventAttendees.map((attendee) => (
                     <div key={attendee.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                       <Avatar className="w-10 h-10">
-                        <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                        <AvatarImage 
+                          src={getUserPhoto(attendee.fullName)} 
+                          alt={attendee.fullName}
+                        />
+                        <AvatarFallback className={`bg-gradient-to-br ${getUserAvatarColor(attendee.fullName)} text-white font-semibold`}>
                           {getUserInitials(attendee.fullName)}
                         </AvatarFallback>
                       </Avatar>

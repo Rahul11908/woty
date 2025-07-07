@@ -93,31 +93,71 @@ export class MemStorage implements IStorage {
         password: "password123",
         fullName: "Michael Chen",
         title: "Sports Analytics Director",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150",
+        avatar: "",
+        isOnline: true
+      },
+      {
+        username: "dwayne.derosario",
+        password: "password123",
+        fullName: "Dwayne De Rosario",
+        title: "Former Player",
+        avatar: "",
+        isOnline: true
+      },
+      {
+        username: "diana.matheson",
+        password: "password123",
+        fullName: "Diana Matheson",
+        title: "Former Player, Co-founder Project 8",
+        avatar: "",
+        isOnline: true
+      },
+      {
+        username: "jesse.marsch",
+        password: "password123",
+        fullName: "Jesse Marsch",
+        title: "Head Coach, Men's National Team",
+        avatar: "",
+        isOnline: false
+      },
+      {
+        username: "teresa.resch",
+        password: "password123",
+        fullName: "Teresa Resch",
+        title: "President, Toronto Tempo",
+        avatar: "",
+        isOnline: true
+      },
+      {
+        username: "anastasia.bucsis",
+        password: "password123",
+        fullName: "Anastasia Bucsis",
+        title: "Former Olympian, CBC Sports journalist",
+        avatar: "",
+        isOnline: false
+      },
+      {
+        username: "kyle.mcmann",
+        password: "password123",
+        fullName: "Kyle McMann",
+        title: "SVP, Global Business Development, NHL",
+        avatar: "",
+        isOnline: true
+      },
+      {
+        username: "lance.chung",
+        password: "password123",
+        fullName: "Lance Chung",
+        title: "Editor-in-Chief, GLORY Media",
+        avatar: "",
         isOnline: true
       },
       {
         username: "sarah.johnson",
         password: "password123",
         fullName: "Sarah Johnson",
-        title: "Olympic Committee Representative",
-        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150",
-        isOnline: false
-      },
-      {
-        username: "david.rodriguez",
-        password: "password123",
-        fullName: "David Rodriguez",
-        title: "Sports Marketing Executive",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150",
-        isOnline: true
-      },
-      {
-        username: "alex.thompson",
-        password: "password123",
-        fullName: "Alex Thompson",
-        title: "Professional Athlete",
-        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150",
+        title: "Summit Attendee",
+        avatar: "",
         isOnline: false
       }
     ];
@@ -331,15 +371,19 @@ export class MemStorage implements IStorage {
     const welcomeMessages = [
       {
         content: "Welcome to the GLORY Sports Summit 2025! Looking forward to connecting with everyone today. 🏆",
-        senderId: 2
+        senderId: 2 // Dwayne De Rosario
       },
       {
         content: "Excited to be here! Can't wait for the panel discussions, especially the one on Canadian soccer identity.",
-        senderId: 3
+        senderId: 3 // Diana Matheson
       },
       {
         content: "Great to see so many industry leaders gathered in one place. This should be an amazing day of insights!",
-        senderId: 4
+        senderId: 5 // Teresa Resch
+      },
+      {
+        content: "The networking opportunities here are incredible. Let's make some great connections! 🤝",
+        senderId: 7 // Kyle McMann
       }
     ];
 
