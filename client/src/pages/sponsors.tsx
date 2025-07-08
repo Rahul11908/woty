@@ -7,7 +7,7 @@ import suttonPlaceHotelLogo from "@assets/SPH-Toronto_logo_Toronto_white_stacked
 import asahiLogo from "@assets/ASD_LOGO_NEGATIVE_RGB_1752004822019.png";
 import rootsLogo from "@assets/Asset 1_1752004822019.png";
 import hennessyLogo from "@assets/image-4_1752004469108.png";
-import masByMessiLogo from "@assets/image-2_1752004469108.png";
+import masByMessiLogo from "@assets/mas-plus-logo.webp";
 import radoLogo from "@assets/image_1752004469108.png";
 import geAppliancesLogo from "@assets/GEAppliances_PrimaryLogo_1752003391719.png";
 
@@ -35,7 +35,7 @@ const sponsors: Sponsor[] = [
     id: "asahi",
     name: "Asahi",
     website: "https://www.asahibeer.com",
-    brandColor: "bg-black",
+    brandColor: "bg-red-600",
     textColor: "text-white",
     logoSvg: `<img src="${asahiLogo}" alt="Asahi" className="w-full h-full object-contain" />`
   },
@@ -43,7 +43,7 @@ const sponsors: Sponsor[] = [
     id: "boss",
     name: "BOSS",
     website: "https://www.boss.info",
-    brandColor: "bg-gray-900",
+    brandColor: "bg-black",
     textColor: "text-white",
     logoSvg: `<img src="${bossLogo}" alt="BOSS" className="w-full h-full object-contain" />`
   },
@@ -51,7 +51,7 @@ const sponsors: Sponsor[] = [
     id: "roots",
     name: "Roots",
     website: "https://www.roots.com",
-    brandColor: "bg-red-700",
+    brandColor: "bg-green-700",
     textColor: "text-white",
     logoSvg: `<img src="${rootsLogo}" alt="Roots" className="w-full h-full object-contain" />`
   },
@@ -59,7 +59,7 @@ const sponsors: Sponsor[] = [
     id: "rabanne",
     name: "Rabanne",
     website: "https://www.rabanne.com",
-    brandColor: "bg-gradient-to-r from-purple-600 to-pink-600",
+    brandColor: "bg-purple-700",
     textColor: "text-white",
     logoSvg: `<img src="${rabanneLogo}" alt="Rabanne" className="w-full h-full object-contain" />`
   },
@@ -67,7 +67,7 @@ const sponsors: Sponsor[] = [
     id: "mas",
     name: "Mas+",
     website: "https://www.masplus.com",
-    brandColor: "bg-gradient-to-r from-blue-600 to-sky-500",
+    brandColor: "bg-orange-500",
     textColor: "text-white",
     logoSvg: `<img src="${masByMessiLogo}" alt="Mas+ by Messi" className="w-full h-full object-contain" />`
   },
@@ -75,7 +75,7 @@ const sponsors: Sponsor[] = [
     id: "hennessy",
     name: "Hennessy",
     website: "https://www.hennessy.com",
-    brandColor: "bg-gradient-to-r from-amber-700 to-orange-600",
+    brandColor: "bg-amber-700",
     textColor: "text-white",
     logoSvg: `<img src="${hennessyLogo}" alt="Hennessy" className="w-full h-full object-contain" />`
   },
@@ -83,7 +83,7 @@ const sponsors: Sponsor[] = [
     id: "rado",
     name: "Rado",
     website: "https://www.rado.com",
-    brandColor: "bg-gradient-to-r from-slate-800 to-gray-800",
+    brandColor: "bg-gray-800",
     textColor: "text-white",
     logoSvg: `<img src="${radoLogo}" alt="Rado Switzerland" className="w-full h-full object-contain" />`
   },
@@ -91,7 +91,7 @@ const sponsors: Sponsor[] = [
     id: "sutton",
     name: "Sutton Place Hotel Toronto",
     website: "https://www.suttonplace.com",
-    brandColor: "bg-gradient-to-r from-indigo-900 to-blue-900",
+    brandColor: "bg-indigo-800",
     textColor: "text-white",
     logoSvg: `<img src="${suttonPlaceHotelLogo}" alt="The Sutton Place Hotel Toronto" className="w-full h-full object-contain" />`
   }
@@ -150,7 +150,7 @@ export default function Sponsors() {
                   onClick={() => handleSponsorClick(sponsor.website)}
                 >
                   <CardContent className={`${sponsor.brandColor} ${sponsor.textColor} h-full flex items-center justify-center rounded-lg px-6 py-4`}>
-                    <div className={`${sponsor.id === 'rabanne' ? 'w-40 h-14' : 'w-32 h-12'}`} dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
+                    <div className={`${sponsor.id === 'rabanne' ? 'w-40 h-14' : sponsor.id === 'asahi' ? 'w-36 h-14' : 'w-32 h-12'}`} dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
                   </CardContent>
                 </Card>
               ))}
