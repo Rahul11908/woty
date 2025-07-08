@@ -123,7 +123,12 @@ export default function Network() {
     return colors[colorIndex];
   };
 
-  const getUserRoleBadge = (userRole: string) => {
+  const getUserRoleBadge = (userRole: string, email?: string) => {
+    // Check for @glory.media emails and override role
+    if (email && email.endsWith('@glory.media')) {
+      return { label: "GLORY Team", color: "bg-orange-600 text-white border-orange-600" };
+    }
+    
     switch (userRole) {
       case "panelist":
         return { label: "Panelist", color: "bg-blue-600 text-white" };
@@ -203,9 +208,9 @@ export default function Network() {
                 )}
                 <div className="flex items-center mt-2 space-x-2">
                   <Badge 
-                    className={`text-xs ${getUserRoleBadge(currentUser.userRole || "attendee").color}`}
+                    className={`text-xs ${getUserRoleBadge(currentUser.userRole || "attendee", currentUser.email).color}`}
                   >
-                    {getUserRoleBadge(currentUser.userRole || "attendee").label}
+                    {getUserRoleBadge(currentUser.userRole || "attendee", currentUser.email).label}
                   </Badge>
                 </div>
               </div>
@@ -237,9 +242,9 @@ export default function Network() {
                     {currentUser.email && <p className="text-xs text-gray-400 mt-1">{currentUser.email}</p>}
                     <div className="flex items-center mt-2 space-x-2">
                       <Badge 
-                        className={`text-xs ${getUserRoleBadge(currentUser.userRole || "attendee").color}`}
+                        className={`text-xs ${getUserRoleBadge(currentUser.userRole || "attendee", currentUser.email).color}`}
                       >
-                        {getUserRoleBadge(currentUser.userRole || "attendee").label}
+                        {getUserRoleBadge(currentUser.userRole || "attendee", currentUser.email).label}
                       </Badge>
                     </div>
                   </div>
@@ -368,9 +373,9 @@ export default function Network() {
                                 <p className="text-sm text-gray-500 mb-3">{attendee.companyName}</p>
                                 <div className="flex items-center space-x-2">
                                   <Badge 
-                                    className={`text-xs ${getUserRoleBadge(attendee.userRole || "attendee").color}`}
+                                    className={`text-xs ${getUserRoleBadge(attendee.userRole || "attendee", attendee.email).color}`}
                                   >
-                                    {getUserRoleBadge(attendee.userRole || "attendee").label}
+                                    {getUserRoleBadge(attendee.userRole || "attendee", attendee.email).label}
                                   </Badge>
                                 </div>
                               </div>

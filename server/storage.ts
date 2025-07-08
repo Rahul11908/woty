@@ -297,13 +297,19 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
+    
+    // Automatically assign GLORY Team role for @glory.media emails
+    const userRole = insertUser.email && insertUser.email.endsWith('@glory.media') 
+      ? 'glory_team' 
+      : insertUser.userRole || "attendee";
+
     const user: User = { 
       ...insertUser, 
       id,
       company: insertUser.company || null,
       jobTitle: insertUser.jobTitle || null,
       avatar: insertUser.avatar || null,
-      userRole: insertUser.userRole || "attendee",
+      userRole,
       isOnline: insertUser.isOnline || false,
       hasAcceptedTerms: insertUser.hasAcceptedTerms || false,
       createdAt: new Date()
@@ -985,11 +991,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
+    // Automatically assign GLORY Team role for @glory.media emails
+    const userRole = insertUser.email && insertUser.email.endsWith('@glory.media') 
+      ? 'glory_team' 
+      : insertUser.userRole || "attendee";
+
     const [user] = await db
       .insert(users)
       .values({
         ...insertUser,
-        userRole: insertUser.userRole || "attendee",
+        userRole,
         isOnline: insertUser.isOnline || false,
         hasAcceptedTerms: insertUser.hasAcceptedTerms || false,
       })
