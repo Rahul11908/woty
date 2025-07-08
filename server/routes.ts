@@ -130,6 +130,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete user by ID (admin only)
+  app.delete("/api/users/:id", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      await storage.deleteUser(userId);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete user" });
+    }
+  });
+
   // Get group chat messages
   app.get("/api/group-chat/messages", async (req, res) => {
     try {

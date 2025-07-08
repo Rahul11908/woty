@@ -32,7 +32,7 @@ export default function Network() {
 
   const sendMessageMutation = useMutation({
     mutationFn: async (content: string) => {
-      await apiRequest("POST", "/api/group-chat/messages", {
+      await apiRequest("/api/group-chat/messages", "POST", {
         content,
         senderId: 1, // Current user ID
       });

@@ -59,6 +59,11 @@ export default function Admin() {
     queryKey: ["/api/analytics/daily"],
   });
 
+  // Users query for management
+  const { data: allUsers = [] } = useQuery({
+    queryKey: ["/api/users"],
+  });
+
   // Survey form
   const surveyForm = useForm<SurveyFormData>({
     resolver: zodResolver(surveyFormSchema),
@@ -155,6 +160,29 @@ export default function Admin() {
     },
   });
 
+  // Delete user mutation
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: number) => {
+      await apiRequest(`/api/users/${userId}`, "DELETE");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/event-attendees"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/analytics/summary"] });
+      toast({
+        title: "User removed",
+        description: "The user has been successfully removed from the system.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error removing user",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const onSubmitSurvey = (data: SurveyFormData) => {
     createSurveyMutation.mutate(data);
   };
@@ -196,9 +224,10 @@ export default function Admin() {
 
       <main className="pt-4 px-4">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="surveys">Surveys</TabsTrigger>
+            <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
 
@@ -568,6 +597,74 @@ export default function Admin() {
                 </DialogContent>
               </Dialog>
             )}
+          </TabsContent>
+
+          {/* Users Tab */}
+          <TabsContent value="users">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-gray-900">User Management</h2>
+                <Badge variant="outline">{allUsers.length} Total Users</Badge>
+              </div>
+
+              <div className="grid gap-4">
+                {allUsers.map((user: any) => (
+                  <Card key={user.id}>
+                    <CardContent className="pt-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span className="text-sm font-semibold text-blue-600">
+                              {user.fullName?.charAt(0) || 'U'}
+                            </span>
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-gray-900">{user.fullName}</h3>
+                            <p className="text-sm text-gray-600">{user.email}</p>
+                            <div className="flex items-center space-x-2 mt-1">
+                              <span className="text-xs text-gray-500">{user.company}</span>
+                              {user.jobTitle && (
+                                <>
+                                  <span className="text-xs text-gray-400">•</span>
+                                  <span className="text-xs text-gray-500">{user.jobTitle}</span>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Badge variant={user.isOnline ? "default" : "secondary"}>
+                            {user.isOnline ? "Online" : "Offline"}
+                          </Badge>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              if (confirm(`Are you sure you want to remove ${user.fullName}? This action cannot be undone.`)) {
+                                deleteUserMutation.mutate(user.id);
+                              }
+                            }}
+                            disabled={deleteUserMutation.isPending}
+                          >
+                            <Trash2 className="w-4 h-4 text-red-500" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+
+                {allUsers.length === 0 && (
+                  <Card>
+                    <CardContent className="pt-6 text-center">
+                      <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">No users found</h3>
+                      <p className="text-gray-600">Users will appear here as they join the platform.</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">

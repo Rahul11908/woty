@@ -49,6 +49,7 @@ export interface IStorage {
   updateUserOnlineStatus(id: number, isOnline: boolean): Promise<void>;
   getSuggestedConnections(userId: number, limit?: number): Promise<User[]>;
   getEventAttendees(limit?: number): Promise<User[]>;
+  deleteUser(id: number): Promise<void>;
 
   // Conversations
   getConversationsForUser(userId: number): Promise<ConversationWithParticipant[]>;
@@ -504,6 +505,50 @@ export class MemStorage implements IStorage {
 
   async getEventAttendees(limit = 50): Promise<User[]> {
     return Array.from(this.users.values()).slice(0, limit);
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    // Remove user from main users map
+    this.users.delete(id);
+    
+    // Remove user's messages
+    const messagesToDelete = Array.from(this.messages.values())
+      .filter(message => message.senderId === id);
+    messagesToDelete.forEach(message => this.messages.delete(message.id));
+    
+    // Remove user's group chat messages
+    const groupMessagesToDelete = Array.from(this.groupChatMessages.values())
+      .filter(message => message.senderId === id);
+    groupMessagesToDelete.forEach(message => this.groupChatMessages.delete(message.id));
+    
+    // Remove user's connections
+    const connectionsToDelete = Array.from(this.connections.values())
+      .filter(conn => conn.requesterId === id || conn.addresseeId === id);
+    connectionsToDelete.forEach(conn => this.connections.delete(conn.id));
+    
+    // Remove user's conversations
+    const conversationsToDelete = Array.from(this.conversations.values())
+      .filter(conv => conv.participant1Id === id || conv.participant2Id === id);
+    conversationsToDelete.forEach(conv => this.conversations.delete(conv.id));
+    
+    // Remove user's questions
+    const questionsToDelete = Array.from(this.questions.values())
+      .filter(question => question.userId === id);
+    questionsToDelete.forEach(question => this.questions.delete(question.id));
+    
+    // Remove user's survey responses
+    const responsesToDelete = Array.from(this.surveyResponses.values())
+      .filter(response => response.userId === id);
+    responsesToDelete.forEach(response => this.surveyResponses.delete(response.id));
+    
+    // Remove user's sessions and activities
+    const sessionsToDelete = Array.from(this.userSessions.values())
+      .filter(session => session.userId === id);
+    sessionsToDelete.forEach(session => this.userSessions.delete(session.id));
+    
+    const activitiesToDelete = Array.from(this.userActivities.values())
+      .filter(activity => activity.userId === id);
+    activitiesToDelete.forEach(activity => this.userActivities.delete(activity.id));
   }
 
   async getGroupChatMessages(limit = 100): Promise<MessageWithSender[]> {
