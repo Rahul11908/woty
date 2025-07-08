@@ -51,7 +51,7 @@ export default function Network() {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
@@ -62,7 +62,7 @@ export default function Network() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [groupMessages]);
 
-  const formatMessageTime = (date: string | Date) => {
+  const formatMessageTime = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
       hour: 'numeric',
       minute: '2-digit',
@@ -71,7 +71,6 @@ export default function Network() {
   };
 
   const getUserInitials = (name: string) => {
-    if (!name) return "U";
     return name
       .split(' ')
       .map(part => part.charAt(0))
@@ -82,7 +81,6 @@ export default function Network() {
 
   // Get user photo URL based on their name
   const getUserPhoto = (fullName: string) => {
-    if (!fullName) return "";
     // Convert full name to expected photo filename format
     const photoFileName = fullName.toLowerCase().replace(/\s+/g, '-') + '.jpg';
     return `/photos/${photoFileName}`;
@@ -90,7 +88,6 @@ export default function Network() {
 
   // Generate consistent color for user avatars
   const getUserAvatarColor = (name: string) => {
-    if (!name) return 'from-gray-500 to-gray-600';
     const colors = [
       'from-blue-500 to-blue-600',
       'from-purple-500 to-purple-600', 
@@ -103,19 +100,6 @@ export default function Network() {
     ];
     const colorIndex = name.length % colors.length;
     return colors[colorIndex];
-  };
-
-  const getUserRoleBadge = (userRole: string) => {
-    switch (userRole) {
-      case "panelist":
-        return { label: "Panelist", color: "bg-blue-600 text-white" };
-      case "moderator":
-        return { label: "Moderator", color: "bg-purple-600 text-white" };
-      case "glory_team":
-        return { label: "GLORY Team", color: "bg-orange-600 text-white border-orange-600" };
-      default:
-        return { label: "Attendee", color: "bg-gray-600 text-white" };
-    }
   };
 
   return (
@@ -174,20 +158,13 @@ export default function Network() {
                 {currentUser.company && (
                   <p className="text-sm text-gray-500">{currentUser.company}</p>
                 )}
-                <div className="flex items-center mt-2 space-x-2">
-                  <Badge 
-                    className={`text-xs ${getUserRoleBadge(currentUser.userRole || "attendee").color}`}
-                  >
-                    {getUserRoleBadge(currentUser.userRole || "attendee").label}
-                  </Badge>
-                  <div className="flex items-center">
-                    <Circle className={`w-2 h-2 mr-1 ${
-                      currentUser.isOnline ? 'text-green-500 fill-current' : 'text-gray-400 fill-current'
-                    }`} />
-                    <span className="text-xs text-gray-500">
-                      {currentUser.isOnline ? 'Online' : 'Offline'}
-                    </span>
-                  </div>
+                <div className="flex items-center mt-1">
+                  <Circle className={`w-2 h-2 mr-2 ${
+                    currentUser.isOnline ? 'text-green-500 fill-current' : 'text-gray-400 fill-current'
+                  }`} />
+                  <span className="text-xs text-gray-500">
+                    {currentUser.isOnline ? 'Online' : 'Offline'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -195,82 +172,95 @@ export default function Network() {
         </div>
       )}
 
-      <main className="px-4 mt-4 space-y-6">
+      <main className="flex-1 flex flex-col">
         {/* Group Chat Section */}
-        <Card className="flex-1">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center space-x-2">
-              <MessageSquare className="w-5 h-5" />
-              <span>Group Discussion</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 flex flex-col">
-            {/* Messages Area with Fixed Height and Scrolling */}
-            <div className="h-80 overflow-y-auto mb-4 pr-2">
-              <div className="space-y-3">
-                {messagesLoading ? (
-                  <div className="flex justify-center py-8">
-                    <div className="text-gray-500">Loading messages...</div>
-                  </div>
-                ) : groupMessages.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-8 text-gray-500">
-                    <MessageSquare className="w-12 h-12 mb-2 text-gray-300" />
-                    <p className="text-sm">No messages yet. Start the conversation!</p>
-                  </div>
-                ) : (
-                  groupMessages.map((message) => (
-                    <div key={message.id} className="flex space-x-3">
-                      <Avatar className="w-8 h-8 flex-shrink-0">
-                        <AvatarImage 
-                          src={getUserPhoto(message.sender?.fullName)} 
-                          alt={message.sender?.fullName || "User"}
-                        />
-                        <AvatarFallback className={`text-xs bg-gradient-to-br ${getUserAvatarColor(message.sender?.fullName || "")} text-white`}>
-                          {getUserInitials(message.sender?.fullName || "")}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <span className="text-sm font-medium text-gray-900 truncate">
-                            {message.sender?.fullName || "Unknown User"}
-                          </span>
-                          <span className="text-xs text-gray-500 flex-shrink-0">
-                            {formatMessageTime(message.createdAt || new Date())}
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-700 break-words">{message.content}</p>
-                      </div>
+        <div className="flex-1 p-4">
+          <Card className="h-96 flex flex-col">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center space-x-2">
+                <MessageSquare className="w-5 h-5" />
+                <span>Group Discussion</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex-1 flex flex-col">
+              {/* Messages Area with Fixed Height and Scrolling */}
+              <div className="h-80 overflow-y-auto mb-4 pr-2">
+                <div className="space-y-3">
+                  {messagesLoading ? (
+                    <div className="flex justify-center py-8">
+                      <div className="text-gray-500">Loading messages...</div>
                     </div>
-                  ))
-                )}
-                <div ref={messagesEndRef} />
+                  ) : groupMessages.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-8 text-gray-500">
+                      <MessageSquare className="w-12 h-12 mb-2 text-gray-300" />
+                      <p className="text-sm">No messages yet. Start the conversation!</p>
+                    </div>
+                  ) : (
+                    groupMessages.map((message) => (
+                      <div key={message.id} className="flex space-x-3">
+                        <Avatar className="w-8 h-8 flex-shrink-0">
+                          <AvatarImage 
+                            src={getUserPhoto(message.sender.fullName)} 
+                            alt={message.sender.fullName}
+                          />
+                          <AvatarFallback className={`text-xs bg-gradient-to-br ${getUserAvatarColor(message.sender.fullName)} text-white`}>
+                            {getUserInitials(message.sender.fullName)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-2 mb-1">
+                            <span className="text-sm font-medium text-gray-900 truncate">
+                              {message.sender.fullName}
+                            </span>
+                            <span className="text-xs text-gray-500 flex-shrink-0">
+                              {formatMessageTime(message.createdAt || new Date())}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-700 break-words">{message.content}</p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
               </div>
-            </div>
 
-            {/* Message Input */}
-            <div className="flex space-x-2">
-              <Textarea
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Type your message..."
-                className="flex-1 min-h-[44px] max-h-32 resize-none"
-                rows={1}
-              />
-              <Button 
-                onClick={handleSendMessage}
-                disabled={!newMessage.trim() || sendMessageMutation.isPending}
-                size="sm"
-                className="px-4 py-2 h-11"
-              >
-                <Send className="w-4 h-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Message Input Section */}
+        <div className="px-4 pb-4">
+          <Card className="border-blue-200 bg-blue-50/50">
+            <CardContent className="pt-4">
+              <div className="flex items-center space-x-2 mb-2">
+                <MessageSquare className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-900">Join the Conversation</span>
+              </div>
+              <div className="flex space-x-2">
+                <Textarea
+                  placeholder="Share your thoughts with fellow attendees..."
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  className="flex-1 resize-none border-blue-200 focus:border-blue-400"
+                  rows={2}
+                />
+                <Button
+                  onClick={handleSendMessage}
+                  disabled={!newMessage.trim() || sendMessageMutation.isPending}
+                  size="sm"
+                  className="self-end bg-blue-600 hover:bg-blue-700"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Event Attendees Section */}
-        <div className="pb-4">
+        <div className="px-4 pb-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center space-x-2">
@@ -308,9 +298,23 @@ export default function Network() {
                           <p className="text-sm text-gray-600 mb-1">{attendee.jobTitle}</p>
                           <div className="flex items-center space-x-2">
                             <Badge 
-                              className={`text-xs ${getUserRoleBadge(attendee.userRole || "attendee").color}`}
+                              variant={
+                                attendee.userRole === "panelist" ? "default" :
+                                attendee.userRole === "moderator" ? "secondary" :
+                                attendee.userRole === "glory_team" ? "outline" :
+                                "secondary"
+                              }
+                              className={`text-xs ${
+                                attendee.userRole === "panelist" ? "bg-blue-600 text-white" :
+                                attendee.userRole === "moderator" ? "bg-purple-600 text-white" :
+                                attendee.userRole === "glory_team" ? "bg-orange-600 text-white border-orange-600" :
+                                "bg-gray-600 text-white"
+                              }`}
                             >
-                              {getUserRoleBadge(attendee.userRole || "attendee").label}
+                              {attendee.userRole === "panelist" ? "Panelist" :
+                               attendee.userRole === "moderator" ? "Moderator" :
+                               attendee.userRole === "glory_team" ? "GLORY Team" :
+                               "Attendee"}
                             </Badge>
                             <Badge variant={attendee.isOnline ? "default" : "secondary"} className="text-xs">
                               {attendee.isOnline ? "Online" : "Offline"}

@@ -194,6 +194,7 @@ export class MemStorage implements IStorage {
         company: "SportsTech Corp",
         jobTitle: "Sports Analytics Director",
         avatar: "",
+        userRole: "attendee",
         isOnline: true,
         hasAcceptedTerms: true
       },
@@ -203,6 +204,7 @@ export class MemStorage implements IStorage {
         company: "Independent",
         jobTitle: "Former Player",
         avatar: "",
+        userRole: "panelist",
         isOnline: true,
         hasAcceptedTerms: true
       },
@@ -212,6 +214,7 @@ export class MemStorage implements IStorage {
         company: "Project 8",
         jobTitle: "Former Player, Co-founder",
         avatar: "",
+        userRole: "panelist",
         isOnline: true,
         hasAcceptedTerms: true
       },
@@ -221,6 +224,7 @@ export class MemStorage implements IStorage {
         company: "US Soccer",
         jobTitle: "Head Coach, Men's National Team",
         avatar: "",
+        userRole: "panelist",
         isOnline: false,
         hasAcceptedTerms: true
       },
@@ -230,6 +234,7 @@ export class MemStorage implements IStorage {
         company: "Toronto Tempo",
         jobTitle: "President",
         avatar: "",
+        userRole: "panelist",
         isOnline: true,
         hasAcceptedTerms: true
       },
@@ -239,6 +244,7 @@ export class MemStorage implements IStorage {
         company: "CBC Sports",
         jobTitle: "Former Olympian, CBC Sports journalist",
         avatar: "",
+        userRole: "moderator",
         isOnline: false,
         hasAcceptedTerms: true
       },
@@ -248,6 +254,7 @@ export class MemStorage implements IStorage {
         company: "NHL",
         jobTitle: "SVP, Global Business Development",
         avatar: "",
+        userRole: "panelist",
         isOnline: true,
         hasAcceptedTerms: true
       },
@@ -257,6 +264,7 @@ export class MemStorage implements IStorage {
         company: "GLORY Media",
         jobTitle: "Editor-in-Chief",
         avatar: "",
+        userRole: "glory_team",
         isOnline: true,
         hasAcceptedTerms: true
       },
@@ -266,6 +274,7 @@ export class MemStorage implements IStorage {
         company: "Independent",
         jobTitle: "Summit Attendee",
         avatar: "",
+        userRole: "attendee",
         isOnline: false,
         hasAcceptedTerms: true
       }
@@ -294,6 +303,7 @@ export class MemStorage implements IStorage {
       company: insertUser.company || null,
       jobTitle: insertUser.jobTitle || null,
       avatar: insertUser.avatar || null,
+      userRole: insertUser.userRole || "attendee",
       isOnline: insertUser.isOnline || false,
       hasAcceptedTerms: insertUser.hasAcceptedTerms || false,
       createdAt: new Date()

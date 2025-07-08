@@ -9,6 +9,7 @@ export const users = pgTable("users", {
   company: text("company"),
   jobTitle: text("job_title"),
   avatar: text("avatar"),
+  userRole: text("user_role").default("attendee"), // attendee, panelist, moderator, glory_team
   isOnline: boolean("is_online").default(false),
   hasAcceptedTerms: boolean("has_accepted_terms").default(false),
   createdAt: timestamp("created_at").defaultNow(),
