@@ -15,6 +15,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertUserSchema } from "@shared/schema";
+import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
 
 const createProfileSchema = insertUserSchema;
 
@@ -132,10 +133,14 @@ export default function CreateProfile() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 py-8">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mb-4">
-            <Badge variant="outline" className="text-blue-600 border-blue-600">
-              2025 GLORY Sports Summit
-            </Badge>
+          <div className="mb-4 flex justify-center">
+            <div className="w-32 h-16">
+              <img 
+                src={gloryLogo} 
+                alt="GLORY Logo" 
+                className="w-full h-full object-contain"
+              />
+            </div>
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
             Create Your Profile
