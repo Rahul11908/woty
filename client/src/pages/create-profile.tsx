@@ -134,7 +134,7 @@ export default function CreateProfile() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
-            <div className="w-32 h-16">
+            <div className="w-64 h-32">
               <img 
                 src={gloryLogo} 
                 alt="GLORY Logo" 

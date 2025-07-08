@@ -16,7 +16,7 @@ export default function Login() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
-            <div className="w-32 h-16">
+            <div className="w-64 h-32">
               <img 
                 src={gloryLogo} 
                 alt="GLORY Logo" 
@@ -25,7 +25,7 @@ export default function Login() {
             </div>
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
-            Welcome to GLORY
+            Welcome
           </CardTitle>
           <CardDescription className="text-gray-600">
             Connect with sports industry professionals and join the conversation
