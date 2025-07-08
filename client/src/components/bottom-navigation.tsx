@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { MessageCircle, Lightbulb, Calendar, Settings } from "lucide-react";
+import { MessageCircle, Star, Calendar, Settings } from "lucide-react";
 import { User } from "@shared/schema";
 
 interface BottomNavigationProps {
@@ -35,11 +35,11 @@ export default function BottomNavigation({ currentUser }: BottomNavigationProps)
           <span className="text-xs font-medium">Network</span>
         </Link>
 
-        <Link href="/ge" className={`flex flex-col items-center space-y-1 p-2 transition-colors ${
-          isActive("/ge") ? "text-primary" : "text-gray-500 hover:text-primary"
+        <Link href="/sponsors" className={`flex flex-col items-center space-y-1 p-2 transition-colors ${
+          isActive("/sponsors") ? "text-primary" : "text-gray-500 hover:text-primary"
         }`}>
-          <Lightbulb className="w-6 h-6" />
-          <span className="text-xs font-medium">GE</span>
+          <Star className="w-6 h-6" />
+          <span className="text-xs font-medium">Sponsors</span>
         </Link>
 
         {isAdmin && (
