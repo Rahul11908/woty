@@ -310,8 +310,18 @@ export default function Profile() {
                 </div>
                 <div className="flex items-center space-x-3">
                   <Clock className="w-4 h-4 text-gray-400" />
+                  <span className="font-medium">2:10 PM - 3:30 PM</span>
+                  <span className="text-gray-600">Panel 1 and Panel 2</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Clock className="w-4 h-4 text-gray-400" />
                   <span className="font-medium">3:30 PM - 3:55 PM</span>
                   <span className="text-gray-600">Networking Break</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Clock className="w-4 h-4 text-gray-400" />
+                  <span className="font-medium">4:00 PM - 5:30 PM</span>
+                  <span className="text-gray-600">Panel 3 and Panel 4</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Clock className="w-4 h-4 text-gray-400" />
