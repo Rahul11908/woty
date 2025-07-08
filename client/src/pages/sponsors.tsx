@@ -182,17 +182,16 @@ export default function Sponsors() {
           {/* Other Sponsors */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Event Partners</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-3">
               {sponsors.slice(1).map((sponsor) => (
                 <Card 
                   key={sponsor.id}
-                  className="cursor-pointer hover:shadow-lg transition-all duration-200 transform hover:scale-105"
-                  style={{ width: '160px', height: '80px' }}
+                  className="cursor-pointer hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] w-full h-20"
                   onClick={() => handleSponsorClick(sponsor.website)}
                 >
-                  <CardContent className={`${sponsor.brandColor} ${sponsor.textColor} h-full flex flex-col items-center justify-center rounded-lg p-2`}>
-                    <div className="w-20 h-10 mb-1" dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
-                    <h4 className="text-xs font-semibold text-center leading-tight">{sponsor.name}</h4>
+                  <CardContent className={`${sponsor.brandColor} ${sponsor.textColor} h-full flex items-center justify-between rounded-lg px-6 py-4`}>
+                    <div className="w-24 h-12" dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
+                    <h4 className="text-lg font-semibold text-center flex-1 ml-4">{sponsor.name}</h4>
                   </CardContent>
                 </Card>
               ))}
