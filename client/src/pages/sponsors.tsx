@@ -160,7 +160,7 @@ export default function Sponsors() {
 
           {/* Main Sponsor - GE (1.5x larger) */}
           <div className="mb-8">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Title Sponsor</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Powered By</h3>
             <Card 
               className="cursor-pointer hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] w-full h-32"
               onClick={() => handleSponsorClick(sponsors[0].website)}
