@@ -4,7 +4,8 @@ import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1
 import bossLogo from "@assets/BOSS_LOGO_white_RGB_1752004469108.png";
 import rabanneLogo from "@assets/image-7_1752004469108.png";
 import suttonPlaceHotelLogo from "@assets/SPH-Toronto_logo_Toronto_white_stacked_1752004469108.png";
-import asahiLogo from "@assets/image-6_1752004469108.png";
+import asahiLogo from "@assets/ASD_LOGO_NEGATIVE_RGB_1752004822019.png";
+import rootsLogo from "@assets/Asset 1_1752004822019.png";
 import hennessyLogo from "@assets/image-4_1752004469108.png";
 import masByMessiLogo from "@assets/image-2_1752004469108.png";
 import radoLogo from "@assets/image_1752004469108.png";
@@ -34,7 +35,7 @@ const sponsors: Sponsor[] = [
     id: "asahi",
     name: "Asahi",
     website: "https://www.asahibeer.com",
-    brandColor: "bg-red-600",
+    brandColor: "bg-black",
     textColor: "text-white",
     logoSvg: `<img src="${asahiLogo}" alt="Asahi" className="w-full h-full object-contain" />`
   },
@@ -50,13 +51,9 @@ const sponsors: Sponsor[] = [
     id: "roots",
     name: "Roots",
     website: "https://www.roots.com",
-    brandColor: "bg-green-700",
-    textColor: "text-white",
-    logoSvg: `<svg viewBox="0 0 100 40" className="w-full h-full">
-      <path d="M20 25 Q30 15 40 25 Q30 35 20 25" fill="white"/>
-      <text x="65" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">Roots</text>
-      <text x="65" y="30" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="white">CANADA</text>
-    </svg>`
+    brandColor: "bg-white",
+    textColor: "text-black",
+    logoSvg: `<img src="${rootsLogo}" alt="Roots" className="w-full h-full object-contain" />`
   },
   {
     id: "rabanne",
@@ -153,7 +150,7 @@ export default function Sponsors() {
                   onClick={() => handleSponsorClick(sponsor.website)}
                 >
                   <CardContent className={`${sponsor.brandColor} ${sponsor.textColor} h-full flex items-center justify-center rounded-lg px-6 py-4`}>
-                    <div className="w-32 h-12" dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
+                    <div className={`${sponsor.id === 'rabanne' ? 'w-40 h-14' : 'w-32 h-12'}`} dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
                   </CardContent>
                 </Card>
               ))}
