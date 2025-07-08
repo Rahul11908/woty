@@ -120,6 +120,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Find user by email (for login)
+  app.post("/api/users/by-email", async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+      
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json(user);
+    } catch (error) {
+      console.error("Error finding user by email:", error);
+      res.status(500).json({ message: "Failed to find user" });
+    }
+  });
+
   // Get event attendees
   app.get("/api/event-attendees", async (req, res) => {
     try {

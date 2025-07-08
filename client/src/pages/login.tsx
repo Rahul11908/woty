@@ -45,7 +45,7 @@ export default function Login() {
               Already registered?
             </p>
             <button
-              onClick={handleEnterEvent}
+              onClick={() => setLocation("/email-login")}
               className="text-sm text-blue-600 hover:text-blue-700 underline font-medium"
             >
               Confirm email and enter here
