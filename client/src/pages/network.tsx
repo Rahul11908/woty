@@ -112,7 +112,7 @@ export default function Network() {
             </div>
             <h1 className="text-xl font-semibold text-gray-900">Event Chat</h1>
           </div>
-          <div className="w-20 h-10">
+          <div className="w-32 h-14">
             <img 
               src={gloryLogo} 
               alt="GLORY Logo" 
