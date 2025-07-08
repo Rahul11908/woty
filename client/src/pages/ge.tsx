@@ -14,7 +14,7 @@ export default function GE() {
             </div>
             <h1 className="text-xl font-semibold text-gray-900">General Electric</h1>
           </div>
-          <div className="w-16 h-8">
+          <div className="w-20 h-10">
             <img 
               src={gloryLogo} 
               alt="GLORY Logo" 
