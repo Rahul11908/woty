@@ -1,6 +1,13 @@
 import { Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
+import bossLogo from "@assets/BOSS_LOGO_white_RGB_1752004469108.png";
+import rabanneLogo from "@assets/image-7_1752004469108.png";
+import suttonPlaceHotelLogo from "@assets/SPH-Toronto_logo_Toronto_white_stacked_1752004469108.png";
+import asahiLogo from "@assets/image-6_1752004469108.png";
+import hennessyLogo from "@assets/image-4_1752004469108.png";
+import masByMessiLogo from "@assets/image-2_1752004469108.png";
+import radoLogo from "@assets/image_1752004469108.png";
 import geAppliancesLogo from "@assets/GEAppliances_PrimaryLogo_1752003391719.png";
 
 interface Sponsor {
@@ -29,12 +36,7 @@ const sponsors: Sponsor[] = [
     website: "https://www.asahibeer.com",
     brandColor: "bg-red-600",
     textColor: "text-white",
-    logoSvg: `<svg viewBox="0 0 100 40" className="w-full h-full">
-      <circle cx="20" cy="20" r="12" fill="white"/>
-      <text x="20" y="25" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#dc2626">朝日</text>
-      <text x="65" y="18" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">ASAHI</text>
-      <text x="65" y="30" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="white">BEER</text>
-    </svg>`
+    logoSvg: `<img src="${asahiLogo}" alt="Asahi" className="w-full h-full object-contain" />`
   },
   {
     id: "boss",
@@ -42,10 +44,7 @@ const sponsors: Sponsor[] = [
     website: "https://www.boss.info",
     brandColor: "bg-black",
     textColor: "text-white",
-    logoSvg: `<svg viewBox="0 0 100 40" className="w-full h-full">
-      <rect x="10" y="8" width="80" height="24" fill="white" stroke="white"/>
-      <text x="50" y="26" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="black">BOSS</text>
-    </svg>`
+    logoSvg: `<img src="${bossLogo}" alt="BOSS" className="w-full h-full object-contain" />`
   },
   {
     id: "roots",
@@ -63,60 +62,41 @@ const sponsors: Sponsor[] = [
     id: "rabanne",
     name: "Rabanne",
     website: "https://www.rabanne.com",
-    brandColor: "bg-purple-700",
+    brandColor: "bg-black",
     textColor: "text-white",
-    logoSvg: `<svg viewBox="0 0 100 40" className="w-full h-full">
-      <rect x="15" y="15" width="70" height="10" fill="white"/>
-      <text x="50" y="26" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="purple">RABANNE</text>
-    </svg>`
+    logoSvg: `<img src="${rabanneLogo}" alt="Rabanne" className="w-full h-full object-contain" />`
   },
   {
     id: "mas",
     name: "Mas+",
     website: "https://www.masplus.com",
-    brandColor: "bg-orange-500",
-    textColor: "text-white",
-    logoSvg: `<svg viewBox="0 0 100 40" className="w-full h-full">
-      <circle cx="35" cy="20" r="8" fill="white"/>
-      <text x="35" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#ea580c">+</text>
-      <text x="65" y="26" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">Mas+</text>
-    </svg>`
+    brandColor: "bg-white",
+    textColor: "text-black",
+    logoSvg: `<img src="${masByMessiLogo}" alt="Mas+ by Messi" className="w-full h-full object-contain" />`
   },
   {
     id: "hennessy",
     name: "Hennessy",
     website: "https://www.hennessy.com",
-    brandColor: "bg-amber-700",
+    brandColor: "bg-black",
     textColor: "text-white",
-    logoSvg: `<svg viewBox="0 0 100 40" className="w-full h-full">
-      <ellipse cx="25" cy="20" rx="12" ry="15" fill="white"/>
-      <text x="25" y="25" font-family="serif" font-size="8" font-weight="bold" text-anchor="middle" fill="#d97706">H</text>
-      <text x="65" y="18" font-family="serif" font-size="12" font-weight="bold" text-anchor="middle" fill="white">HENNESSY</text>
-      <text x="65" y="30" font-family="serif" font-size="8" text-anchor="middle" fill="white">COGNAC</text>
-    </svg>`
+    logoSvg: `<img src="${hennessyLogo}" alt="Hennessy" className="w-full h-full object-contain" />`
   },
   {
     id: "rado",
     name: "Rado",
     website: "https://www.rado.com",
-    brandColor: "bg-gray-800",
-    textColor: "text-white",
-    logoSvg: `<svg viewBox="0 0 100 40" className="w-full h-full">
-      <rect x="15" y="12" width="70" height="16" fill="white" rx="8"/>
-      <text x="50" y="26" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="black">RADO</text>
-    </svg>`
+    brandColor: "bg-white",
+    textColor: "text-black",
+    logoSvg: `<img src="${radoLogo}" alt="Rado Switzerland" className="w-full h-full object-contain" />`
   },
   {
     id: "sutton",
-    name: "Sutton Place Hotel",
+    name: "Sutton Place Hotel Toronto",
     website: "https://www.suttonplace.com",
-    brandColor: "bg-indigo-800",
+    brandColor: "bg-black",
     textColor: "text-white",
-    logoSvg: `<svg viewBox="0 0 100 40" className="w-full h-full">
-      <rect x="10" y="8" width="80" height="6" fill="white"/>
-      <text x="50" y="20" font-family="serif" font-size="9" font-weight="bold" text-anchor="middle" fill="white">SUTTON PLACE</text>
-      <text x="50" y="32" font-family="serif" font-size="8" text-anchor="middle" fill="white">HOTEL TORONTO</text>
-    </svg>`
+    logoSvg: `<img src="${suttonPlaceHotelLogo}" alt="The Sutton Place Hotel Toronto" className="w-full h-full object-contain" />`
   }
 ];
 
