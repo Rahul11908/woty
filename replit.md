@@ -131,6 +131,9 @@ The application uses four main entities:
 ✓ Implemented automatic GLORY Team role detection for @glory.media email addresses
 ✓ Fixed uploaded photo display system to properly show user avatars throughout the application
 ✓ Enhanced role-based badge system with email domain checking for proper team identification
+✓ Added panel questions management functionality to admin dashboard with dedicated Questions tab
+✓ Implemented question flagging system allowing admins to mark panel questions as answered
+✓ Integrated actual speaker photos for Bob Park and Sharon Bollenbach in program tab
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.

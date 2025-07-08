@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
+import bobParkPhoto from "@assets/bobpark_1752004236296.webp";
+import sharonBollenbachPhoto from "@assets/Sharon Bollenbach_1752004236296.png";
 
 interface Panel {
   id: string;
@@ -78,11 +80,11 @@ const SpeakerPhoto = ({ name, photo, size = "normal" }: { name: string; photo?: 
   );
 };
 
-// Speaker photo URLs - Replace these with actual photos when available
+// Speaker photo URLs - Using actual photos when available
 const speakerPhotos: Record<string, string> = {
   // Panel 1
   "Dwayne De Rosario": "/photos/dwayne-de-rosario.jpg",
-  "Sharon Bollenbach": "/photos/sharon-bollenbach.jpg", 
+  "Sharon Bollenbach": sharonBollenbachPhoto, 
   "Marcus Hanson": "/photos/marcus-hanson.jpg",
   "Ellen Hyslop": "/photos/ellen-hyslop.jpg",
   
@@ -99,7 +101,7 @@ const speakerPhotos: Record<string, string> = {
   
   // Panel 4
   "Jesse Marsch": "/photos/jesse-marsch.jpg",
-  "Bob Park": "/photos/bob-park.jpg",
+  "Bob Park": bobParkPhoto,
   "Kevin Blue": "/photos/kevin-blue.jpg",
   "Andi Petrillo": "/photos/andi-petrillo.jpg"
 };
