@@ -47,8 +47,18 @@ function Router() {
       }
     };
 
+    // Listen for custom userLogin event from profile creation/login
+    const handleUserLogin = (event: CustomEvent) => {
+      const user = event.detail;
+      setCurrentUser(user);
+    };
+
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener('userLogin', handleUserLogin as EventListener);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('userLogin', handleUserLogin as EventListener);
+    };
   }, []);
 
   if (isLoading) {

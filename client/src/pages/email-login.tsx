@@ -43,7 +43,14 @@ export default function EmailLogin() {
       // Store the user data for the session
       localStorage.setItem("currentUserId", user.id.toString());
       localStorage.setItem("currentUser", JSON.stringify(user));
-      setLocation("/network");
+      
+      // Dispatch custom event to notify App.tsx of user login
+      window.dispatchEvent(new CustomEvent('userLogin', { detail: user }));
+      
+      // Small delay to ensure App.tsx receives the event before redirect
+      setTimeout(() => {
+        setLocation("/network");
+      }, 100);
     },
     onError: (error) => {
       toast({
