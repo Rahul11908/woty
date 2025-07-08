@@ -43,7 +43,7 @@ const sponsors: Sponsor[] = [
     id: "boss",
     name: "BOSS",
     website: "https://www.boss.info",
-    brandColor: "bg-black",
+    brandColor: "bg-gray-900",
     textColor: "text-white",
     logoSvg: `<img src="${bossLogo}" alt="BOSS" className="w-full h-full object-contain" />`
   },
@@ -51,15 +51,15 @@ const sponsors: Sponsor[] = [
     id: "roots",
     name: "Roots",
     website: "https://www.roots.com",
-    brandColor: "bg-white",
-    textColor: "text-black",
+    brandColor: "bg-red-700",
+    textColor: "text-white",
     logoSvg: `<img src="${rootsLogo}" alt="Roots" className="w-full h-full object-contain" />`
   },
   {
     id: "rabanne",
     name: "Rabanne",
     website: "https://www.rabanne.com",
-    brandColor: "bg-black",
+    brandColor: "bg-gradient-to-r from-purple-600 to-pink-600",
     textColor: "text-white",
     logoSvg: `<img src="${rabanneLogo}" alt="Rabanne" className="w-full h-full object-contain" />`
   },
@@ -67,15 +67,15 @@ const sponsors: Sponsor[] = [
     id: "mas",
     name: "Mas+",
     website: "https://www.masplus.com",
-    brandColor: "bg-white",
-    textColor: "text-black",
+    brandColor: "bg-gradient-to-r from-blue-600 to-sky-500",
+    textColor: "text-white",
     logoSvg: `<img src="${masByMessiLogo}" alt="Mas+ by Messi" className="w-full h-full object-contain" />`
   },
   {
     id: "hennessy",
     name: "Hennessy",
     website: "https://www.hennessy.com",
-    brandColor: "bg-black",
+    brandColor: "bg-gradient-to-r from-amber-700 to-orange-600",
     textColor: "text-white",
     logoSvg: `<img src="${hennessyLogo}" alt="Hennessy" className="w-full h-full object-contain" />`
   },
@@ -83,15 +83,15 @@ const sponsors: Sponsor[] = [
     id: "rado",
     name: "Rado",
     website: "https://www.rado.com",
-    brandColor: "bg-white",
-    textColor: "text-black",
+    brandColor: "bg-gradient-to-r from-slate-800 to-gray-800",
+    textColor: "text-white",
     logoSvg: `<img src="${radoLogo}" alt="Rado Switzerland" className="w-full h-full object-contain" />`
   },
   {
     id: "sutton",
     name: "Sutton Place Hotel Toronto",
     website: "https://www.suttonplace.com",
-    brandColor: "bg-black",
+    brandColor: "bg-gradient-to-r from-indigo-900 to-blue-900",
     textColor: "text-white",
     logoSvg: `<img src="${suttonPlaceHotelLogo}" alt="The Sutton Place Hotel Toronto" className="w-full h-full object-contain" />`
   }
