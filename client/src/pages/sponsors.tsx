@@ -56,20 +56,20 @@ const sponsors: Sponsor[] = [
     logoSvg: `<img src="${rootsLogo}" alt="Roots" className="w-full h-full object-contain" />`
   },
   {
-    id: "rabanne",
-    name: "Rabanne",
-    website: "https://www.rabanne.com",
-    brandColor: "bg-purple-700",
-    textColor: "text-white",
-    logoSvg: `<img src="${rabanneLogo}" alt="Rabanne" className="w-full h-full object-contain" />`
-  },
-  {
     id: "mas",
     name: "Mas+",
     website: "https://www.masplus.com",
     brandColor: "bg-orange-500",
     textColor: "text-white",
     logoSvg: `<img src="${masByMessiLogo}" alt="Mas+ by Messi" className="w-full h-full object-contain" />`
+  },
+  {
+    id: "rabanne",
+    name: "Rabanne",
+    website: "https://www.rabanne.com",
+    brandColor: "bg-purple-700",
+    textColor: "text-white",
+    logoSvg: `<img src="${rabanneLogo}" alt="Rabanne" className="w-full h-full object-contain" />`
   },
   {
     id: "hennessy",
