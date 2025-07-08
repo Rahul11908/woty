@@ -17,6 +17,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertSurveySchema, insertSurveyQuestionSchema, type Survey, type SurveyWithQuestions } from "@shared/schema";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const surveyFormSchema = insertSurveySchema.extend({
   emailSubject: z.string().optional(),
@@ -46,6 +47,15 @@ export default function Admin() {
   const { data: surveyStats } = useQuery({
     queryKey: ["/api/surveys", selectedSurvey?.id, "stats"],
     enabled: !!selectedSurvey?.id,
+  });
+
+  // Analytics queries
+  const { data: analyticsSummary } = useQuery({
+    queryKey: ["/api/analytics/summary"],
+  });
+
+  const { data: dailyMetrics = [] } = useQuery({
+    queryKey: ["/api/analytics/daily"],
   });
 
   // Survey form
@@ -556,7 +566,114 @@ export default function Admin() {
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">
-            <div className="grid grid-cols-1 gap-6">
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Platform Analytics</h3>
+              
+              {/* Summary Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card className="p-4">
+                  <h4 className="font-medium text-sm text-muted-foreground">Total Users</h4>
+                  <p className="text-2xl font-bold">{analyticsSummary?.totalUsers || 0}</p>
+                </Card>
+                <Card className="p-4">
+                  <h4 className="font-medium text-sm text-muted-foreground">Active Today</h4>
+                  <p className="text-2xl font-bold">{analyticsSummary?.activeUsersToday || 0}</p>
+                </Card>
+                <Card className="p-4">
+                  <h4 className="font-medium text-sm text-muted-foreground">Total Messages</h4>
+                  <p className="text-2xl font-bold">{analyticsSummary?.totalMessages || 0}</p>
+                </Card>
+                <Card className="p-4">
+                  <h4 className="font-medium text-sm text-muted-foreground">Avg Session</h4>
+                  <p className="text-2xl font-bold">
+                    {analyticsSummary?.avgSessionDuration 
+                      ? `${Math.floor(analyticsSummary.avgSessionDuration / 60)}m ${analyticsSummary.avgSessionDuration % 60}s`
+                      : '0s'
+                    }
+                  </p>
+                </Card>
+              </div>
+
+              {/* User Engagement Chart */}
+              <Card className="p-4">
+                <h4 className="font-medium mb-4">User Engagement (Last 7 Days)</h4>
+                {analyticsSummary?.userEngagement && analyticsSummary.userEngagement.length > 0 ? (
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={analyticsSummary.userEngagement}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="date" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line 
+                          type="monotone" 
+                          dataKey="activeUsers" 
+                          stroke="#8884d8" 
+                          name="Active Users"
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="messages" 
+                          stroke="#82ca9d" 
+                          name="Messages"
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                ) : (
+                  <div className="h-64 flex items-center justify-center text-muted-foreground">
+                    No engagement data available yet
+                  </div>
+                )}
+              </Card>
+
+              {/* Popular Pages */}
+              <Card className="p-4">
+                <h4 className="font-medium mb-4">Popular Pages</h4>
+                {analyticsSummary?.popularPages && analyticsSummary.popularPages.length > 0 ? (
+                  <div className="space-y-2">
+                    {analyticsSummary.popularPages.map((page, index) => (
+                      <div key={index} className="flex justify-between items-center p-2 bg-muted rounded">
+                        <span className="font-medium">{page.page}</span>
+                        <span className="text-sm text-muted-foreground">{page.views} views</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-muted-foreground">No page view data available yet</div>
+                )}
+              </Card>
+
+              {/* Additional Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card className="p-4">
+                  <h4 className="font-medium mb-2">Connection Statistics</h4>
+                  <p className="text-xl font-bold">{analyticsSummary?.totalConnections || 0}</p>
+                  <p className="text-sm text-muted-foreground">Total connections made</p>
+                </Card>
+                
+                <Card className="p-4">
+                  <h4 className="font-medium mb-2">Daily Metrics</h4>
+                  {dailyMetrics.length > 0 ? (
+                    <div className="space-y-1">
+                      <p className="text-sm">
+                        <span className="font-medium">Today's Activity:</span> {dailyMetrics[dailyMetrics.length - 1]?.activeUsers || 0} users
+                      </p>
+                      <p className="text-sm">
+                        <span className="font-medium">Page Views:</span> {dailyMetrics[dailyMetrics.length - 1]?.totalPageViews || 0}
+                      </p>
+                      <p className="text-sm">
+                        <span className="font-medium">New Users:</span> {dailyMetrics[dailyMetrics.length - 1]?.newUsers || 0}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No daily metrics available</p>
+                  )}
+                </Card>
+              </div>
+
+              {/* Survey Analytics Section */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center">
@@ -593,6 +710,10 @@ export default function Admin() {
                   )}
                 </CardContent>
               </Card>
+
+              <div className="text-sm text-muted-foreground">
+                <p>Analytics are updated in real-time as users interact with the platform.</p>
+              </div>
             </div>
           </TabsContent>
         </Tabs>

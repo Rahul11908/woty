@@ -347,6 +347,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Analytics Routes
+
+  // Get analytics summary
+  app.get("/api/analytics/summary", async (req, res) => {
+    try {
+      const summary = await storage.getAnalyticsSummary();
+      res.json(summary);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch analytics summary" });
+    }
+  });
+
+  // Get daily metrics
+  app.get("/api/analytics/daily", async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+      const metrics = await storage.getDailyMetrics(
+        startDate as string, 
+        endDate as string
+      );
+      res.json(metrics);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch daily metrics" });
+    }
+  });
+
+  // Get user activity
+  app.get("/api/analytics/activity/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const limit = parseInt(req.query.limit as string) || 100;
+      const activity = await storage.getUserActivity(userId, limit);
+      res.json(activity);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch user activity" });
+    }
+  });
+
+  // Get user sessions
+  app.get("/api/analytics/sessions/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const limit = parseInt(req.query.limit as string) || 50;
+      const sessions = await storage.getUserSessions(userId, limit);
+      res.json(sessions);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch user sessions" });
+    }
+  });
+
+  // Create user session (for tracking)
+  app.post("/api/analytics/sessions", async (req, res) => {
+    try {
+      const sessionData = req.body;
+      const session = await storage.createUserSession(sessionData);
+      res.json(session);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create session" });
+    }
+  });
+
+  // Update user session
+  app.put("/api/analytics/sessions/:sessionId", async (req, res) => {
+    try {
+      const sessionId = parseInt(req.params.sessionId);
+      const updates = req.body;
+      const session = await storage.updateUserSession(sessionId, updates);
+      res.json(session);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update session" });
+    }
+  });
+
+  // End user session
+  app.post("/api/analytics/sessions/:sessionId/end", async (req, res) => {
+    try {
+      const sessionId = parseInt(req.params.sessionId);
+      const session = await storage.endUserSession(sessionId);
+      res.json(session);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to end session" });
+    }
+  });
+
+  // Track user activity
+  app.post("/api/analytics/activity", async (req, res) => {
+    try {
+      const activityData = req.body;
+      const activity = await storage.createUserActivity(activityData);
+      res.json(activity);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to track activity" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

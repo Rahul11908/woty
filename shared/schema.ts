@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, serial, integer, boolean, timestamp, json, jsonb, date } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -89,6 +89,44 @@ export const surveyAnswers = pgTable("survey_answers", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// User Analytics Tables
+export const userSessions = pgTable("user_sessions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  sessionStart: timestamp("session_start").defaultNow(),
+  sessionEnd: timestamp("session_end"),
+  duration: integer("duration"), // in seconds
+  pageViews: integer("page_views").default(0),
+  messagesPosted: integer("messages_posted").default(0),
+  connectionsRequested: integer("connections_requested").default(0),
+  questionsSubmitted: integer("questions_submitted").default(0),
+  surveysCompleted: integer("surveys_completed").default(0),
+  deviceType: varchar("device_type", { length: 50 }),
+  userAgent: text("user_agent"),
+});
+
+export const userActivity = pgTable("user_activity", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  activityType: varchar("activity_type", { length: 100 }).notNull(), // 'message_sent', 'connection_requested', etc.
+  activityDetails: jsonb("activity_details"),
+  timestamp: timestamp("timestamp").defaultNow(),
+  sessionId: integer("session_id").references(() => userSessions.id),
+});
+
+export const dailyMetrics = pgTable("daily_metrics", {
+  id: serial("id").primaryKey(),
+  date: date("date").notNull(),
+  totalUsers: integer("total_users").default(0),
+  activeUsers: integer("active_users").default(0),
+  newUsers: integer("new_users").default(0),
+  totalMessages: integer("total_messages").default(0),
+  totalConnections: integer("total_connections").default(0),
+  totalQuestions: integer("total_questions").default(0),
+  avgSessionDuration: integer("avg_session_duration").default(0), // in seconds
+  totalPageViews: integer("total_page_views").default(0),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -136,6 +174,20 @@ export const insertSurveyAnswerSchema = createInsertSchema(surveyAnswers).omit({
   createdAt: true,
 });
 
+// Analytics Schema
+export const insertUserSessionSchema = createInsertSchema(userSessions).omit({
+  id: true,
+});
+
+export const insertUserActivitySchema = createInsertSchema(userActivity).omit({
+  id: true,
+  timestamp: true,
+});
+
+export const insertDailyMetricsSchema = createInsertSchema(dailyMetrics).omit({
+  id: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertConversation = z.infer<typeof insertConversationSchema>;
@@ -154,6 +206,14 @@ export type InsertSurveyResponse = z.infer<typeof insertSurveyResponseSchema>;
 export type SurveyResponse = typeof surveyResponses.$inferSelect;
 export type InsertSurveyAnswer = z.infer<typeof insertSurveyAnswerSchema>;
 export type SurveyAnswer = typeof surveyAnswers.$inferSelect;
+
+// Analytics Types
+export type InsertUserSession = z.infer<typeof insertUserSessionSchema>;
+export type UserSession = typeof userSessions.$inferSelect;
+export type InsertUserActivity = z.infer<typeof insertUserActivitySchema>;
+export type UserActivity = typeof userActivity.$inferSelect;
+export type InsertDailyMetrics = z.infer<typeof insertDailyMetricsSchema>;
+export type DailyMetrics = typeof dailyMetrics.$inferSelect;
 
 export type ConversationWithParticipant = Conversation & {
   participant: User;

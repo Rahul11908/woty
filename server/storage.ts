@@ -8,6 +8,9 @@ import {
   surveyQuestions,
   surveyResponses,
   surveyAnswers,
+  userSessions,
+  userActivity,
+  dailyMetrics,
   type User, 
   type InsertUser,
   type Conversation,
@@ -29,7 +32,13 @@ import {
   type ConversationWithParticipant,
   type MessageWithSender,
   type SurveyWithQuestions,
-  type SurveyResponseWithAnswers
+  type SurveyResponseWithAnswers,
+  type UserSession,
+  type InsertUserSession,
+  type UserActivity,
+  type InsertUserActivity,
+  type DailyMetrics,
+  type InsertDailyMetrics,
 } from "@shared/schema";
 
 export interface IStorage {
@@ -96,6 +105,25 @@ export interface IStorage {
       responses: Array<{ answer: string; count: number }>;
     }>;
   }>;
+
+  // Analytics
+  createUserSession(session: InsertUserSession): Promise<UserSession>;
+  updateUserSession(sessionId: number, updates: Partial<UserSession>): Promise<UserSession>;
+  endUserSession(sessionId: number): Promise<UserSession>;
+  getUserSessions(userId: number, limit?: number): Promise<UserSession[]>;
+  createUserActivity(activity: InsertUserActivity): Promise<UserActivity>;
+  getUserActivity(userId: number, limit?: number): Promise<UserActivity[]>;
+  updateDailyMetrics(date: string): Promise<DailyMetrics>;
+  getDailyMetrics(startDate?: string, endDate?: string): Promise<DailyMetrics[]>;
+  getAnalyticsSummary(): Promise<{
+    totalUsers: number;
+    activeUsersToday: number;
+    avgSessionDuration: number;
+    totalMessages: number;
+    totalConnections: number;
+    popularPages: Array<{ page: string; views: number }>;
+    userEngagement: Array<{ date: string; activeUsers: number; messages: number }>;
+  }>;
 }
 
 export class MemStorage implements IStorage {
@@ -109,6 +137,9 @@ export class MemStorage implements IStorage {
   private surveyQuestions: Map<number, SurveyQuestion>;
   private surveyResponses: Map<number, SurveyResponse>;
   private surveyAnswers: Map<number, SurveyAnswer>;
+  private userSessions: Map<number, UserSession>;
+  private userActivities: Map<number, UserActivity>;
+  private dailyMetrics: Map<string, DailyMetrics>;
   private currentUserId: number;
   private currentConversationId: number;
   private currentMessageId: number;
@@ -118,6 +149,8 @@ export class MemStorage implements IStorage {
   private currentSurveyQuestionId: number;
   private currentSurveyResponseId: number;
   private currentSurveyAnswerId: number;
+  private currentUserSessionId: number;
+  private currentUserActivityId: number;
   private groupChatId: number;
 
   constructor() {
@@ -130,6 +163,9 @@ export class MemStorage implements IStorage {
     this.surveyQuestions = new Map();
     this.surveyResponses = new Map();
     this.surveyAnswers = new Map();
+    this.userSessions = new Map();
+    this.userActivities = new Map();
+    this.dailyMetrics = new Map();
     this.groupChatMessages = new Map();
     this.currentUserId = 1;
     this.currentConversationId = 1;
@@ -140,6 +176,8 @@ export class MemStorage implements IStorage {
     this.currentSurveyQuestionId = 1;
     this.currentSurveyResponseId = 1;
     this.currentSurveyAnswerId = 1;
+    this.currentUserSessionId = 1;
+    this.currentUserActivityId = 1;
     this.groupChatId = 9999; // Special ID for group chat
 
     // Initialize with some sample users
@@ -662,6 +700,215 @@ export class MemStorage implements IStorage {
       totalResponses: responses.length,
       completionRate: responses.length > 0 ? (completedResponses.length / responses.length) * 100 : 0,
       questionStats
+    };
+  }
+
+  // Analytics Methods
+  async createUserSession(insertSession: InsertUserSession): Promise<UserSession> {
+    const id = this.currentUserSessionId++;
+    const session: UserSession = {
+      ...insertSession,
+      id,
+      sessionStart: new Date(),
+    };
+    this.userSessions.set(id, session);
+    
+    // Track activity
+    await this.createUserActivity({
+      userId: session.userId,
+      activityType: 'session_start',
+      sessionId: id,
+    });
+    
+    return session;
+  }
+
+  async updateUserSession(sessionId: number, updates: Partial<UserSession>): Promise<UserSession> {
+    const session = this.userSessions.get(sessionId);
+    if (!session) throw new Error('Session not found');
+
+    const updatedSession = { ...session, ...updates };
+    this.userSessions.set(sessionId, updatedSession);
+    return updatedSession;
+  }
+
+  async endUserSession(sessionId: number): Promise<UserSession> {
+    const session = this.userSessions.get(sessionId);
+    if (!session) throw new Error('Session not found');
+
+    const endTime = new Date();
+    const duration = session.sessionStart ? Math.floor((endTime.getTime() - session.sessionStart.getTime()) / 1000) : 0;
+    
+    const updatedSession = {
+      ...session,
+      sessionEnd: endTime,
+      duration,
+    };
+    
+    this.userSessions.set(sessionId, updatedSession);
+    
+    // Track session end activity
+    await this.createUserActivity({
+      userId: session.userId,
+      activityType: 'session_end',
+      activityDetails: { duration },
+      sessionId,
+    });
+    
+    return updatedSession;
+  }
+
+  async getUserSessions(userId: number, limit = 50): Promise<UserSession[]> {
+    return Array.from(this.userSessions.values())
+      .filter(session => session.userId === userId)
+      .sort((a, b) => new Date(b.sessionStart!).getTime() - new Date(a.sessionStart!).getTime())
+      .slice(0, limit);
+  }
+
+  async createUserActivity(insertActivity: InsertUserActivity): Promise<UserActivity> {
+    const id = this.currentUserActivityId++;
+    const activity: UserActivity = {
+      ...insertActivity,
+      id,
+      timestamp: new Date(),
+    };
+    this.userActivities.set(id, activity);
+    return activity;
+  }
+
+  async getUserActivity(userId: number, limit = 100): Promise<UserActivity[]> {
+    return Array.from(this.userActivities.values())
+      .filter(activity => activity.userId === userId)
+      .sort((a, b) => new Date(b.timestamp!).getTime() - new Date(a.timestamp!).getTime())
+      .slice(0, limit);
+  }
+
+  async updateDailyMetrics(date: string): Promise<DailyMetrics> {
+    const existingMetrics = this.dailyMetrics.get(date);
+    const today = new Date(date);
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+
+    // Calculate metrics for the day
+    const sessions = Array.from(this.userSessions.values())
+      .filter(session => session.sessionStart && 
+        session.sessionStart >= startOfDay && 
+        session.sessionStart < endOfDay);
+
+    const activities = Array.from(this.userActivities.values())
+      .filter(activity => activity.timestamp && 
+        activity.timestamp >= startOfDay && 
+        activity.timestamp < endOfDay);
+
+    const uniqueUsers = new Set(sessions.map(s => s.userId)).size;
+    const totalUsers = this.users.size;
+    const newUsers = Array.from(this.users.values())
+      .filter(user => user.createdAt && 
+        user.createdAt >= startOfDay && 
+        user.createdAt < endOfDay).length;
+
+    const totalMessages = activities.filter(a => a.activityType === 'message_sent').length;
+    const totalConnections = activities.filter(a => a.activityType === 'connection_requested').length;
+    const totalQuestions = activities.filter(a => a.activityType === 'question_submitted').length;
+    
+    const completedSessions = sessions.filter(s => s.duration !== undefined && s.duration !== null);
+    const avgSessionDuration = completedSessions.length > 0 
+      ? Math.round(completedSessions.reduce((sum, s) => sum + (s.duration || 0), 0) / completedSessions.length)
+      : 0;
+
+    const totalPageViews = sessions.reduce((sum, s) => sum + (s.pageViews || 0), 0);
+
+    const metrics: DailyMetrics = {
+      id: existingMetrics?.id || Date.now(),
+      date,
+      totalUsers,
+      activeUsers: uniqueUsers,
+      newUsers,
+      totalMessages,
+      totalConnections,
+      totalQuestions,
+      avgSessionDuration,
+      totalPageViews,
+    };
+
+    this.dailyMetrics.set(date, metrics);
+    return metrics;
+  }
+
+  async getDailyMetrics(startDate?: string, endDate?: string): Promise<DailyMetrics[]> {
+    let metrics = Array.from(this.dailyMetrics.values());
+    
+    if (startDate) {
+      metrics = metrics.filter(m => m.date >= startDate);
+    }
+    if (endDate) {
+      metrics = metrics.filter(m => m.date <= endDate);
+    }
+    
+    return metrics.sort((a, b) => a.date.localeCompare(b.date));
+  }
+
+  async getAnalyticsSummary(): Promise<{
+    totalUsers: number;
+    activeUsersToday: number;
+    avgSessionDuration: number;
+    totalMessages: number;
+    totalConnections: number;
+    popularPages: Array<{ page: string; views: number }>;
+    userEngagement: Array<{ date: string; activeUsers: number; messages: number }>;
+  }> {
+    const today = new Date().toISOString().split('T')[0];
+    const last7Days = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    
+    // Get today's metrics
+    await this.updateDailyMetrics(today);
+    const todayMetrics = this.dailyMetrics.get(today);
+    
+    // Calculate overall stats
+    const totalUsers = this.users.size;
+    const activeUsersToday = todayMetrics?.activeUsers || 0;
+    
+    // Calculate average session duration from all completed sessions
+    const completedSessions = Array.from(this.userSessions.values())
+      .filter(s => s.duration !== undefined && s.duration !== null);
+    const avgSessionDuration = completedSessions.length > 0 
+      ? Math.round(completedSessions.reduce((sum, s) => sum + (s.duration || 0), 0) / completedSessions.length)
+      : 0;
+
+    // Count total messages and connections
+    const totalMessages = this.groupChatMessages.size + this.messages.size;
+    const totalConnections = this.connections.size;
+
+    // Calculate popular pages (simplified - based on page views in sessions)
+    const pageViewCounts = new Map<string, number>();
+    Array.from(this.userActivities.values())
+      .filter(a => a.activityType === 'page_view')
+      .forEach(activity => {
+        const page = activity.activityDetails?.page || 'unknown';
+        pageViewCounts.set(page, (pageViewCounts.get(page) || 0) + 1);
+      });
+
+    const popularPages = Array.from(pageViewCounts.entries())
+      .map(([page, views]) => ({ page, views }))
+      .sort((a, b) => b.views - a.views)
+      .slice(0, 5);
+
+    // Get user engagement for last 7 days
+    const recentMetrics = await this.getDailyMetrics(last7Days, today);
+    const userEngagement = recentMetrics.map(metrics => ({
+      date: metrics.date,
+      activeUsers: metrics.activeUsers || 0,
+      messages: metrics.totalMessages || 0,
+    }));
+
+    return {
+      totalUsers,
+      activeUsersToday,
+      avgSessionDuration,
+      totalMessages,
+      totalConnections,
+      popularPages,
+      userEngagement,
     };
   }
 }
