@@ -25,41 +25,27 @@ export default function Network() {
     queryKey: ["/api/event-attendees"],
   });
 
-  // Get current user profile
-  const getCurrentUserId = () => {
-    // First check for stored user object (most reliable)
+  // Get current user from localStorage (same as App.tsx pattern)
+  const getCurrentUser = () => {
     const storedUser = localStorage.getItem("currentUser");
-    
     if (storedUser) {
       try {
-        const user = JSON.parse(storedUser);
-        // Always use ID 1 for now since that's your actual database ID
-        if (user.id && user.id !== 10) {
-          return user.id;
-        }
+        return JSON.parse(storedUser);
       } catch (error) {
         console.error("Error parsing stored user:", error);
-        // Clear corrupted data
         localStorage.removeItem("currentUser");
         localStorage.removeItem("currentUserId");
       }
     }
-    
-    // Fallback to stored user ID, but avoid ID 10
-    const storedUserId = localStorage.getItem("currentUserId");
-    if (storedUserId && parseInt(storedUserId) !== 10) {
-      return parseInt(storedUserId);
-    }
-    
-    // Use ID 1 as default (your actual database ID)
-    return 1;
+    return null;
   };
 
-  const currentUserId = 1; // Force to use ID 1 for now
-  const { data: currentUser, isLoading: userLoading, error: userError } = useQuery<User>({
-    queryKey: [`/api/users/${currentUserId}`],
-    retry: 1,
-  });
+  const currentUser = getCurrentUser();
+  const currentUserId = currentUser?.id || 1;
+  
+  // Remove the redundant API call since we already have currentUser from localStorage
+  const userLoading = false;
+  const userError = null;
 
 
 
@@ -230,51 +216,39 @@ export default function Network() {
         <div className="bg-white shadow-sm mx-4 mt-4 rounded-lg overflow-hidden">
           <div className="p-4">
             <div className="flex items-center space-x-4">
-              {/* Use stored user data as fallback */}
-              {(() => {
-                const storedUser = localStorage.getItem("currentUser");
-                if (storedUser) {
-                  try {
-                    const user = JSON.parse(storedUser);
-                    return (
-                      <>
-                        <div className="relative">
-                          <Avatar className="w-16 h-16">
-                            <AvatarImage 
-                              src={user.avatar} 
-                              alt={user.fullName}
-                            />
-                            <AvatarFallback className={`text-white text-lg font-semibold bg-gradient-to-br ${getUserAvatarColor(user.fullName)}`}>
-                              {getUserInitials(user.fullName)}
-                            </AvatarFallback>
-                          </Avatar>
-                        </div>
-                        <div className="flex-1">
-                          <h2 className="text-lg font-semibold text-gray-900">{user.fullName}</h2>
-                          {user.jobTitle && <p className="text-sm text-gray-600">{user.jobTitle}</p>}
-                          {user.company && <p className="text-sm text-gray-500">{user.company}</p>}
-                          {user.email && <p className="text-xs text-gray-400 mt-1">{user.email}</p>}
-                          <div className="flex items-center mt-2 space-x-2">
-                            <Badge className="text-xs bg-orange-500 hover:bg-orange-600 text-white">
-                              GLORY Team
-                            </Badge>
-                          </div>
-                        </div>
-                      </>
-                    );
-                  } catch (error) {
-                    console.error("Error parsing stored user for fallback:", error);
-                  }
-                }
-                
-                return (
-                  <div className="text-center text-gray-500">
-                    <p>Loading user profile...</p>
-                    <p className="text-xs mt-1">User ID: {currentUserId}</p>
-                    {userError && <p className="text-xs text-red-500 mt-1">Error: {JSON.stringify(userError)}</p>}
+              {/* This fallback is no longer needed since we get user directly from localStorage */}
+              {currentUser ? (
+                <>
+                  <div className="relative">
+                    <Avatar className="w-16 h-16">
+                      <AvatarImage 
+                        src={currentUser.avatar} 
+                        alt={currentUser.fullName}
+                      />
+                      <AvatarFallback className={`text-white text-lg font-semibold bg-gradient-to-br ${getUserAvatarColor(currentUser.fullName)}`}>
+                        {getUserInitials(currentUser.fullName)}
+                      </AvatarFallback>
+                    </Avatar>
                   </div>
-                );
-              })()}
+                  <div className="flex-1">
+                    <h2 className="text-lg font-semibold text-gray-900">{currentUser.fullName}</h2>
+                    {currentUser.jobTitle && <p className="text-sm text-gray-600">{currentUser.jobTitle}</p>}
+                    {currentUser.company && <p className="text-sm text-gray-500">{currentUser.company}</p>}
+                    {currentUser.email && <p className="text-xs text-gray-400 mt-1">{currentUser.email}</p>}
+                    <div className="flex items-center mt-2 space-x-2">
+                      <Badge 
+                        className={`text-xs ${getUserRoleBadge(currentUser.userRole || "attendee").color}`}
+                      >
+                        {getUserRoleBadge(currentUser.userRole || "attendee").label}
+                      </Badge>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center text-gray-500">
+                  <p>Please log in to view your profile</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -307,7 +281,7 @@ export default function Network() {
                     <div key={message.id} className="flex space-x-3">
                       <Avatar className="w-8 h-8 flex-shrink-0">
                         <AvatarImage 
-                          src={getUserPhoto(message.sender?.fullName)} 
+                          src={message.sender?.avatar} 
                           alt={message.sender?.fullName || "User"}
                         />
                         <AvatarFallback className={`text-xs bg-gradient-to-br ${getUserAvatarColor(message.sender?.fullName || "")} text-white`}>
@@ -378,7 +352,7 @@ export default function Network() {
                           <div className="relative flex-shrink-0">
                             <Avatar className="w-16 h-16">
                               <AvatarImage 
-                                src={getUserPhoto(attendee.fullName)} 
+                                src={attendee.avatar} 
                                 alt={attendee.fullName}
                               />
                               <AvatarFallback className={`bg-gradient-to-br ${getUserAvatarColor(attendee.fullName)} text-white font-semibold text-lg`}>
