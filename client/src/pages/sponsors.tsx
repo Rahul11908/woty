@@ -148,15 +148,6 @@ export default function Sponsors() {
 
       <main className="pt-6 px-4">
         <div className="space-y-6">
-          {/* Page Header */}
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Our Sponsors
-            </h2>
-            <p className="text-gray-600">
-              Thank you to our incredible sponsors who make the GLORY Sports Summit possible
-            </p>
-          </div>
 
           {/* Main Sponsor - GE (1.5x larger) */}
           <div className="mb-8">
@@ -194,10 +185,10 @@ export default function Sponsors() {
           <div className="mt-8 text-center">
             <Card>
               <CardContent className="pt-6 pb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-bold italic text-gray-900 mb-2">
                   Thank You to Our Sponsors
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-600 font-bold italic">
                   The GLORY Sports Summit 2025 is made possible by the generous support of our sponsors. 
                   Their commitment to advancing sports innovation and community building makes this event extraordinary.
                 </p>
