@@ -1,7 +1,15 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertMessageSchema, insertConnectionSchema, insertQuestionSchema } from "@shared/schema";
+import { 
+  insertMessageSchema, 
+  insertConnectionSchema, 
+  insertQuestionSchema,
+  insertSurveySchema,
+  insertSurveyQuestionSchema,
+  insertSurveyResponseSchema,
+  insertSurveyAnswerSchema
+} from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
@@ -173,6 +181,169 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(questions);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch user questions" });
+    }
+  });
+
+  // Survey Management Routes
+  
+  // Create a survey
+  app.post("/api/surveys", async (req, res) => {
+    try {
+      const parsed = insertSurveySchema.parse(req.body);
+      const survey = await storage.createSurvey(parsed);
+      res.json(survey);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create survey" });
+    }
+  });
+
+  // Get all surveys
+  app.get("/api/surveys", async (req, res) => {
+    try {
+      const surveys = await storage.getSurveys();
+      res.json(surveys);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch surveys" });
+    }
+  });
+
+  // Get a survey with questions
+  app.get("/api/surveys/:id", async (req, res) => {
+    try {
+      const surveyId = parseInt(req.params.id);
+      const survey = await storage.getSurvey(surveyId);
+      if (!survey) {
+        return res.status(404).json({ error: "Survey not found" });
+      }
+      res.json(survey);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch survey" });
+    }
+  });
+
+  // Update a survey
+  app.put("/api/surveys/:id", async (req, res) => {
+    try {
+      const surveyId = parseInt(req.params.id);
+      const survey = await storage.updateSurvey(surveyId, req.body);
+      res.json(survey);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update survey" });
+    }
+  });
+
+  // Delete a survey
+  app.delete("/api/surveys/:id", async (req, res) => {
+    try {
+      const surveyId = parseInt(req.params.id);
+      await storage.deleteSurvey(surveyId);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete survey" });
+    }
+  });
+
+  // Survey Questions
+
+  // Add question to survey
+  app.post("/api/surveys/:surveyId/questions", async (req, res) => {
+    try {
+      const surveyId = parseInt(req.params.surveyId);
+      const questionData = { ...req.body, surveyId };
+      const parsed = insertSurveyQuestionSchema.parse(questionData);
+      const question = await storage.createSurveyQuestion(parsed);
+      res.json(question);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create survey question" });
+    }
+  });
+
+  // Get survey questions
+  app.get("/api/surveys/:surveyId/questions", async (req, res) => {
+    try {
+      const surveyId = parseInt(req.params.surveyId);
+      const questions = await storage.getSurveyQuestions(surveyId);
+      res.json(questions);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch survey questions" });
+    }
+  });
+
+  // Update survey question
+  app.put("/api/survey-questions/:id", async (req, res) => {
+    try {
+      const questionId = parseInt(req.params.id);
+      const question = await storage.updateSurveyQuestion(questionId, req.body);
+      res.json(question);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update survey question" });
+    }
+  });
+
+  // Delete survey question
+  app.delete("/api/survey-questions/:id", async (req, res) => {
+    try {
+      const questionId = parseInt(req.params.id);
+      await storage.deleteSurveyQuestion(questionId);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete survey question" });
+    }
+  });
+
+  // Survey Responses and Analytics
+
+  // Get survey responses
+  app.get("/api/surveys/:surveyId/responses", async (req, res) => {
+    try {
+      const surveyId = parseInt(req.params.surveyId);
+      const responses = await storage.getSurveyResponses(surveyId);
+      res.json(responses);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch survey responses" });
+    }
+  });
+
+  // Get survey statistics
+  app.get("/api/surveys/:surveyId/stats", async (req, res) => {
+    try {
+      const surveyId = parseInt(req.params.surveyId);
+      const stats = await storage.getSurveyStats(surveyId);
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch survey statistics" });
+    }
+  });
+
+  // Submit survey response
+  app.post("/api/surveys/:surveyId/responses", async (req, res) => {
+    try {
+      const surveyId = parseInt(req.params.surveyId);
+      const { userId, answers } = req.body;
+      
+      // Create response
+      const response = await storage.createSurveyResponse({
+        surveyId,
+        userId,
+        isCompleted: false
+      });
+
+      // Add answers
+      for (const answer of answers) {
+        await storage.createSurveyAnswer({
+          responseId: response.id,
+          questionId: answer.questionId,
+          answerText: answer.answerText,
+          selectedOption: answer.selectedOption
+        });
+      }
+
+      // Mark as completed
+      await storage.completeSurveyResponse(response.id);
+      
+      res.json({ success: true, responseId: response.id });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to submit survey response" });
     }
   });
 

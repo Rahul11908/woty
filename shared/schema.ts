@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -47,6 +47,48 @@ export const questions = pgTable("questions", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const surveys = pgTable("surveys", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  type: text("type").notNull(), // 'during_event', 'post_event'
+  status: text("status").notNull().default("draft"), // 'draft', 'active', 'completed'
+  emailSubject: text("email_subject"),
+  emailBody: text("email_body"),
+  scheduledSendDate: timestamp("scheduled_send_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const surveyQuestions = pgTable("survey_questions", {
+  id: serial("id").primaryKey(),
+  surveyId: integer("survey_id").notNull().references(() => surveys.id),
+  questionText: text("question_text").notNull(),
+  questionType: text("question_type").notNull(), // 'text', 'multiple_choice', 'rating'
+  options: json("options"), // For multiple choice questions
+  isRequired: boolean("is_required").default(false),
+  order: integer("order").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const surveyResponses = pgTable("survey_responses", {
+  id: serial("id").primaryKey(),
+  surveyId: integer("survey_id").notNull().references(() => surveys.id),
+  userId: integer("user_id").notNull().references(() => users.id),
+  isCompleted: boolean("is_completed").default(false),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const surveyAnswers = pgTable("survey_answers", {
+  id: serial("id").primaryKey(),
+  responseId: integer("response_id").notNull().references(() => surveyResponses.id),
+  questionId: integer("question_id").notNull().references(() => surveyQuestions.id),
+  answerText: text("answer_text"),
+  selectedOption: text("selected_option"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -73,6 +115,27 @@ export const insertQuestionSchema = createInsertSchema(questions).omit({
   createdAt: true,
 });
 
+export const insertSurveySchema = createInsertSchema(surveys).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSurveyQuestionSchema = createInsertSchema(surveyQuestions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSurveyResponseSchema = createInsertSchema(surveyResponses).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSurveyAnswerSchema = createInsertSchema(surveyAnswers).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertConversation = z.infer<typeof insertConversationSchema>;
@@ -83,6 +146,14 @@ export type InsertConnection = z.infer<typeof insertConnectionSchema>;
 export type Connection = typeof connections.$inferSelect;
 export type InsertQuestion = z.infer<typeof insertQuestionSchema>;
 export type Question = typeof questions.$inferSelect;
+export type InsertSurvey = z.infer<typeof insertSurveySchema>;
+export type Survey = typeof surveys.$inferSelect;
+export type InsertSurveyQuestion = z.infer<typeof insertSurveyQuestionSchema>;
+export type SurveyQuestion = typeof surveyQuestions.$inferSelect;
+export type InsertSurveyResponse = z.infer<typeof insertSurveyResponseSchema>;
+export type SurveyResponse = typeof surveyResponses.$inferSelect;
+export type InsertSurveyAnswer = z.infer<typeof insertSurveyAnswerSchema>;
+export type SurveyAnswer = typeof surveyAnswers.$inferSelect;
 
 export type ConversationWithParticipant = Conversation & {
   participant: User;
@@ -92,4 +163,13 @@ export type ConversationWithParticipant = Conversation & {
 
 export type MessageWithSender = Message & {
   sender: User;
+};
+
+export type SurveyWithQuestions = Survey & {
+  questions: SurveyQuestion[];
+};
+
+export type SurveyResponseWithAnswers = SurveyResponse & {
+  answers: SurveyAnswer[];
+  user: User;
 };

@@ -4,6 +4,10 @@ import {
   messages, 
   connections,
   questions,
+  surveys,
+  surveyQuestions,
+  surveyResponses,
+  surveyAnswers,
   type User, 
   type InsertUser,
   type Conversation,
@@ -14,8 +18,18 @@ import {
   type InsertConnection,
   type Question,
   type InsertQuestion,
+  type Survey,
+  type InsertSurvey,
+  type SurveyQuestion,
+  type InsertSurveyQuestion,
+  type SurveyResponse,
+  type InsertSurveyResponse,
+  type SurveyAnswer,
+  type InsertSurveyAnswer,
   type ConversationWithParticipant,
-  type MessageWithSender
+  type MessageWithSender,
+  type SurveyWithQuestions,
+  type SurveyResponseWithAnswers
 } from "@shared/schema";
 
 export interface IStorage {
@@ -51,6 +65,37 @@ export interface IStorage {
   createQuestion(question: InsertQuestion): Promise<Question>;
   getQuestions(panelName?: string): Promise<Question[]>;
   getQuestionsByUser(userId: number): Promise<Question[]>;
+
+  // Surveys
+  createSurvey(survey: InsertSurvey): Promise<Survey>;
+  getSurveys(): Promise<Survey[]>;
+  getSurvey(id: number): Promise<SurveyWithQuestions | undefined>;
+  updateSurvey(id: number, updates: Partial<Survey>): Promise<Survey>;
+  deleteSurvey(id: number): Promise<void>;
+
+  // Survey Questions
+  createSurveyQuestion(question: InsertSurveyQuestion): Promise<SurveyQuestion>;
+  getSurveyQuestions(surveyId: number): Promise<SurveyQuestion[]>;
+  updateSurveyQuestion(id: number, updates: Partial<SurveyQuestion>): Promise<SurveyQuestion>;
+  deleteSurveyQuestion(id: number): Promise<void>;
+
+  // Survey Responses
+  createSurveyResponse(response: InsertSurveyResponse): Promise<SurveyResponse>;
+  getSurveyResponses(surveyId: number): Promise<SurveyResponseWithAnswers[]>;
+  completeSurveyResponse(responseId: number): Promise<void>;
+
+  // Survey Answers
+  createSurveyAnswer(answer: InsertSurveyAnswer): Promise<SurveyAnswer>;
+  getSurveyStats(surveyId: number): Promise<{
+    totalResponses: number;
+    completionRate: number;
+    questionStats: Array<{
+      questionId: number;
+      questionText: string;
+      responseCount: number;
+      responses: Array<{ answer: string; count: number }>;
+    }>;
+  }>;
 }
 
 export class MemStorage implements IStorage {
@@ -60,11 +105,19 @@ export class MemStorage implements IStorage {
   private connections: Map<number, Connection>;
   private questions: Map<number, Question>;
   private groupChatMessages: Map<number, Message>;
+  private surveys: Map<number, Survey>;
+  private surveyQuestions: Map<number, SurveyQuestion>;
+  private surveyResponses: Map<number, SurveyResponse>;
+  private surveyAnswers: Map<number, SurveyAnswer>;
   private currentUserId: number;
   private currentConversationId: number;
   private currentMessageId: number;
   private currentConnectionId: number;
   private currentQuestionId: number;
+  private currentSurveyId: number;
+  private currentSurveyQuestionId: number;
+  private currentSurveyResponseId: number;
+  private currentSurveyAnswerId: number;
   private groupChatId: number;
 
   constructor() {
@@ -73,12 +126,20 @@ export class MemStorage implements IStorage {
     this.messages = new Map();
     this.connections = new Map();
     this.questions = new Map();
+    this.surveys = new Map();
+    this.surveyQuestions = new Map();
+    this.surveyResponses = new Map();
+    this.surveyAnswers = new Map();
     this.groupChatMessages = new Map();
     this.currentUserId = 1;
     this.currentConversationId = 1;
     this.currentMessageId = 1;
     this.currentConnectionId = 1;
     this.currentQuestionId = 1;
+    this.currentSurveyId = 1;
+    this.currentSurveyQuestionId = 1;
+    this.currentSurveyResponseId = 1;
+    this.currentSurveyAnswerId = 1;
     this.groupChatId = 9999; // Special ID for group chat
 
     // Initialize with some sample users
@@ -436,6 +497,172 @@ export class MemStorage implements IStorage {
 
     this.groupChatMessages.set(id, message);
     return message;
+  }
+
+  // Survey Methods
+  async createSurvey(insertSurvey: InsertSurvey): Promise<Survey> {
+    const id = this.currentSurveyId++;
+    const survey: Survey = {
+      ...insertSurvey,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.surveys.set(id, survey);
+    return survey;
+  }
+
+  async getSurveys(): Promise<Survey[]> {
+    return Array.from(this.surveys.values());
+  }
+
+  async getSurvey(id: number): Promise<SurveyWithQuestions | undefined> {
+    const survey = this.surveys.get(id);
+    if (!survey) return undefined;
+
+    const questions = Array.from(this.surveyQuestions.values())
+      .filter(q => q.surveyId === id)
+      .sort((a, b) => a.order - b.order);
+
+    return { ...survey, questions };
+  }
+
+  async updateSurvey(id: number, updates: Partial<Survey>): Promise<Survey> {
+    const survey = this.surveys.get(id);
+    if (!survey) throw new Error('Survey not found');
+
+    const updatedSurvey = { ...survey, ...updates, updatedAt: new Date() };
+    this.surveys.set(id, updatedSurvey);
+    return updatedSurvey;
+  }
+
+  async deleteSurvey(id: number): Promise<void> {
+    this.surveys.delete(id);
+    // Also delete associated questions and responses
+    Array.from(this.surveyQuestions.entries())
+      .filter(([_, q]) => q.surveyId === id)
+      .forEach(([qId, _]) => this.surveyQuestions.delete(qId));
+  }
+
+  async createSurveyQuestion(insertQuestion: InsertSurveyQuestion): Promise<SurveyQuestion> {
+    const id = this.currentSurveyQuestionId++;
+    const question: SurveyQuestion = {
+      ...insertQuestion,
+      id,
+      createdAt: new Date()
+    };
+    this.surveyQuestions.set(id, question);
+    return question;
+  }
+
+  async getSurveyQuestions(surveyId: number): Promise<SurveyQuestion[]> {
+    return Array.from(this.surveyQuestions.values())
+      .filter(q => q.surveyId === surveyId)
+      .sort((a, b) => a.order - b.order);
+  }
+
+  async updateSurveyQuestion(id: number, updates: Partial<SurveyQuestion>): Promise<SurveyQuestion> {
+    const question = this.surveyQuestions.get(id);
+    if (!question) throw new Error('Survey question not found');
+
+    const updatedQuestion = { ...question, ...updates };
+    this.surveyQuestions.set(id, updatedQuestion);
+    return updatedQuestion;
+  }
+
+  async deleteSurveyQuestion(id: number): Promise<void> {
+    this.surveyQuestions.delete(id);
+  }
+
+  async createSurveyResponse(insertResponse: InsertSurveyResponse): Promise<SurveyResponse> {
+    const id = this.currentSurveyResponseId++;
+    const response: SurveyResponse = {
+      ...insertResponse,
+      id,
+      createdAt: new Date()
+    };
+    this.surveyResponses.set(id, response);
+    return response;
+  }
+
+  async getSurveyResponses(surveyId: number): Promise<SurveyResponseWithAnswers[]> {
+    const responses = Array.from(this.surveyResponses.values())
+      .filter(r => r.surveyId === surveyId);
+
+    return responses.map(response => {
+      const answers = Array.from(this.surveyAnswers.values())
+        .filter(a => a.responseId === response.id);
+      const user = this.users.get(response.userId)!;
+      return { ...response, answers, user };
+    });
+  }
+
+  async completeSurveyResponse(responseId: number): Promise<void> {
+    const response = this.surveyResponses.get(responseId);
+    if (response) {
+      response.isCompleted = true;
+      response.completedAt = new Date();
+      this.surveyResponses.set(responseId, response);
+    }
+  }
+
+  async createSurveyAnswer(insertAnswer: InsertSurveyAnswer): Promise<SurveyAnswer> {
+    const id = this.currentSurveyAnswerId++;
+    const answer: SurveyAnswer = {
+      ...insertAnswer,
+      id,
+      createdAt: new Date()
+    };
+    this.surveyAnswers.set(id, answer);
+    return answer;
+  }
+
+  async getSurveyStats(surveyId: number): Promise<{
+    totalResponses: number;
+    completionRate: number;
+    questionStats: Array<{
+      questionId: number;
+      questionText: string;
+      responseCount: number;
+      responses: Array<{ answer: string; count: number }>;
+    }>;
+  }> {
+    const responses = Array.from(this.surveyResponses.values())
+      .filter(r => r.surveyId === surveyId);
+    const completedResponses = responses.filter(r => r.isCompleted);
+    
+    const questions = await this.getSurveyQuestions(surveyId);
+    const questionStats = questions.map(question => {
+      const answers = Array.from(this.surveyAnswers.values())
+        .filter(a => {
+          const response = this.surveyResponses.get(a.responseId);
+          return response && response.surveyId === surveyId;
+        })
+        .filter(a => a.questionId === question.id);
+
+      const responseGroups = new Map<string, number>();
+      answers.forEach(answer => {
+        const key = answer.answerText || answer.selectedOption || '';
+        responseGroups.set(key, (responseGroups.get(key) || 0) + 1);
+      });
+
+      const responses = Array.from(responseGroups.entries())
+        .map(([answer, count]) => ({ answer, count }))
+        .sort((a, b) => b.count - a.count);
+
+      return {
+        questionId: question.id,
+        questionText: question.questionText,
+        responseCount: answers.length,
+        responses
+      };
+    });
+
+    return {
+      totalResponses: responses.length,
+      completionRate: responses.length > 0 ? (completedResponses.length / responses.length) * 100 : 0,
+      questionStats
+    };
   }
 }
 
