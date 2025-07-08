@@ -6,7 +6,7 @@ import rabanneLogo from "@assets/image-7_1752004469108.png";
 import suttonPlaceHotelLogo from "@assets/SPH-Toronto_logo_Toronto_white_stacked_1752004469108.png";
 import asahiLogo from "@assets/ASD_LOGO_NEGATIVE_RGB_1752004822019.png";
 import rootsLogo from "@assets/Asset 1_1752004822019.png";
-import hennessyLogo from "@assets/image-4_1752004469108.png";
+import hennessyLogo from "@assets/hennessy-new-logo.png";
 import masByMessiLogo from "@assets/mas-plus-logo.webp";
 import radoLogo from "@assets/rado-new-logo.png";
 import geAppliancesLogo from "@assets/GEAppliances_PrimaryLogo_1752003391719.png";
@@ -75,8 +75,8 @@ const sponsors: Sponsor[] = [
     id: "hennessy",
     name: "Hennessy",
     website: "https://www.hennessy.com",
-    brandColor: "bg-white",
-    textColor: "text-black",
+    brandColor: "bg-amber-600",
+    textColor: "text-white",
     logoSvg: `<img src="${hennessyLogo}" alt="Hennessy" className="w-full h-full object-contain" />`
   },
   {
@@ -142,7 +142,14 @@ export default function Sponsors() {
                   onClick={() => handleSponsorClick(sponsor.website)}
                 >
                   <CardContent className={`${sponsor.brandColor} ${sponsor.textColor} h-full flex items-center justify-center rounded-lg px-6 py-4`}>
-                    <div className={`${sponsor.id === 'rabanne' ? 'w-40 h-14' : sponsor.id === 'asahi' ? 'w-44 h-16' : 'w-32 h-12'}`} dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
+                    <div className={`flex items-center justify-center ${
+                      sponsor.id === 'rabanne' ? 'w-40 h-14' : 
+                      sponsor.id === 'asahi' ? 'w-48 h-18' : 
+                      sponsor.id === 'roots' ? 'w-32 h-12' : 
+                      sponsor.id === 'hennessy' ? 'w-36 h-12' : 
+                      sponsor.id === 'rado' ? 'w-32 h-12' : 
+                      'w-32 h-12'
+                    }`} dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
                   </CardContent>
                 </Card>
               ))}
