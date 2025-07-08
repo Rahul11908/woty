@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { apiRequest } from "@/lib/queryClient";
 import type { User, MessageWithSender } from "@shared/schema";
@@ -54,7 +54,7 @@ export default function Network() {
   
   // Query to get fresh user data from the server
   const { data: freshUserData, isLoading: userLoading } = useQuery<User>({
-    queryKey: ["/api/users", currentUserId],
+    queryKey: [`/api/users/${currentUserId}`],
     enabled: !!currentUserId,
   });
 
@@ -96,7 +96,7 @@ export default function Network() {
 
   // Initialize edit form when user data changes
   useEffect(() => {
-    if (displayUser) {
+    if (displayUser && !isEditingProfile) {
       setEditForm({
         fullName: displayUser.fullName || "",
         jobTitle: displayUser.jobTitle || "",
@@ -104,7 +104,7 @@ export default function Network() {
         avatar: displayUser.avatar || ""
       });
     }
-  }, [displayUser]);
+  }, [displayUser, isEditingProfile]);
 
   const updateProfileMutation = useMutation({
     mutationFn: async (updatedData: typeof editForm) => {
@@ -112,12 +112,18 @@ export default function Network() {
       return response;
     },
     onSuccess: (updatedUser) => {
-      // Update localStorage
+      // Update localStorage with the updated user data
       localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-      // Refresh queries
-      queryClient.invalidateQueries({ queryKey: ["/api/users", currentUserId] });
+      
+      // Dispatch custom event to notify other parts of the app
+      window.dispatchEvent(new CustomEvent('userUpdated', { detail: updatedUser }));
+      
+      // Refresh all relevant queries
+      queryClient.invalidateQueries({ queryKey: [`/api/users/${currentUserId}`] });
       queryClient.invalidateQueries({ queryKey: ["/api/event-attendees"] });
       queryClient.invalidateQueries({ queryKey: ["/api/group-chat/messages"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      
       setIsEditingProfile(false);
     },
   });
@@ -284,6 +290,9 @@ export default function Network() {
                   <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                       <DialogTitle>Edit Profile</DialogTitle>
+                      <DialogDescription>
+                        Update your profile information and photo. Changes will be saved automatically.
+                      </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                       {/* Avatar Upload */}
