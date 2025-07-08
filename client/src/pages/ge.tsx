@@ -1,5 +1,6 @@
 import { Lightbulb, TrendingUp, Users, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
 
 export default function GE() {
   return (
@@ -15,7 +16,7 @@ export default function GE() {
           </div>
           <div className="w-16 h-8">
             <img 
-              src="/attached_assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png" 
+              src={gloryLogo} 
               alt="GLORY Logo" 
               className="w-full h-full object-contain"
             />

@@ -18,6 +18,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertSurveySchema, insertSurveyQuestionSchema, type Survey, type SurveyWithQuestions } from "@shared/schema";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
 
 const surveyFormSchema = insertSurveySchema.extend({
   emailSubject: z.string().optional(),
@@ -185,7 +186,7 @@ export default function Admin() {
           </div>
           <div className="w-16 h-8">
             <img 
-              src="/attached_assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png" 
+              src={gloryLogo} 
               alt="GLORY Logo" 
               className="w-full h-full object-contain"
             />

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
 
 interface Panel {
   id: string;
@@ -261,7 +262,7 @@ export default function Profile() {
           </div>
           <div className="w-16 h-8">
             <img 
-              src="/attached_assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png" 
+              src={gloryLogo} 
               alt="GLORY Logo" 
               className="w-full h-full object-contain"
             />

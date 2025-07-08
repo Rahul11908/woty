@@ -9,6 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import { apiRequest } from "@/lib/queryClient";
 import type { User, MessageWithSender } from "@shared/schema";
+import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
 
 export default function Network() {
   const [newMessage, setNewMessage] = useState("");
@@ -113,7 +114,7 @@ export default function Network() {
           </div>
           <div className="w-16 h-8">
             <img 
-              src="/attached_assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png" 
+              src={gloryLogo} 
               alt="GLORY Logo" 
               className="w-full h-full object-contain"
             />
