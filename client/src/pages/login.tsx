@@ -2,7 +2,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
+import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (2)_1751991903966.png";
 
 export default function Login() {
   const [, setLocation] = useLocation();
