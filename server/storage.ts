@@ -76,6 +76,7 @@ export interface IStorage {
   createQuestion(question: InsertQuestion): Promise<Question>;
   getQuestions(panelName?: string): Promise<Question[]>;
   getQuestionsByUser(userId: number): Promise<Question[]>;
+  markQuestionAsAnswered(questionId: number): Promise<void>;
 
   // Surveys
   createSurvey(survey: InsertSurvey): Promise<Survey>;
@@ -503,6 +504,14 @@ export class MemStorage implements IStorage {
 
   async getQuestionsByUser(userId: number): Promise<Question[]> {
     return Array.from(this.questions.values()).filter(q => q.userId === userId);
+  }
+
+  async markQuestionAsAnswered(questionId: number): Promise<void> {
+    const question = this.questions.get(questionId);
+    if (question) {
+      question.isAnswered = true;
+      this.questions.set(questionId, question);
+    }
   }
 
   private async initializeGroupChat() {
@@ -1188,6 +1197,12 @@ export class DatabaseStorage implements IStorage {
 
   async getQuestionsByUser(userId: number): Promise<Question[]> {
     return await db.select().from(questions).where(eq(questions.userId, userId));
+  }
+
+  async markQuestionAsAnswered(questionId: number): Promise<void> {
+    await db.update(questions)
+      .set({ isAnswered: true })
+      .where(eq(questions.id, questionId));
   }
 
   // Surveys - simplified implementations

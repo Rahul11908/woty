@@ -269,6 +269,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Mark question as answered
+  app.patch("/api/questions/:id/answer", async (req, res) => {
+    try {
+      const questionId = parseInt(req.params.id);
+      await storage.markQuestionAsAnswered(questionId);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to mark question as answered" });
+    }
+  });
+
   // Survey Management Routes
   
   // Create a survey

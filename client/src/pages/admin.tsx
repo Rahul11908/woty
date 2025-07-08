@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Settings, Users, BarChart3, Shield, Calendar, FileText, Plus, Mail, Eye, Edit, Trash2, PieChart, TrendingUp } from "lucide-react";
+import { Settings, Users, BarChart3, Shield, Calendar, FileText, Plus, Mail, Eye, Edit, Trash2, PieChart, TrendingUp, MessageSquare, CheckCircle, Flag } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ import { z } from "zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { insertSurveySchema, insertSurveyQuestionSchema, type Survey, type SurveyWithQuestions } from "@shared/schema";
+import { insertSurveySchema, insertSurveyQuestionSchema, type Survey, type SurveyWithQuestions, type Question } from "@shared/schema";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
 
@@ -62,6 +62,11 @@ export default function Admin() {
   // Users query for management
   const { data: allUsers = [] } = useQuery({
     queryKey: ["/api/users"],
+  });
+
+  // Panel questions query
+  const { data: panelQuestions = [] } = useQuery<Question[]>({
+    queryKey: ["/api/questions"],
   });
 
   // Survey form
@@ -183,6 +188,27 @@ export default function Admin() {
     },
   });
 
+  // Mark question as answered mutation
+  const markQuestionAnsweredMutation = useMutation({
+    mutationFn: async (questionId: number) => {
+      await apiRequest(`/api/questions/${questionId}/answer`, "PATCH");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/questions"] });
+      toast({
+        title: "Question marked as answered",
+        description: "The question has been flagged as answered.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error updating question",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const onSubmitSurvey = (data: SurveyFormData) => {
     createSurveyMutation.mutate(data);
   };
@@ -224,8 +250,9 @@ export default function Admin() {
 
       <main className="pt-4 px-4">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="questions">Questions</TabsTrigger>
             <TabsTrigger value="surveys">Surveys</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
@@ -279,6 +306,136 @@ export default function Admin() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="questions" className="space-y-6">
+            {/* Questions Management Header */}
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Panel Questions</h2>
+              <Badge variant="outline" className="ml-2">
+                {panelQuestions.length} questions submitted
+              </Badge>
+            </div>
+
+            {/* Question Stats */}
+            <div className="grid grid-cols-2 gap-4">
+              <Card>
+                <CardContent className="pt-6 text-center">
+                  <MessageSquare className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                  <h3 className="text-xl font-semibold">{panelQuestions.filter(q => !q.isAnswered).length}</h3>
+                  <p className="text-sm text-gray-600">Pending Questions</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6 text-center">
+                  <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                  <h3 className="text-xl font-semibold">{panelQuestions.filter(q => q.isAnswered).length}</h3>
+                  <p className="text-sm text-gray-600">Answered Questions</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Questions List */}
+            <div className="space-y-4">
+              {panelQuestions.length === 0 ? (
+                <Card>
+                  <CardContent className="pt-6 text-center py-8">
+                    <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No questions yet</h3>
+                    <p className="text-gray-600">Questions submitted by attendees will appear here</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                panelQuestions.map((question) => (
+                  <Card key={question.id} className="hover:shadow-md transition-shadow">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <Badge variant="outline" className="text-xs">
+                              {question.panelName}
+                            </Badge>
+                            <span className="text-xs text-gray-500">
+                              {new Date(question.createdAt).toLocaleDateString()} at {new Date(question.createdAt).toLocaleTimeString()}
+                            </span>
+                          </div>
+                          <p className="text-gray-900 mb-2">{question.question}</p>
+                          <p className="text-sm text-gray-600">
+                            Asked by User ID: {question.userId}
+                          </p>
+                        </div>
+                        <div className="flex items-center space-x-2 ml-4">
+                          {question.isAnswered ? (
+                            <Badge variant="secondary" className="bg-green-100 text-green-800">
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              Answered
+                            </Badge>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => markQuestionAnsweredMutation.mutate(question.id)}
+                              disabled={markQuestionAnsweredMutation.isPending}
+                            >
+                              <Flag className="w-4 h-4 mr-1" />
+                              Mark as Answered
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
+
+            {/* Questions by Panel */}
+            <div className="mt-8">
+              <h3 className="text-lg font-semibold mb-4">Questions by Panel</h3>
+              <div className="grid grid-cols-1 gap-4">
+                {["Panel 1: Game Planning & Partnerships", "Panel 2: Trailblazing Female Athletes", "Panel 3: Content Creation", "Panel 4: Sports Analytics"].map((panelName) => {
+                  const panelQuestions = panelQuestions.filter(q => q.panelName === panelName);
+                  return (
+                    <Card key={panelName}>
+                      <CardContent className="pt-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="font-semibold">{panelName}</h4>
+                          <Badge variant="outline">
+                            {panelQuestions.length} questions
+                          </Badge>
+                        </div>
+                        {panelQuestions.length === 0 ? (
+                          <p className="text-gray-500 text-sm">No questions for this panel yet</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {panelQuestions.slice(0, 3).map((question) => (
+                              <div key={question.id} className="flex items-start space-x-2 p-2 bg-gray-50 rounded">
+                                <div className="flex-1">
+                                  <p className="text-sm text-gray-900">{question.question}</p>
+                                  <p className="text-xs text-gray-500 mt-1">
+                                    {new Date(question.createdAt).toLocaleDateString()}
+                                  </p>
+                                </div>
+                                {question.isAnswered ? (
+                                  <CheckCircle className="w-4 h-4 text-green-500 mt-1 flex-shrink-0" />
+                                ) : (
+                                  <div className="w-4 h-4 bg-yellow-400 rounded-full mt-1 flex-shrink-0"></div>
+                                )}
+                              </div>
+                            ))}
+                            {panelQuestions.length > 3 && (
+                              <p className="text-xs text-gray-500">
+                                ... and {panelQuestions.length - 3} more questions
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="surveys" className="space-y-6">
