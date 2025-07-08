@@ -1,18 +1,27 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Send, Users, Circle, MessageSquare } from "lucide-react";
+import { Send, Users, Circle, MessageSquare, Edit, Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { apiRequest } from "@/lib/queryClient";
 import type { User, MessageWithSender } from "@shared/schema";
 import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
 
 export default function Network() {
   const [newMessage, setNewMessage] = useState("");
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [editForm, setEditForm] = useState({
+    fullName: "",
+    jobTitle: "",
+    company: "",
+    avatar: ""
+  });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
@@ -43,9 +52,14 @@ export default function Network() {
   const currentUser = getCurrentUser();
   const currentUserId = currentUser?.id || 1;
   
-  // Remove the redundant API call since we already have currentUser from localStorage
-  const userLoading = false;
-  const userError = null;
+  // Query to get fresh user data from the server
+  const { data: freshUserData, isLoading: userLoading } = useQuery<User>({
+    queryKey: ["/api/users", currentUserId],
+    enabled: !!currentUserId,
+  });
+
+  // Use fresh data from server or fallback to localStorage data
+  const displayUser = freshUserData || currentUser;
 
 
 
@@ -79,6 +93,50 @@ export default function Network() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [groupMessages]);
+
+  // Initialize edit form when user data changes
+  useEffect(() => {
+    if (displayUser) {
+      setEditForm({
+        fullName: displayUser.fullName || "",
+        jobTitle: displayUser.jobTitle || "",
+        company: displayUser.company || "",
+        avatar: displayUser.avatar || ""
+      });
+    }
+  }, [displayUser]);
+
+  const updateProfileMutation = useMutation({
+    mutationFn: async (updatedData: typeof editForm) => {
+      const response = await apiRequest(`/api/users/${currentUserId}`, "PATCH", updatedData);
+      return response;
+    },
+    onSuccess: (updatedUser) => {
+      // Update localStorage
+      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      // Refresh queries
+      queryClient.invalidateQueries({ queryKey: ["/api/users", currentUserId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/event-attendees"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/group-chat/messages"] });
+      setIsEditingProfile(false);
+    },
+  });
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = e.target?.result as string;
+        setEditForm(prev => ({ ...prev, avatar: base64 }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUpdateProfile = () => {
+    updateProfileMutation.mutate(editForm);
+  };
 
   const formatMessageTime = (date: string | Date) => {
     return new Intl.DateTimeFormat('en-US', {
@@ -175,7 +233,7 @@ export default function Network() {
             </div>
           </div>
         </div>
-      ) : currentUser ? (
+      ) : displayUser ? (
         <div className="bg-white shadow-sm mx-4 mt-4 rounded-lg overflow-hidden">
           <div className="p-4">
             <div className="flex items-center space-x-4">
@@ -183,36 +241,136 @@ export default function Network() {
               <div className="relative">
                 <Avatar className="w-16 h-16">
                   <AvatarImage 
-                    src={currentUser.avatar} 
-                    alt={currentUser.fullName}
+                    src={displayUser.avatar} 
+                    alt={displayUser.fullName}
                   />
                   <AvatarFallback 
-                    className={`text-white text-lg font-semibold bg-gradient-to-br ${getUserAvatarColor(currentUser.fullName)}`}
+                    className={`text-white text-lg font-semibold bg-gradient-to-br ${getUserAvatarColor(displayUser.fullName)}`}
                   >
-                    {getUserInitials(currentUser.fullName)}
+                    {getUserInitials(displayUser.fullName)}
                   </AvatarFallback>
                 </Avatar>
               </div>
 
               {/* User Info */}
               <div className="flex-1">
-                <h2 className="text-lg font-semibold text-gray-900">{currentUser.fullName || "User"}</h2>
-                {currentUser.jobTitle && (
-                  <p className="text-sm text-gray-600">{currentUser.jobTitle}</p>
+                <h2 className="text-lg font-semibold text-gray-900">{displayUser.fullName || "User"}</h2>
+                {displayUser.jobTitle && (
+                  <p className="text-sm text-gray-600">{displayUser.jobTitle}</p>
                 )}
-                {currentUser.company && (
-                  <p className="text-sm text-gray-500">{currentUser.company}</p>
+                {displayUser.company && (
+                  <p className="text-sm text-gray-500">{displayUser.company}</p>
                 )}
-                {currentUser.email && (
-                  <p className="text-xs text-gray-400 mt-1">{currentUser.email}</p>
+                {displayUser.email && (
+                  <p className="text-xs text-gray-400 mt-1">{displayUser.email}</p>
                 )}
                 <div className="flex items-center mt-2 space-x-2">
                   <Badge 
-                    className={`text-xs ${getUserRoleBadge(currentUser.userRole || "attendee", currentUser.email).color}`}
+                    className={`text-xs ${getUserRoleBadge(displayUser.userRole || "attendee", displayUser.email).color}`}
                   >
-                    {getUserRoleBadge(currentUser.userRole || "attendee", currentUser.email).label}
+                    {getUserRoleBadge(displayUser.userRole || "attendee", displayUser.email).label}
                   </Badge>
                 </div>
+              </div>
+
+              {/* Edit Profile Button */}
+              <div className="flex-shrink-0">
+                <Dialog open={isEditingProfile} onOpenChange={setIsEditingProfile}>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Edit Profile</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      {/* Avatar Upload */}
+                      <div className="grid gap-2">
+                        <Label htmlFor="avatar">Profile Photo</Label>
+                        <div className="flex items-center space-x-4">
+                          <Avatar className="w-16 h-16">
+                            <AvatarImage 
+                              src={editForm.avatar} 
+                              alt={editForm.fullName}
+                            />
+                            <AvatarFallback 
+                              className={`text-white text-lg font-semibold bg-gradient-to-br ${getUserAvatarColor(editForm.fullName)}`}
+                            >
+                              {getUserInitials(editForm.fullName)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleFileUpload}
+                              className="hidden"
+                              id="avatar-upload"
+                            />
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => document.getElementById('avatar-upload')?.click()}
+                            >
+                              <Upload className="w-4 h-4 mr-2" />
+                              Upload Photo
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Full Name */}
+                      <div className="grid gap-2">
+                        <Label htmlFor="fullName">Full Name</Label>
+                        <Input
+                          id="fullName"
+                          value={editForm.fullName}
+                          onChange={(e) => setEditForm(prev => ({...prev, fullName: e.target.value}))}
+                          placeholder="Enter your full name"
+                        />
+                      </div>
+
+                      {/* Job Title */}
+                      <div className="grid gap-2">
+                        <Label htmlFor="jobTitle">Job Title</Label>
+                        <Input
+                          id="jobTitle"
+                          value={editForm.jobTitle}
+                          onChange={(e) => setEditForm(prev => ({...prev, jobTitle: e.target.value}))}
+                          placeholder="Enter your job title"
+                        />
+                      </div>
+
+                      {/* Company */}
+                      <div className="grid gap-2">
+                        <Label htmlFor="company">Company</Label>
+                        <Input
+                          id="company"
+                          value={editForm.company}
+                          onChange={(e) => setEditForm(prev => ({...prev, company: e.target.value}))}
+                          placeholder="Enter your company"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end space-x-2">
+                      <Button 
+                        variant="outline" 
+                        onClick={() => setIsEditingProfile(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        onClick={handleUpdateProfile}
+                        disabled={updateProfileMutation.isPending}
+                      >
+                        {updateProfileMutation.isPending ? "Saving..." : "Save Changes"}
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </div>

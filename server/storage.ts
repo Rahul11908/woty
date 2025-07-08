@@ -46,6 +46,7 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUser(id: number, updates: Partial<User>): Promise<User>;
   updateUserOnlineStatus(id: number, isOnline: boolean): Promise<void>;
   getSuggestedConnections(userId: number, limit?: number): Promise<User[]>;
   getEventAttendees(limit?: number): Promise<User[]>;
@@ -316,6 +317,17 @@ export class MemStorage implements IStorage {
     };
     this.users.set(id, user);
     return user;
+  }
+
+  async updateUser(id: number, updates: Partial<User>): Promise<User> {
+    const user = this.users.get(id);
+    if (!user) {
+      throw new Error(`User with id ${id} not found`);
+    }
+    
+    const updatedUser = { ...user, ...updates };
+    this.users.set(id, updatedUser);
+    return updatedUser;
   }
 
   async updateUserOnlineStatus(id: number, isOnline: boolean): Promise<void> {
@@ -1019,6 +1031,20 @@ export class DatabaseStorage implements IStorage {
 
   async getEventAttendees(limit = 50): Promise<User[]> {
     return await db.select().from(users).limit(limit);
+  }
+
+  async updateUser(id: number, updates: Partial<User>): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set(updates)
+      .where(eq(users.id, id))
+      .returning();
+    
+    if (!user) {
+      throw new Error(`User with id ${id} not found`);
+    }
+    
+    return user;
   }
 
   async deleteUser(id: number): Promise<void> {
