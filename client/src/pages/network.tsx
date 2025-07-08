@@ -27,9 +27,12 @@ export default function Network() {
 
   // Get current user profile
   const currentUserId = localStorage.getItem("currentUserId") ? parseInt(localStorage.getItem("currentUserId")!) : 1;
-  const { data: currentUser } = useQuery<User>({
-    queryKey: ["/api/users", currentUserId],
+  const { data: currentUser, isLoading: userLoading, error: userError } = useQuery<User>({
+    queryKey: [`/api/users/${currentUserId}`],
+    retry: 1,
   });
+
+
 
   const sendMessageMutation = useMutation({
     mutationFn: async (content: string) => {
@@ -140,7 +143,19 @@ export default function Network() {
       </header>
 
       {/* User Profile Display */}
-      {currentUser && (
+      {userLoading ? (
+        <div className="bg-white shadow-sm mx-4 mt-4 rounded-lg overflow-hidden">
+          <div className="p-4">
+            <div className="flex items-center space-x-4">
+              <div className="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+              <div className="flex-1">
+                <div className="h-4 bg-gray-200 rounded mb-2 animate-pulse"></div>
+                <div className="h-3 bg-gray-200 rounded w-2/3 animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : currentUser ? (
         <div className="bg-white shadow-sm mx-4 mt-4 rounded-lg overflow-hidden">
           <div className="p-4">
             <div className="flex items-center space-x-4">
@@ -160,17 +175,19 @@ export default function Network() {
                     {getUserInitials(currentUser.fullName)}
                   </AvatarFallback>
                 </Avatar>
-
               </div>
 
               {/* User Info */}
               <div className="flex-1">
-                <h2 className="text-lg font-semibold text-gray-900">{currentUser.fullName}</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{currentUser.fullName || "User"}</h2>
                 {currentUser.jobTitle && (
                   <p className="text-sm text-gray-600">{currentUser.jobTitle}</p>
                 )}
                 {currentUser.company && (
                   <p className="text-sm text-gray-500">{currentUser.company}</p>
+                )}
+                {currentUser.email && (
+                  <p className="text-xs text-gray-400 mt-1">{currentUser.email}</p>
                 )}
                 <div className="flex items-center mt-2 space-x-2">
                   <Badge 
@@ -178,9 +195,18 @@ export default function Network() {
                   >
                     {getUserRoleBadge(currentUser.userRole || "attendee").label}
                   </Badge>
-
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-white shadow-sm mx-4 mt-4 rounded-lg overflow-hidden">
+          <div className="p-4">
+            <div className="text-center text-gray-500">
+              <p>Unable to load user profile</p>
+              <p className="text-xs mt-1">User ID: {currentUserId}</p>
+              {userError && <p className="text-xs text-red-500 mt-1">Error: {JSON.stringify(userError)}</p>}
             </div>
           </div>
         </div>

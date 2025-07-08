@@ -50,9 +50,9 @@ export default function CreateProfile() {
         description: `Welcome to GLORY Sports Summit, ${user.fullName}!`,
       });
       // Store user session and redirect to main app
+      localStorage.setItem("currentUserId", user.id.toString());
       localStorage.setItem("currentUser", JSON.stringify(user));
-      // Force page reload to ensure app recognizes the new user
-      window.location.href = "/";
+      setLocation("/network");
     },
     onError: (error) => {
       toast({

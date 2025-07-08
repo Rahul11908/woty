@@ -140,6 +140,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get user by ID
+  app.get("/api/users/:id", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user by ID:", error);
+      res.status(500).json({ error: "Failed to fetch user" });
+    }
+  });
+
   // Get event attendees
   app.get("/api/event-attendees", async (req, res) => {
     try {
