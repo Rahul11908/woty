@@ -302,36 +302,42 @@ export default function Network() {
                   <div className="text-gray-500">Loading attendees...</div>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {eventAttendees.map((attendee) => (
-                    <div key={attendee.id} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
-                      <div className="flex items-start space-x-3">
-                        <div className="relative">
-                          <Avatar className="w-12 h-12">
-                            <AvatarImage 
-                              src={getUserPhoto(attendee.fullName)} 
-                              alt={attendee.fullName}
-                            />
-                            <AvatarFallback className={`bg-gradient-to-br ${getUserAvatarColor(attendee.fullName)} text-white font-semibold`}>
-                              {getUserInitials(attendee.fullName)}
-                            </AvatarFallback>
-                          </Avatar>
-
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-gray-900 truncate">{attendee.fullName}</h4>
-                          <p className="text-sm text-gray-600 mb-1">{attendee.jobTitle}</p>
-                          <div className="flex items-center space-x-2">
-                            <Badge 
-                              className={`text-xs ${getUserRoleBadge(attendee.userRole || "attendee").color}`}
-                            >
-                              {getUserRoleBadge(attendee.userRole || "attendee").label}
-                            </Badge>
+                <div className="h-96 overflow-y-auto pr-2">
+                  <div className="space-y-3">
+                    {eventAttendees.map((attendee) => (
+                      <div key={attendee.id} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow w-full">
+                        <div className="flex items-start space-x-4">
+                          <div className="relative flex-shrink-0">
+                            <Avatar className="w-16 h-16">
+                              <AvatarImage 
+                                src={getUserPhoto(attendee.fullName)} 
+                                alt={attendee.fullName}
+                              />
+                              <AvatarFallback className={`bg-gradient-to-br ${getUserAvatarColor(attendee.fullName)} text-white font-semibold text-lg`}>
+                                {getUserInitials(attendee.fullName)}
+                              </AvatarFallback>
+                            </Avatar>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <h4 className="font-semibold text-gray-900 text-lg mb-1">{attendee.fullName}</h4>
+                                <p className="text-sm text-gray-600 mb-2">{attendee.jobTitle}</p>
+                                <p className="text-sm text-gray-500 mb-3">{attendee.companyName}</p>
+                                <div className="flex items-center space-x-2">
+                                  <Badge 
+                                    className={`text-xs ${getUserRoleBadge(attendee.userRole || "attendee").color}`}
+                                  >
+                                    {getUserRoleBadge(attendee.userRole || "attendee").label}
+                                  </Badge>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               )}
             </CardContent>
