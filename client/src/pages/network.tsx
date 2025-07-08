@@ -22,8 +22,39 @@ export default function Network() {
     company: "",
     avatar: ""
   });
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<number>(1);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
+
+  // Initialize current user from localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem("currentUser");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        setCurrentUser(user);
+        setCurrentUserId(user?.id || 1);
+      } catch (error) {
+        console.error("Error parsing stored user:", error);
+        localStorage.removeItem("currentUser");
+        localStorage.removeItem("currentUserId");
+        setCurrentUserId(1);
+      }
+    }
+
+    // Listen for user updates
+    const handleUserUpdated = (event: CustomEvent) => {
+      const updatedUser = event.detail;
+      setCurrentUser(updatedUser);
+      setCurrentUserId(updatedUser?.id || 1);
+    };
+
+    window.addEventListener('userUpdated', handleUserUpdated as EventListener);
+    return () => {
+      window.removeEventListener('userUpdated', handleUserUpdated as EventListener);
+    };
+  }, []);
 
   const { data: groupMessages = [], isLoading: messagesLoading } = useQuery<MessageWithSender[]>({
     queryKey: ["/api/group-chat/messages"],
@@ -34,24 +65,6 @@ export default function Network() {
     queryKey: ["/api/event-attendees"],
   });
 
-  // Get current user from localStorage (same as App.tsx pattern)
-  const getCurrentUser = () => {
-    const storedUser = localStorage.getItem("currentUser");
-    if (storedUser) {
-      try {
-        return JSON.parse(storedUser);
-      } catch (error) {
-        console.error("Error parsing stored user:", error);
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("currentUserId");
-      }
-    }
-    return null;
-  };
-
-  const currentUser = getCurrentUser();
-  const currentUserId = currentUser?.id || 1;
-  
   // Query to get fresh user data from the server
   const { data: freshUserData, isLoading: userLoading } = useQuery<User>({
     queryKey: [`/api/users/${currentUserId}`],
