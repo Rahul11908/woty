@@ -39,6 +39,18 @@ export default function Login() {
           >
             Enter Event
           </Button>
+          
+          <div className="text-center pt-4 border-t border-gray-200">
+            <p className="text-sm text-gray-600 mb-2">
+              Already registered?
+            </p>
+            <button
+              onClick={handleEnterEvent}
+              className="text-sm text-blue-600 hover:text-blue-700 underline font-medium"
+            >
+              Confirm email and enter here
+            </button>
+          </div>
         </CardContent>
       </Card>
     </div>
