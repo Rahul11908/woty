@@ -24,6 +24,11 @@ export default function Network() {
     queryKey: ["/api/event-attendees"],
   });
 
+  // Get current user profile (hardcoded to user ID 1 for now)
+  const { data: currentUser } = useQuery<User>({
+    queryKey: ["/api/users/1"],
+  });
+
   const sendMessageMutation = useMutation({
     mutationFn: async (content: string) => {
       await apiRequest("POST", "/api/group-chat/messages", {
@@ -115,6 +120,55 @@ export default function Network() {
           </Badge>
         </div>
       </header>
+
+      {/* User Profile Display */}
+      {currentUser && (
+        <div className="bg-white shadow-sm mx-4 mt-4 rounded-lg overflow-hidden">
+          <div className="p-4">
+            <div className="flex items-center space-x-4">
+              {/* User Avatar */}
+              <div className="relative">
+                <Avatar className="w-16 h-16">
+                  <AvatarImage 
+                    src={currentUser.avatar || getUserPhoto(currentUser.fullName)} 
+                    alt={currentUser.fullName}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                  <AvatarFallback 
+                    className={`text-white text-lg font-semibold bg-gradient-to-br ${getUserAvatarColor(currentUser.fullName)}`}
+                  >
+                    {getUserInitials(currentUser.fullName)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${
+                  currentUser.isOnline ? 'bg-green-500' : 'bg-gray-400'
+                }`} />
+              </div>
+
+              {/* User Info */}
+              <div className="flex-1">
+                <h2 className="text-lg font-semibold text-gray-900">{currentUser.fullName}</h2>
+                {currentUser.jobTitle && (
+                  <p className="text-sm text-gray-600">{currentUser.jobTitle}</p>
+                )}
+                {currentUser.company && (
+                  <p className="text-sm text-gray-500">{currentUser.company}</p>
+                )}
+                <div className="flex items-center mt-1">
+                  <Circle className={`w-2 h-2 mr-2 ${
+                    currentUser.isOnline ? 'text-green-500 fill-current' : 'text-gray-400 fill-current'
+                  }`} />
+                  <span className="text-xs text-gray-500">
+                    {currentUser.isOnline ? 'Online' : 'Offline'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <main className="flex-1 flex flex-col">
         {/* Group Chat Section */}
