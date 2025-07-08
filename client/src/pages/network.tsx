@@ -160,9 +160,7 @@ export default function Network() {
                     {getUserInitials(currentUser.fullName)}
                   </AvatarFallback>
                 </Avatar>
-                <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${
-                  currentUser.isOnline ? 'bg-green-500' : 'bg-gray-400'
-                }`} />
+
               </div>
 
               {/* User Info */}
@@ -180,14 +178,7 @@ export default function Network() {
                   >
                     {getUserRoleBadge(currentUser.userRole || "attendee").label}
                   </Badge>
-                  <div className="flex items-center">
-                    <Circle className={`w-2 h-2 mr-1 ${
-                      currentUser.isOnline ? 'text-green-500 fill-current' : 'text-gray-400 fill-current'
-                    }`} />
-                    <span className="text-xs text-gray-500">
-                      {currentUser.isOnline ? 'Online' : 'Offline'}
-                    </span>
-                  </div>
+
                 </div>
               </div>
             </div>
@@ -299,9 +290,7 @@ export default function Network() {
                               {getUserInitials(attendee.fullName)}
                             </AvatarFallback>
                           </Avatar>
-                          {attendee.isOnline && (
-                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
-                          )}
+
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className="font-semibold text-gray-900 truncate">{attendee.fullName}</h4>
@@ -311,9 +300,6 @@ export default function Network() {
                               className={`text-xs ${getUserRoleBadge(attendee.userRole || "attendee").color}`}
                             >
                               {getUserRoleBadge(attendee.userRole || "attendee").label}
-                            </Badge>
-                            <Badge variant={attendee.isOnline ? "default" : "secondary"} className="text-xs">
-                              {attendee.isOnline ? "Online" : "Offline"}
                             </Badge>
                           </div>
                         </div>
