@@ -1053,15 +1053,55 @@ export class DatabaseStorage implements IStorage {
 
   // Group Chat
   async getGroupChatMessages(limit = 100): Promise<MessageWithSender[]> {
-    // For now, return empty array - would need proper implementation
-    return [];
+    // Create a special group chat conversation if it doesn't exist
+    const GROUP_CHAT_ID = 999; // Special ID for group chat
+    
+    try {
+      const result = await db.select({
+        id: messages.id,
+        content: messages.content,
+        createdAt: messages.createdAt,
+        conversationId: messages.conversationId,
+        senderId: messages.senderId,
+        sender: {
+          id: users.id,
+          fullName: users.fullName,
+          email: users.email,
+          company: users.company,
+          jobTitle: users.jobTitle,
+          avatar: users.avatar,
+          userRole: users.userRole,
+          isOnline: users.isOnline,
+          hasAcceptedTerms: users.hasAcceptedTerms,
+          createdAt: users.createdAt,
+        }
+      })
+      .from(messages)
+      .innerJoin(users, eq(messages.senderId, users.id))
+      .where(eq(messages.conversationId, GROUP_CHAT_ID))
+      .orderBy(messages.createdAt)
+      .limit(limit);
+
+      return result.map(row => ({
+        id: row.id,
+        content: row.content,
+        createdAt: row.createdAt,
+        conversationId: row.conversationId,
+        senderId: row.senderId,
+        sender: row.sender
+      }));
+    } catch (error) {
+      console.error("Error fetching group chat messages:", error);
+      return [];
+    }
   }
 
   async createGroupChatMessage(messageData: Omit<InsertMessage, 'conversationId'>): Promise<Message> {
-    // Simplified implementation
+    const GROUP_CHAT_ID = 999; // Special ID for group chat
+    
     const [message] = await db.insert(messages).values({
       ...messageData,
-      conversationId: 1 // Group chat conversation ID
+      conversationId: GROUP_CHAT_ID
     }).returning();
     return message;
   }

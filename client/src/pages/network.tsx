@@ -26,7 +26,33 @@ export default function Network() {
   });
 
   // Get current user profile
-  const currentUserId = localStorage.getItem("currentUserId") ? parseInt(localStorage.getItem("currentUserId")!) : 1;
+  const getCurrentUserId = () => {
+    const storedUser = localStorage.getItem("currentUser");
+    
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        console.log("Found stored user:", user);
+        return user.id;
+      } catch (error) {
+        console.error("Error parsing stored user:", error);
+        // Clear corrupted data
+        localStorage.removeItem("currentUser");
+        localStorage.removeItem("currentUserId");
+      }
+    }
+    
+    const storedUserId = localStorage.getItem("currentUserId");
+    if (storedUserId) {
+      console.log("Found stored user ID:", storedUserId);
+      return parseInt(storedUserId);
+    }
+    
+    console.log("No stored user found, using default ID 1");
+    return 1; // Default fallback
+  };
+
+  const currentUserId = getCurrentUserId();
   const { data: currentUser, isLoading: userLoading, error: userError } = useQuery<User>({
     queryKey: [`/api/users/${currentUserId}`],
     retry: 1,
