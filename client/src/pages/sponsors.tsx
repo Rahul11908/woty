@@ -1,6 +1,7 @@
 import { Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
+import geAppliancesLogo from "@assets/GEAppliances_PrimaryLogo_1752003391719.png";
 
 interface Sponsor {
   id: string;
@@ -19,12 +20,7 @@ const sponsors: Sponsor[] = [
     website: "https://www.geappliances.com",
     brandColor: "bg-blue-600",
     textColor: "text-white",
-    logoSvg: `<svg viewBox="0 0 120 48" className="w-full h-full">
-      <circle cx="24" cy="24" r="18" fill="white" stroke="#0066cc" stroke-width="2"/>
-      <text x="24" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#0066cc">GE</text>
-      <text x="70" y="18" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">APPLIANCES</text>
-      <text x="70" y="32" font-family="Arial, sans-serif" font-size="8" fill="white">A Haier Company</text>
-    </svg>`,
+    logoSvg: `<img src="${geAppliancesLogo}" alt="GE Appliances" className="w-full h-full object-contain" />`,
     isMainSponsor: true
   },
   {
@@ -169,9 +165,8 @@ export default function Sponsors() {
               className="cursor-pointer hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] w-full h-32"
               onClick={() => handleSponsorClick(sponsors[0].website)}
             >
-              <CardContent className={`${sponsors[0].brandColor} ${sponsors[0].textColor} h-full flex items-center justify-between rounded-lg px-6 py-4`}>
-                <div className="w-32 h-16" dangerouslySetInnerHTML={{ __html: sponsors[0].logoSvg }} />
-                <h4 className="text-xl font-bold text-center flex-1 ml-6">{sponsors[0].name}</h4>
+              <CardContent className={`${sponsors[0].brandColor} ${sponsors[0].textColor} h-full flex items-center justify-center rounded-lg px-6 py-4`}>
+                <div className="w-64 h-20" dangerouslySetInnerHTML={{ __html: sponsors[0].logoSvg }} />
               </CardContent>
             </Card>
           </div>
