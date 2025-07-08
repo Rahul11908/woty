@@ -31,6 +31,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Login by email
+  app.post("/api/users/by-email", async (req, res) => {
+    try {
+      const { email } = req.body;
+      const user = await storage.getUserByEmail(email);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json(user);
+    } catch (error) {
+      console.error("Email login error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // Get conversations for current user
   app.get("/api/conversations", async (req, res) => {
     try {

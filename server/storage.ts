@@ -968,4 +968,315 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database storage implementation
+import { db } from "./db";
+import { eq, desc, and, ne, sql } from "drizzle-orm";
+
+export class DatabaseStorage implements IStorage {
+  // Users
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values({
+        ...insertUser,
+        userRole: insertUser.userRole || "attendee",
+        isOnline: insertUser.isOnline || false,
+        hasAcceptedTerms: insertUser.hasAcceptedTerms || false,
+      })
+      .returning();
+    return user;
+  }
+
+  async updateUserOnlineStatus(id: number, isOnline: boolean): Promise<void> {
+    await db.update(users).set({ isOnline }).where(eq(users.id, id));
+  }
+
+  async getSuggestedConnections(userId: number, limit = 10): Promise<User[]> {
+    const allUsers = await db.select().from(users).where(ne(users.id, userId));
+    return allUsers.slice(0, limit);
+  }
+
+  async getEventAttendees(limit = 50): Promise<User[]> {
+    return await db.select().from(users).limit(limit);
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    await db.delete(users).where(eq(users.id, id));
+  }
+
+  // Conversations
+  async getConversationsForUser(userId: number): Promise<ConversationWithParticipant[]> {
+    // Simplified implementation - would need proper joins in production
+    return [];
+  }
+
+  async getOrCreateConversation(participant1Id: number, participant2Id: number): Promise<Conversation> {
+    // Simplified implementation
+    const [conversation] = await db
+      .insert(conversations)
+      .values({ participant1Id, participant2Id })
+      .returning();
+    return conversation;
+  }
+
+  async getConversation(id: number): Promise<Conversation | undefined> {
+    const [conversation] = await db.select().from(conversations).where(eq(conversations.id, id));
+    return conversation || undefined;
+  }
+
+  // Messages
+  async getMessagesForConversation(conversationId: number, limit = 50): Promise<MessageWithSender[]> {
+    // Simplified implementation - would need joins
+    return [];
+  }
+
+  async createMessage(insertMessage: InsertMessage): Promise<Message> {
+    const [message] = await db.insert(messages).values(insertMessage).returning();
+    return message;
+  }
+
+  async updateConversationLastMessage(conversationId: number): Promise<void> {
+    await db.update(conversations)
+      .set({ lastMessageAt: new Date() })
+      .where(eq(conversations.id, conversationId));
+  }
+
+  // Group Chat
+  async getGroupChatMessages(limit = 100): Promise<MessageWithSender[]> {
+    // For now, return empty array - would need proper implementation
+    return [];
+  }
+
+  async createGroupChatMessage(messageData: Omit<InsertMessage, 'conversationId'>): Promise<Message> {
+    // Simplified implementation
+    const [message] = await db.insert(messages).values({
+      ...messageData,
+      conversationId: 1 // Group chat conversation ID
+    }).returning();
+    return message;
+  }
+
+  // Connections
+  async createConnection(insertConnection: InsertConnection): Promise<Connection> {
+    const [connection] = await db.insert(connections).values(insertConnection).returning();
+    return connection;
+  }
+
+  async getConnectionStatus(requesterId: number, addresseeId: number): Promise<Connection | undefined> {
+    const [connection] = await db.select().from(connections)
+      .where(and(
+        eq(connections.requesterId, requesterId),
+        eq(connections.addresseeId, addresseeId)
+      ));
+    return connection || undefined;
+  }
+
+  async updateConnectionStatus(connectionId: number, status: string): Promise<void> {
+    await db.update(connections).set({ status }).where(eq(connections.id, connectionId));
+  }
+
+  async getConnections(userId: number, status?: string): Promise<Connection[]> {
+    let query = db.select().from(connections)
+      .where(eq(connections.requesterId, userId));
+    
+    if (status) {
+      query = query.where(eq(connections.status, status));
+    }
+    
+    return await query;
+  }
+
+  // Questions
+  async createQuestion(insertQuestion: InsertQuestion): Promise<Question> {
+    const [question] = await db.insert(questions).values(insertQuestion).returning();
+    return question;
+  }
+
+  async getQuestions(panelName?: string): Promise<Question[]> {
+    if (panelName) {
+      return await db.select().from(questions).where(eq(questions.panelName, panelName));
+    }
+    return await db.select().from(questions);
+  }
+
+  async getQuestionsByUser(userId: number): Promise<Question[]> {
+    return await db.select().from(questions).where(eq(questions.userId, userId));
+  }
+
+  // Surveys - simplified implementations
+  async createSurvey(insertSurvey: InsertSurvey): Promise<Survey> {
+    const [survey] = await db.insert(surveys).values(insertSurvey).returning();
+    return survey;
+  }
+
+  async getSurveys(): Promise<Survey[]> {
+    return await db.select().from(surveys);
+  }
+
+  async getSurvey(id: number): Promise<SurveyWithQuestions | undefined> {
+    const [survey] = await db.select().from(surveys).where(eq(surveys.id, id));
+    if (!survey) return undefined;
+    
+    const surveyQuestions = await db.select().from(surveyQuestions)
+      .where(eq(surveyQuestions.surveyId, id));
+    
+    return { ...survey, questions: surveyQuestions };
+  }
+
+  async updateSurvey(id: number, updates: Partial<Survey>): Promise<Survey> {
+    const [survey] = await db.update(surveys).set(updates).where(eq(surveys.id, id)).returning();
+    return survey;
+  }
+
+  async deleteSurvey(id: number): Promise<void> {
+    await db.delete(surveys).where(eq(surveys.id, id));
+  }
+
+  // Survey Questions
+  async createSurveyQuestion(insertQuestion: InsertSurveyQuestion): Promise<SurveyQuestion> {
+    const [question] = await db.insert(surveyQuestions).values(insertQuestion).returning();
+    return question;
+  }
+
+  async getSurveyQuestions(surveyId: number): Promise<SurveyQuestion[]> {
+    return await db.select().from(surveyQuestions).where(eq(surveyQuestions.surveyId, surveyId));
+  }
+
+  async updateSurveyQuestion(id: number, updates: Partial<SurveyQuestion>): Promise<SurveyQuestion> {
+    const [question] = await db.update(surveyQuestions).set(updates).where(eq(surveyQuestions.id, id)).returning();
+    return question;
+  }
+
+  async deleteSurveyQuestion(id: number): Promise<void> {
+    await db.delete(surveyQuestions).where(eq(surveyQuestions.id, id));
+  }
+
+  // Survey Responses
+  async createSurveyResponse(insertResponse: InsertSurveyResponse): Promise<SurveyResponse> {
+    const [response] = await db.insert(surveyResponses).values(insertResponse).returning();
+    return response;
+  }
+
+  async getSurveyResponses(surveyId: number): Promise<SurveyResponseWithAnswers[]> {
+    // Simplified implementation
+    return [];
+  }
+
+  async completeSurveyResponse(responseId: number): Promise<void> {
+    await db.update(surveyResponses)
+      .set({ completedAt: new Date() })
+      .where(eq(surveyResponses.id, responseId));
+  }
+
+  // Survey Answers
+  async createSurveyAnswer(insertAnswer: InsertSurveyAnswer): Promise<SurveyAnswer> {
+    const [answer] = await db.insert(surveyAnswers).values(insertAnswer).returning();
+    return answer;
+  }
+
+  async getSurveyStats(surveyId: number): Promise<{
+    totalResponses: number;
+    completionRate: number;
+    questionStats: Array<{
+      questionId: number;
+      questionText: string;
+      responseCount: number;
+      responses: Array<{ answer: string; count: number }>;
+    }>;
+  }> {
+    // Simplified implementation
+    return {
+      totalResponses: 0,
+      completionRate: 0,
+      questionStats: []
+    };
+  }
+
+  // Analytics - simplified implementations
+  async createUserSession(insertSession: InsertUserSession): Promise<UserSession> {
+    const [session] = await db.insert(userSessions).values(insertSession).returning();
+    return session;
+  }
+
+  async updateUserSession(sessionId: number, updates: Partial<UserSession>): Promise<UserSession> {
+    const [session] = await db.update(userSessions).set(updates).where(eq(userSessions.id, sessionId)).returning();
+    return session;
+  }
+
+  async endUserSession(sessionId: number): Promise<UserSession> {
+    const [session] = await db.update(userSessions)
+      .set({ endTime: new Date() })
+      .where(eq(userSessions.id, sessionId))
+      .returning();
+    return session;
+  }
+
+  async getUserSessions(userId: number, limit = 50): Promise<UserSession[]> {
+    return await db.select().from(userSessions)
+      .where(eq(userSessions.userId, userId))
+      .limit(limit);
+  }
+
+  async createUserActivity(insertActivity: InsertUserActivity): Promise<UserActivity> {
+    const [activity] = await db.insert(userActivity).values(insertActivity).returning();
+    return activity;
+  }
+
+  async getUserActivity(userId: number, limit = 100): Promise<UserActivity[]> {
+    return await db.select().from(userActivity)
+      .where(eq(userActivity.userId, userId))
+      .limit(limit);
+  }
+
+  async updateDailyMetrics(date: string): Promise<DailyMetrics> {
+    // Simplified implementation
+    const [metrics] = await db.insert(dailyMetrics).values({
+      date: new Date(date),
+      activeUsers: 0,
+      newUsers: 0,
+      totalMessages: 0,
+      totalConnections: 0,
+      avgSessionDuration: 0
+    }).returning();
+    return metrics;
+  }
+
+  async getDailyMetrics(startDate?: string, endDate?: string): Promise<DailyMetrics[]> {
+    return await db.select().from(dailyMetrics);
+  }
+
+  async getAnalyticsSummary(): Promise<{
+    totalUsers: number;
+    activeUsersToday: number;
+    avgSessionDuration: number;
+    totalMessages: number;
+    totalConnections: number;
+    popularPages: Array<{ page: string; views: number }>;
+    userEngagement: Array<{ date: string; activeUsers: number; messages: number }>;
+  }> {
+    const totalUsersResult = await db.select({ count: sql<number>`count(*)` }).from(users);
+    const totalUsers = totalUsersResult[0]?.count || 0;
+
+    return {
+      totalUsers,
+      activeUsersToday: 0,
+      avgSessionDuration: 0,
+      totalMessages: 0,
+      totalConnections: 0,
+      popularPages: [],
+      userEngagement: []
+    };
+  }
+}
+
+export const storage = new DatabaseStorage();

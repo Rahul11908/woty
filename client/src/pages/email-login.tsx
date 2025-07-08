@@ -40,8 +40,9 @@ export default function EmailLogin() {
         title: "Welcome back!",
         description: `Welcome to GLORY Sports Summit, ${user.fullName}!`,
       });
-      // Store the user ID for the session
+      // Store the user data for the session
       localStorage.setItem("currentUserId", user.id.toString());
+      localStorage.setItem("currentUser", JSON.stringify(user));
       setLocation("/network");
     },
     onError: (error) => {
