@@ -8,7 +8,7 @@ import asahiLogo from "@assets/ASD_LOGO_NEGATIVE_RGB_1752004822019.png";
 import rootsLogo from "@assets/Asset 1_1752004822019.png";
 import hennessyLogo from "@assets/image-4_1752004469108.png";
 import masByMessiLogo from "@assets/mas-plus-logo.webp";
-import radoLogo from "@assets/image_1752004469108.png";
+import radoLogo from "@assets/rado-new-logo.png";
 import geAppliancesLogo from "@assets/GEAppliances_PrimaryLogo_1752003391719.png";
 
 interface Sponsor {
@@ -75,8 +75,8 @@ const sponsors: Sponsor[] = [
     id: "hennessy",
     name: "Hennessy",
     website: "https://www.hennessy.com",
-    brandColor: "bg-amber-700",
-    textColor: "text-white",
+    brandColor: "bg-white",
+    textColor: "text-black",
     logoSvg: `<img src="${hennessyLogo}" alt="Hennessy" className="w-full h-full object-contain" />`
   },
   {
@@ -86,14 +86,6 @@ const sponsors: Sponsor[] = [
     brandColor: "bg-gray-800",
     textColor: "text-white",
     logoSvg: `<img src="${radoLogo}" alt="Rado Switzerland" className="w-full h-full object-contain" />`
-  },
-  {
-    id: "sutton",
-    name: "Sutton Place Hotel Toronto",
-    website: "https://www.suttonplace.com",
-    brandColor: "bg-indigo-800",
-    textColor: "text-white",
-    logoSvg: `<img src="${suttonPlaceHotelLogo}" alt="The Sutton Place Hotel Toronto" className="w-full h-full object-contain" />`
   }
 ];
 
@@ -150,7 +142,7 @@ export default function Sponsors() {
                   onClick={() => handleSponsorClick(sponsor.website)}
                 >
                   <CardContent className={`${sponsor.brandColor} ${sponsor.textColor} h-full flex items-center justify-center rounded-lg px-6 py-4`}>
-                    <div className={`${sponsor.id === 'rabanne' ? 'w-40 h-14' : sponsor.id === 'asahi' ? 'w-36 h-14' : 'w-32 h-12'}`} dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
+                    <div className={`${sponsor.id === 'rabanne' ? 'w-40 h-14' : sponsor.id === 'asahi' ? 'w-44 h-16' : 'w-32 h-12'}`} dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
                   </CardContent>
                 </Card>
               ))}
