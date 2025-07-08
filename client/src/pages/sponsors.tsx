@@ -6,7 +6,7 @@ import rabanneLogo from "@assets/image-7_1752004469108.png";
 import suttonPlaceHotelLogo from "@assets/SPH-Toronto_logo_Toronto_white_stacked_1752004469108.png";
 import asahiLogo from "@assets/ASD_LOGO_NEGATIVE_RGB_1752004822019.png";
 import rootsLogo from "@assets/Asset 1_1752004822019.png";
-import hennessyLogo from "@assets/hennessy-new-logo.png";
+import hennessyLogo from "@assets/hennessy-final-logo.png";
 import masByMessiLogo from "@assets/mas-plus-logo.webp";
 import radoLogo from "@assets/rado-new-logo.png";
 import geAppliancesLogo from "@assets/GEAppliances_PrimaryLogo_1752003391719.png";
