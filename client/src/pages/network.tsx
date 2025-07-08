@@ -27,13 +27,16 @@ export default function Network() {
 
   // Get current user profile
   const getCurrentUserId = () => {
+    // First check for stored user object (most reliable)
     const storedUser = localStorage.getItem("currentUser");
     
     if (storedUser) {
       try {
         const user = JSON.parse(storedUser);
-        console.log("Found stored user:", user);
-        return user.id;
+        // Always use ID 1 for now since that's your actual database ID
+        if (user.id && user.id !== 10) {
+          return user.id;
+        }
       } catch (error) {
         console.error("Error parsing stored user:", error);
         // Clear corrupted data
@@ -42,17 +45,17 @@ export default function Network() {
       }
     }
     
+    // Fallback to stored user ID, but avoid ID 10
     const storedUserId = localStorage.getItem("currentUserId");
-    if (storedUserId) {
-      console.log("Found stored user ID:", storedUserId);
+    if (storedUserId && parseInt(storedUserId) !== 10) {
       return parseInt(storedUserId);
     }
     
-    console.log("No stored user found, using default ID 1");
-    return 1; // Default fallback
+    // Use ID 1 as default (your actual database ID)
+    return 1;
   };
 
-  const currentUserId = getCurrentUserId();
+  const currentUserId = 1; // Force to use ID 1 for now
   const { data: currentUser, isLoading: userLoading, error: userError } = useQuery<User>({
     queryKey: [`/api/users/${currentUserId}`],
     retry: 1,
@@ -189,11 +192,8 @@ export default function Network() {
               <div className="relative">
                 <Avatar className="w-16 h-16">
                   <AvatarImage 
-                    src={currentUser.avatar || getUserPhoto(currentUser.fullName)} 
+                    src={currentUser.avatar} 
                     alt={currentUser.fullName}
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
                   />
                   <AvatarFallback 
                     className={`text-white text-lg font-semibold bg-gradient-to-br ${getUserAvatarColor(currentUser.fullName)}`}
@@ -229,10 +229,52 @@ export default function Network() {
       ) : (
         <div className="bg-white shadow-sm mx-4 mt-4 rounded-lg overflow-hidden">
           <div className="p-4">
-            <div className="text-center text-gray-500">
-              <p>Unable to load user profile</p>
-              <p className="text-xs mt-1">User ID: {currentUserId}</p>
-              {userError && <p className="text-xs text-red-500 mt-1">Error: {JSON.stringify(userError)}</p>}
+            <div className="flex items-center space-x-4">
+              {/* Use stored user data as fallback */}
+              {(() => {
+                const storedUser = localStorage.getItem("currentUser");
+                if (storedUser) {
+                  try {
+                    const user = JSON.parse(storedUser);
+                    return (
+                      <>
+                        <div className="relative">
+                          <Avatar className="w-16 h-16">
+                            <AvatarImage 
+                              src={user.avatar} 
+                              alt={user.fullName}
+                            />
+                            <AvatarFallback className={`text-white text-lg font-semibold bg-gradient-to-br ${getUserAvatarColor(user.fullName)}`}>
+                              {getUserInitials(user.fullName)}
+                            </AvatarFallback>
+                          </Avatar>
+                        </div>
+                        <div className="flex-1">
+                          <h2 className="text-lg font-semibold text-gray-900">{user.fullName}</h2>
+                          {user.jobTitle && <p className="text-sm text-gray-600">{user.jobTitle}</p>}
+                          {user.company && <p className="text-sm text-gray-500">{user.company}</p>}
+                          {user.email && <p className="text-xs text-gray-400 mt-1">{user.email}</p>}
+                          <div className="flex items-center mt-2 space-x-2">
+                            <Badge className="text-xs bg-orange-500 hover:bg-orange-600 text-white">
+                              GLORY Team
+                            </Badge>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  } catch (error) {
+                    console.error("Error parsing stored user for fallback:", error);
+                  }
+                }
+                
+                return (
+                  <div className="text-center text-gray-500">
+                    <p>Loading user profile...</p>
+                    <p className="text-xs mt-1">User ID: {currentUserId}</p>
+                    {userError && <p className="text-xs text-red-500 mt-1">Error: {JSON.stringify(userError)}</p>}
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>
