@@ -165,18 +165,15 @@ export default function Sponsors() {
           {/* Main Sponsor - GE (1.5x larger) */}
           <div className="mb-8">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Title Sponsor</h3>
-            <div className="flex justify-center">
-              <Card 
-                className="cursor-pointer hover:shadow-lg transition-all duration-200 transform hover:scale-105"
-                style={{ width: '240px', height: '120px' }}
-                onClick={() => handleSponsorClick(sponsors[0].website)}
-              >
-                <CardContent className={`${sponsors[0].brandColor} ${sponsors[0].textColor} h-full flex flex-col items-center justify-center rounded-lg p-4`}>
-                  <div className="w-32 h-16 mb-2" dangerouslySetInnerHTML={{ __html: sponsors[0].logoSvg }} />
-                  <h4 className="text-lg font-bold text-center">{sponsors[0].name}</h4>
-                </CardContent>
-              </Card>
-            </div>
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] w-full h-32"
+              onClick={() => handleSponsorClick(sponsors[0].website)}
+            >
+              <CardContent className={`${sponsors[0].brandColor} ${sponsors[0].textColor} h-full flex items-center justify-between rounded-lg px-6 py-4`}>
+                <div className="w-32 h-16" dangerouslySetInnerHTML={{ __html: sponsors[0].logoSvg }} />
+                <h4 className="text-xl font-bold text-center flex-1 ml-6">{sponsors[0].name}</h4>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Other Sponsors */}
