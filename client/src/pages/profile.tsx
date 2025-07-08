@@ -274,11 +274,10 @@ export default function Profile() {
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">
                   GLORY Sports Summit 2025
                 </h2>
-                <p className="text-gray-600 mb-3">
+                <p className="text-gray-600 mb-4">
                   July 15th • Sutton Place Hotel, Toronto
                 </p>
-                <Badge variant="secondary" className="mb-4">4 Panel Discussions</Badge>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-700 font-bold italic">
                   Exploring the intersection of sports and culture through a distinctly Canadian lens
                 </p>
               </div>
