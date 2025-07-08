@@ -109,15 +109,15 @@ export default function Network() {
             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
               <MessageSquare className="w-4 h-4 text-white" />
             </div>
-            <div>
-              <h1 className="text-lg font-semibold text-gray-900">Event Chat</h1>
-              <p className="text-xs text-gray-500">GLORY Sports Summit 2025</p>
-            </div>
+            <h1 className="text-xl font-semibold text-gray-900">Event Chat</h1>
           </div>
-          <Badge variant="secondary" className="flex items-center space-x-1">
-            <Circle className="w-2 h-2 text-green-500 fill-current" />
-            <span className="text-xs">{eventAttendees.length} attendees</span>
-          </Badge>
+          <div className="w-16 h-8">
+            <img 
+              src="/attached_assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png" 
+              alt="GLORY Logo" 
+              className="w-full h-full object-contain"
+            />
+          </div>
         </div>
       </header>
 

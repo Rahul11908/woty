@@ -11,10 +11,14 @@ export default function GE() {
             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
               <Lightbulb className="w-4 h-4 text-white" />
             </div>
-            <div>
-              <h1 className="text-lg font-semibold text-gray-900">General Electric</h1>
-              <p className="text-xs text-gray-500">Innovation Partner</p>
-            </div>
+            <h1 className="text-xl font-semibold text-gray-900">General Electric</h1>
+          </div>
+          <div className="w-16 h-8">
+            <img 
+              src="/attached_assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png" 
+              alt="GLORY Logo" 
+              className="w-full h-full object-contain"
+            />
           </div>
         </div>
       </header>
