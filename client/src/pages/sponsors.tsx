@@ -149,7 +149,7 @@ export default function Sponsors() {
                       sponsor.id === 'hennessy' ? 'w-36 h-12' : 
                       sponsor.id === 'rado' ? 'w-32 h-12' : 
                       'w-32 h-12'
-                    }`} style={sponsor.id === 'rabanne' ? { margin: '0 auto' } : {}} dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
+                    }`} style={sponsor.id === 'rabanne' ? { margin: '0 auto', marginLeft: '1rem' } : {}} dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
                   </CardContent>
                 </Card>
               ))}
