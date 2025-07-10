@@ -210,9 +210,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = parseInt(req.params.id);
       await storage.deleteUser(userId);
-      res.json({ success: true });
+      res.json({ success: true, message: "User deleted successfully" });
     } catch (error) {
-      res.status(500).json({ error: "Failed to delete user" });
+      console.error("Delete user error:", error);
+      res.status(500).json({ error: "Failed to delete user", details: error.message });
     }
   });
 

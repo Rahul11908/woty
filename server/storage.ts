@@ -1002,7 +1002,7 @@ export class MemStorage implements IStorage {
 
 // Database storage implementation
 import { db } from "./db";
-import { eq, desc, and, ne, sql } from "drizzle-orm";
+import { eq, desc, and, ne, sql, or } from "drizzle-orm";
 
 export class DatabaseStorage implements IStorage {
   // Users
@@ -1062,7 +1062,52 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteUser(id: number): Promise<void> {
-    await db.delete(users).where(eq(users.id, id));
+    try {
+      // Delete in order to respect foreign key constraints
+      
+      // 1. Delete questions submitted by this user
+      await db.delete(questions).where(eq(questions.userId, id));
+      
+      // 2. Delete connections involving this user
+      await db.delete(connections).where(
+        or(
+          eq(connections.requesterId, id),
+          eq(connections.addresseeId, id)
+        )
+      );
+      
+      // 3. Delete messages sent by this user
+      await db.delete(messages).where(eq(messages.senderId, id));
+      
+      // 4. Delete conversations where this user is a participant
+      await db.delete(conversations).where(
+        or(
+          eq(conversations.participant1Id, id),
+          eq(conversations.participant2Id, id)
+        )
+      );
+      
+      // 5. Delete survey responses by this user (if table exists)
+      try {
+        await db.delete(surveyResponses).where(eq(surveyResponses.userId, id));
+      } catch (e) {
+        console.log("Survey responses table might not exist:", e.message);
+      }
+      
+      // 6. Delete user sessions and activities (if tables exist)
+      try {
+        await db.delete(userActivities).where(eq(userActivities.userId, id));
+        await db.delete(userSessions).where(eq(userSessions.userId, id));
+      } catch (e) {
+        console.log("Analytics tables might not exist:", e.message);
+      }
+      
+      // 7. Finally, delete the user
+      await db.delete(users).where(eq(users.id, id));
+    } catch (error) {
+      console.error("Error in deleteUser:", error);
+      throw error;
+    }
   }
 
   // Conversations
