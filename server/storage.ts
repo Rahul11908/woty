@@ -611,7 +611,7 @@ export class MemStorage implements IStorage {
     const message: Message = {
       ...messageData,
       id,
-      conversationId: this.groupChatId,
+      conversationId: this.groupChatId, // 9999
       createdAt: new Date()
     };
 

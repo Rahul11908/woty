@@ -154,6 +154,12 @@ export const insertQuestionSchema = createInsertSchema(questions).omit({
   createdAt: true,
 });
 
+export const insertGroupChatMessageSchema = createInsertSchema(messages).omit({
+  id: true,
+  createdAt: true,
+  conversationId: true,
+});
+
 export const insertSurveySchema = createInsertSchema(surveys).omit({
   id: true,
   createdAt: true,

@@ -5,6 +5,7 @@ import {
   insertMessageSchema, 
   insertConnectionSchema, 
   insertQuestionSchema,
+  insertGroupChatMessageSchema,
   insertSurveySchema,
   insertSurveyQuestionSchema,
   insertSurveyResponseSchema,
@@ -228,10 +229,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Send group chat message
   app.post("/api/group-chat/messages", async (req, res) => {
     try {
-      const messageData = insertMessageSchema.omit({ conversationId: true }).parse(req.body);
+      const messageData = insertGroupChatMessageSchema.parse(req.body);
       const message = await storage.createGroupChatMessage(messageData);
       res.json(message);
     } catch (error) {
+      console.error("Group chat message error:", error);
       res.status(400).json({ error: "Invalid message data" });
     }
   });

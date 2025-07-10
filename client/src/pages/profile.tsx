@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Calendar, Clock, Users, MessageSquare, Send, ChevronDown, ChevronUp, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -228,12 +228,27 @@ const panels: Panel[] = [
 export default function Profile() {
   const [expandedPanel, setExpandedPanel] = useState<string | null>(null);
   const [questions, setQuestions] = useState<{ [key: string]: string }>({});
+  const [currentUserId, setCurrentUserId] = useState<number>(1);
   const queryClient = useQueryClient();
+
+  // Get current user ID from localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem("currentUser");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        setCurrentUserId(user?.id || 1);
+      } catch (error) {
+        console.error("Error parsing stored user:", error);
+        setCurrentUserId(1);
+      }
+    }
+  }, []);
 
   const submitQuestionMutation = useMutation({
     mutationFn: async ({ panelName, question }: { panelName: string; question: string }) => {
-      await apiRequest("POST", "/api/questions", {
-        userId: 1, // In real app, get from auth context
+      await apiRequest("/api/questions", "POST", {
+        userId: currentUserId,
         panelName,
         question
       });
