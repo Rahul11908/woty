@@ -69,7 +69,7 @@ const sponsors: Sponsor[] = [
     website: "https://www.rabanne.com/ww/en/",
     brandColor: "bg-gray-600",
     textColor: "text-white",
-    logoSvg: `<img src="${rabanneLogo}" alt="Rabanne" className="w-full h-full object-contain" />`
+    logoSvg: `<img src="${rabanneLogo}" alt="Rabanne" className="w-full h-full object-contain" style="object-position: center;" />`
   },
   {
     id: "hennessy",
@@ -143,7 +143,7 @@ export default function Sponsors() {
                 >
                   <CardContent className={`${sponsor.brandColor} ${sponsor.textColor} h-full flex items-center justify-center rounded-lg px-6 py-4`}>
                     <div className={`flex items-center justify-center ${
-                      sponsor.id === 'rabanne' ? 'w-40 h-14' : 
+                      sponsor.id === 'rabanne' ? 'w-40 h-14 mx-auto' : 
                       sponsor.id === 'asahi' ? 'w-48 h-18' : 
                       sponsor.id === 'roots' ? 'w-32 h-12' : 
                       sponsor.id === 'hennessy' ? 'w-36 h-12' : 
