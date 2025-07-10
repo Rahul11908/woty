@@ -66,10 +66,20 @@ export default function Network() {
   });
 
   // Query to get fresh user data from the server
-  const { data: freshUserData, isLoading: userLoading } = useQuery<User>({
+  const { data: freshUserData, isLoading: userLoading, error: userError } = useQuery<User>({
     queryKey: [`/api/users/${currentUserId}`],
     enabled: !!currentUserId,
   });
+
+  // If user doesn't exist in database, reset to user ID 1
+  useEffect(() => {
+    if (userError && currentUserId !== 1) {
+      console.log("User not found, resetting to user ID 1");
+      setCurrentUserId(1);
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("currentUserId");
+    }
+  }, [userError, currentUserId]);
 
   // Use fresh data from server or fallback to localStorage data
   const displayUser = freshUserData || currentUser;

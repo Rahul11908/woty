@@ -237,7 +237,17 @@ export default function Profile() {
     if (storedUser) {
       try {
         const user = JSON.parse(storedUser);
-        setCurrentUserId(user?.id || 1);
+        // Validate that the user ID exists in the database (1, 2, 4, 5, 6)
+        const validUserIds = [1, 2, 4, 5, 6];
+        const userId = user?.id;
+        if (validUserIds.includes(userId)) {
+          setCurrentUserId(userId);
+        } else {
+          console.log("Invalid user ID, resetting to user ID 1");
+          setCurrentUserId(1);
+          localStorage.removeItem("currentUser");
+          localStorage.removeItem("currentUserId");
+        }
       } catch (error) {
         console.error("Error parsing stored user:", error);
         setCurrentUserId(1);
