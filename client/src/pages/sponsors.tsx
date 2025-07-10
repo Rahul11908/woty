@@ -35,8 +35,8 @@ const sponsors: Sponsor[] = [
     id: "asahi",
     name: "Asahi",
     website: "https://www.asahibeer.com",
-    brandColor: "bg-gray-100",
-    textColor: "text-black",
+    brandColor: "bg-gray-600",
+    textColor: "text-white",
     logoSvg: `<img src="${asahiLogo}" alt="Asahi" className="w-full h-full object-contain" />`
   },
   {
@@ -51,8 +51,8 @@ const sponsors: Sponsor[] = [
     id: "roots",
     name: "Roots",
     website: "https://www.roots.com",
-    brandColor: "bg-gray-100",
-    textColor: "text-black",
+    brandColor: "bg-gray-600",
+    textColor: "text-white",
     logoSvg: `<img src="${rootsLogo}" alt="Roots" className="w-full h-full object-contain" />`
   },
   {
@@ -67,8 +67,8 @@ const sponsors: Sponsor[] = [
     id: "rabanne",
     name: "Rabanne",
     website: "https://www.rabanne.com/ww/en/",
-    brandColor: "bg-gray-100",
-    textColor: "text-black",
+    brandColor: "bg-gray-600",
+    textColor: "text-white",
     logoSvg: `<img src="${rabanneLogo}" alt="Rabanne" className="w-full h-full object-contain" />`
   },
   {
@@ -83,8 +83,8 @@ const sponsors: Sponsor[] = [
     id: "rado",
     name: "Rado",
     website: "https://www.rado.com",
-    brandColor: "bg-gray-100",
-    textColor: "text-black",
+    brandColor: "bg-gray-600",
+    textColor: "text-white",
     logoSvg: `<img src="${radoLogo}" alt="Rado Switzerland" className="w-full h-full object-contain" />`
   }
 ];
