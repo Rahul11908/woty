@@ -1417,19 +1417,70 @@ export class DatabaseStorage implements IStorage {
     totalMessages: number;
     totalConnections: number;
     popularPages: Array<{ page: string; views: number }>;
-    userEngagement: Array<{ date: string; activeUsers: number; messages: number }>;
+    userEngagement: Array<{ date: string; activeUsers: number; messages: number; questions: number; posts: number }>;
   }> {
     const totalUsersResult = await db.select({ count: sql<number>`count(*)` }).from(users);
     const totalUsers = totalUsersResult[0]?.count || 0;
 
+    // Get total messages (group chat + private messages)
+    const groupChatMessagesResult = await db.select({ count: sql<number>`count(*)` }).from(groupChatMessages);
+    const privateMessagesResult = await db.select({ count: sql<number>`count(*)` }).from(messages);
+    const totalMessages = (groupChatMessagesResult[0]?.count || 0) + (privateMessagesResult[0]?.count || 0);
+
+    // Get total questions submitted
+    const questionsResult = await db.select({ count: sql<number>`count(*)` }).from(questions);
+    const totalQuestions = questionsResult[0]?.count || 0;
+
+    // Get total connections
+    const connectionsResult = await db.select({ count: sql<number>`count(*)` }).from(connections);
+    const totalConnections = connectionsResult[0]?.count || 0;
+
+    // Get user engagement for last 7 days
+    const last7Days = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    
+    // Get activity data for last 7 days
+    const messageActivity = await db.select({
+      date: sql<string>`DATE(${groupChatMessages.sentAt}) as date`,
+      count: sql<number>`count(*) as count`
+    })
+    .from(groupChatMessages)
+    .where(sql`${groupChatMessages.sentAt} >= ${last7Days}`)
+    .groupBy(sql`DATE(${groupChatMessages.sentAt})`);
+
+    const questionActivity = await db.select({
+      date: sql<string>`DATE(${questions.createdAt}) as date`, 
+      count: sql<number>`count(*) as count`
+    })
+    .from(questions)
+    .where(sql`${questions.createdAt} >= ${last7Days}`)
+    .groupBy(sql`DATE(${questions.createdAt})`);
+
+    // Build engagement data for last 7 days
+    const userEngagement = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+      const dateStr = date.toISOString().split('T')[0];
+      
+      const dayMessages = messageActivity.find(m => m.date === dateStr)?.count || 0;
+      const dayQuestions = questionActivity.find(q => q.date === dateStr)?.count || 0;
+      
+      userEngagement.push({
+        date: dateStr,
+        activeUsers: 0, // Simplified for now
+        messages: dayMessages,
+        questions: dayQuestions,
+        posts: dayMessages // Posts are group chat messages
+      });
+    }
+
     return {
       totalUsers,
-      activeUsersToday: 0,
-      avgSessionDuration: 0,
-      totalMessages: 0,
-      totalConnections: 0,
-      popularPages: [],
-      userEngagement: []
+      activeUsersToday: 0, // Simplified for now
+      avgSessionDuration: 0, // Simplified for now
+      totalMessages,
+      totalConnections,
+      popularPages: [], // Removed as requested
+      userEngagement
     };
   }
 }

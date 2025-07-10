@@ -232,6 +232,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const messageData = insertGroupChatMessageSchema.parse(req.body);
       const message = await storage.createGroupChatMessage(messageData);
+      
+      // Track user activity for posting a message
+      await storage.createUserActivity({
+        userId: messageData.senderId,
+        activityType: 'message_sent',
+        activityDetails: { messageId: message.id, messageType: 'group_chat' }
+      });
+      
       res.json(message);
     } catch (error) {
       console.error("Group chat message error:", error);
@@ -264,6 +272,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const questionData = insertQuestionSchema.parse(req.body);
       const question = await storage.createQuestion(questionData);
+      
+      // Track user activity for submitting a question
+      await storage.createUserActivity({
+        userId: questionData.userId,
+        activityType: 'question_submitted',
+        activityDetails: { questionId: question.id, panelName: question.panelName }
+      });
+      
       res.json(question);
     } catch (error) {
       res.status(400).json({ error: "Invalid question data" });
