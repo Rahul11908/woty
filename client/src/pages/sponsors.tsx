@@ -26,7 +26,7 @@ const sponsors: Sponsor[] = [
     id: "ge",
     name: "GE Appliances",
     website: "https://geappliances.ca",
-    brandColor: "bg-blue-600",
+    brandColor: "bg-black",
     textColor: "text-white",
     logoSvg: `<img src="${geAppliancesLogo}" alt="GE Appliances" className="w-full h-full object-contain" />`,
     isMainSponsor: true
@@ -35,8 +35,8 @@ const sponsors: Sponsor[] = [
     id: "asahi",
     name: "Asahi",
     website: "https://www.asahibeer.com",
-    brandColor: "bg-red-600",
-    textColor: "text-white",
+    brandColor: "bg-gray-100",
+    textColor: "text-black",
     logoSvg: `<img src="${asahiLogo}" alt="Asahi" className="w-full h-full object-contain" />`
   },
   {
@@ -51,15 +51,15 @@ const sponsors: Sponsor[] = [
     id: "roots",
     name: "Roots",
     website: "https://www.roots.com",
-    brandColor: "bg-green-700",
-    textColor: "text-white",
+    brandColor: "bg-gray-100",
+    textColor: "text-black",
     logoSvg: `<img src="${rootsLogo}" alt="Roots" className="w-full h-full object-contain" />`
   },
   {
     id: "mas",
     name: "Mas+",
     website: "https://www.masbymessi.com/en-ca/",
-    brandColor: "bg-orange-500",
+    brandColor: "bg-black",
     textColor: "text-white",
     logoSvg: `<img src="${masByMessiLogo}" alt="Mas+ by Messi" className="w-full h-full object-contain" />`
   },
@@ -67,15 +67,15 @@ const sponsors: Sponsor[] = [
     id: "rabanne",
     name: "Rabanne",
     website: "https://www.rabanne.com/ww/en/",
-    brandColor: "bg-purple-700",
-    textColor: "text-white",
+    brandColor: "bg-gray-100",
+    textColor: "text-black",
     logoSvg: `<img src="${rabanneLogo}" alt="Rabanne" className="w-full h-full object-contain" />`
   },
   {
     id: "hennessy",
     name: "Hennessy",
     website: "https://www.hennessy.com",
-    brandColor: "bg-amber-600",
+    brandColor: "bg-black",
     textColor: "text-white",
     logoSvg: `<img src="${hennessyLogo}" alt="Hennessy" className="w-full h-full object-contain" />`
   },
@@ -83,8 +83,8 @@ const sponsors: Sponsor[] = [
     id: "rado",
     name: "Rado",
     website: "https://www.rado.com",
-    brandColor: "bg-gray-800",
-    textColor: "text-white",
+    brandColor: "bg-gray-100",
+    textColor: "text-black",
     logoSvg: `<img src="${radoLogo}" alt="Rado Switzerland" className="w-full h-full object-contain" />`
   }
 ];
