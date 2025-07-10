@@ -69,7 +69,7 @@ const sponsors: Sponsor[] = [
     website: "https://www.rabanne.com/ww/en/",
     brandColor: "bg-gray-600",
     textColor: "text-white",
-    logoSvg: `<img src="${rabanneLogo}" alt="Rabanne" className="w-full h-full object-contain" style="object-position: center;" />`
+    logoSvg: `<img src="${rabanneLogo}" alt="Rabanne" className="w-full h-full object-contain" />`
   },
   {
     id: "hennessy",
@@ -149,7 +149,7 @@ export default function Sponsors() {
                       sponsor.id === 'hennessy' ? 'w-36 h-12' : 
                       sponsor.id === 'rado' ? 'w-32 h-12' : 
                       'w-32 h-12'
-                    }`} style={sponsor.id === 'rabanne' ? { margin: '0 auto', marginLeft: '1rem' } : {}} dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
+                    }`} dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
                   </CardContent>
                 </Card>
               ))}
