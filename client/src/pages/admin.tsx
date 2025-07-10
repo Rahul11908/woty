@@ -284,7 +284,7 @@ export default function Admin() {
               <Card>
                 <CardContent className="pt-6 text-center">
                   <Users className="w-8 h-8 text-primary mx-auto mb-2" />
-                  <h3 className="text-xl font-semibold">342</h3>
+                  <h3 className="text-xl font-semibold">{analyticsSummary?.totalUsers || allUsers.length}</h3>
                   <p className="text-sm text-gray-600">Total Attendees</p>
                 </CardContent>
               </Card>

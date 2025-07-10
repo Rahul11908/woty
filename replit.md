@@ -146,6 +146,8 @@ The application uses four main entities:
 ✓ Fixed user deletion functionality in admin panel with proper cascade delete handling
 ✓ Implemented comprehensive user deletion that removes all related data (questions, connections, messages, conversations)
 ✓ Added proper error handling and logging for admin user management operations
+✓ Fixed total attendees count in admin overview tab to show actual database user count instead of hardcoded 342
+✓ Connected overview statistics to real analytics summary API for accurate reporting
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
