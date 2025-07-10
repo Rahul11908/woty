@@ -862,25 +862,97 @@ export default function Admin() {
               <h3 className="text-lg font-semibold">Platform Analytics</h3>
               
               {/* Summary Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <Card className="p-4">
                   <h4 className="font-medium text-sm text-muted-foreground">Total Users</h4>
                   <p className="text-2xl font-bold">{analyticsSummary?.totalUsers || 0}</p>
+                  <p className="text-xs text-muted-foreground">Platform registrations</p>
                 </Card>
                 <Card className="p-4">
-                  <h4 className="font-medium text-sm text-muted-foreground">Total Posts</h4>
-                  <p className="text-2xl font-bold">{analyticsSummary?.totalMessages || 0}</p>
-                  <p className="text-xs text-muted-foreground">Group chat messages</p>
+                  <h4 className="font-medium text-sm text-muted-foreground">Group Chat Posts</h4>
+                  <p className="text-2xl font-bold">
+                    {analyticsSummary?.userEngagement?.reduce((sum, day) => sum + day.posts, 0) || 0}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Network conversations</p>
                 </Card>
                 <Card className="p-4">
-                  <h4 className="font-medium text-sm text-muted-foreground">Total Questions</h4>
-                  <p className="text-2xl font-bold">{panelQuestions.length || 0}</p>
-                  <p className="text-xs text-muted-foreground">Panel submissions</p>
+                  <h4 className="font-medium text-sm text-muted-foreground">Panel Questions</h4>
+                  <p className="text-2xl font-bold">
+                    {analyticsSummary?.userEngagement?.reduce((sum, day) => sum + day.questions, 0) || 0}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Speaker questions</p>
                 </Card>
                 <Card className="p-4">
                   <h4 className="font-medium text-sm text-muted-foreground">Connections</h4>
                   <p className="text-2xl font-bold">{analyticsSummary?.totalConnections || 0}</p>
-                  <p className="text-xs text-muted-foreground">User connections</p>
+                  <p className="text-xs text-muted-foreground">Professional networking</p>
+                </Card>
+                <Card className="p-4">
+                  <h4 className="font-medium text-sm text-muted-foreground">Active Today</h4>
+                  <p className="text-2xl font-bold">{analyticsSummary?.activeUsersToday || 0}</p>
+                  <p className="text-xs text-muted-foreground">Daily active users</p>
+                </Card>
+              </div>
+
+              {/* Detailed Activity Breakdown */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="p-4">
+                  <h4 className="font-medium text-sm text-muted-foreground">Program Engagement</h4>
+                  <div className="space-y-2 mt-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm">Questions Submitted</span>
+                      <span className="font-medium">{panelQuestions.length}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm">Questions Answered</span>
+                      <span className="font-medium">{panelQuestions.filter(q => q.isAnswered).length}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm">Surveys Created</span>
+                      <span className="font-medium">{surveys.length}</span>
+                    </div>
+                  </div>
+                </Card>
+                
+                <Card className="p-4">
+                  <h4 className="font-medium text-sm text-muted-foreground">User Activity</h4>
+                  <div className="space-y-2 mt-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm">Total Messages</span>
+                      <span className="font-medium">{analyticsSummary?.totalMessages || 0}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm">Network Posts</span>
+                      <span className="font-medium">
+                        {analyticsSummary?.userEngagement?.reduce((sum, day) => sum + day.posts, 0) || 0}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm">User Connections</span>
+                      <span className="font-medium">{analyticsSummary?.totalConnections || 0}</span>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="p-4">
+                  <h4 className="font-medium text-sm text-muted-foreground">Platform Health</h4>
+                  <div className="space-y-2 mt-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm">Registered Users</span>
+                      <span className="font-medium">{analyticsSummary?.totalUsers || 0}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm">Active Users</span>
+                      <span className="font-medium">{analyticsSummary?.activeUsersToday || 0}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm">Engagement Rate</span>
+                      <span className="font-medium">
+                        {analyticsSummary?.totalUsers ? 
+                          Math.round((analyticsSummary.activeUsersToday / analyticsSummary.totalUsers) * 100) : 0}%
+                      </span>
+                    </div>
+                  </div>
                 </Card>
               </div>
 

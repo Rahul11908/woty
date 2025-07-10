@@ -9,7 +9,10 @@ import {
   insertSurveySchema,
   insertSurveyQuestionSchema,
   insertSurveyResponseSchema,
-  insertSurveyAnswerSchema
+  insertSurveyAnswerSchema,
+  insertUserSessionSchema,
+  insertUserActivitySchema,
+  insertDailyMetricsSchema
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -609,10 +612,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create user session (for tracking)
   app.post("/api/analytics/sessions", async (req, res) => {
     try {
-      const sessionData = req.body;
+      const sessionData = insertUserSessionSchema.parse(req.body);
       const session = await storage.createUserSession(sessionData);
       res.json(session);
     } catch (error) {
+      console.error("Error creating session:", error);
       res.status(500).json({ error: "Failed to create session" });
     }
   });
@@ -643,10 +647,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Track user activity
   app.post("/api/analytics/activity", async (req, res) => {
     try {
-      const activityData = req.body;
+      const activityData = insertUserActivitySchema.parse(req.body);
       const activity = await storage.createUserActivity(activityData);
       res.json(activity);
     } catch (error) {
+      console.error("Error tracking activity:", error);
       res.status(500).json({ error: "Failed to track activity" });
     }
   });
