@@ -69,7 +69,7 @@ const sponsors: Sponsor[] = [
     website: "https://www.rabanne.com/ww/en/",
     brandColor: "bg-gray-600",
     textColor: "text-white",
-    logoSvg: `<img src="${rabanneLogo}" alt="Rabanne" className="w-full h-full object-contain" style="object-position: center;" />`
+    logoSvg: `<img src="${rabanneLogo}" alt="Rabanne" className="h-full object-contain mx-auto block" style="max-width: 100%; object-position: center center;" />`
   },
   {
     id: "hennessy",
@@ -142,8 +142,8 @@ export default function Sponsors() {
                   onClick={() => handleSponsorClick(sponsor.website)}
                 >
                   <CardContent className={`${sponsor.brandColor} ${sponsor.textColor} h-full flex items-center justify-center rounded-lg px-6 py-4`}>
-                    <div className={`flex items-center justify-center ${
-                      sponsor.id === 'rabanne' ? 'w-40 h-14 mx-auto' : 
+                    <div className={`flex items-center justify-center text-center ${
+                      sponsor.id === 'rabanne' ? 'w-full h-14' : 
                       sponsor.id === 'asahi' ? 'w-48 h-18' : 
                       sponsor.id === 'roots' ? 'w-32 h-12' : 
                       sponsor.id === 'hennessy' ? 'w-36 h-12' : 
