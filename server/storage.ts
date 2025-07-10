@@ -65,6 +65,7 @@ export interface IStorage {
   // Group Chat
   getGroupChatMessages(limit?: number): Promise<MessageWithSender[]>;
   createGroupChatMessage(message: Omit<InsertMessage, 'conversationId'>): Promise<Message>;
+  deleteGroupChatMessage(messageId: number): Promise<void>;
 
   // Connections
   createConnection(connection: InsertConnection): Promise<Connection>;
@@ -622,6 +623,10 @@ export class MemStorage implements IStorage {
 
     this.groupChatMessages.set(id, message);
     return message;
+  }
+
+  async deleteGroupChatMessage(messageId: number): Promise<void> {
+    this.groupChatMessages.delete(messageId);
   }
 
   // Survey Methods
@@ -1200,6 +1205,10 @@ export class DatabaseStorage implements IStorage {
       conversationId: GROUP_CHAT_ID
     }).returning();
     return message;
+  }
+
+  async deleteGroupChatMessage(messageId: number): Promise<void> {
+    await db.delete(messages).where(eq(messages.id, messageId));
   }
 
   // Connections

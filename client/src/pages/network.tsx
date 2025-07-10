@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Send, Users, Circle, MessageSquare, Edit, Upload } from "lucide-react";
+import { Send, Users, Circle, MessageSquare, Edit, Upload, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -98,6 +98,20 @@ export default function Network() {
       setNewMessage("");
     },
   });
+
+  const deleteMessageMutation = useMutation({
+    mutationFn: async (messageId: number) => {
+      await apiRequest(`/api/group-chat/messages/${messageId}`, "DELETE", {
+        adminUserId: currentUserId,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/group-chat/messages"] });
+    },
+  });
+
+  // Check if current user is admin (has @glory.media email)
+  const isAdmin = displayUser?.email?.endsWith('@glory.media') || false;
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
@@ -473,7 +487,7 @@ export default function Network() {
                   </div>
                 ) : (
                   groupMessages.map((message) => (
-                    <div key={message.id} className="flex space-x-3">
+                    <div key={message.id} className="flex space-x-3 group">
                       <Avatar className="w-8 h-8 flex-shrink-0">
                         <AvatarImage 
                           src={message.sender?.avatar} 
@@ -484,13 +498,26 @@ export default function Network() {
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <span className="text-sm font-medium text-gray-900 truncate">
-                            {message.sender?.fullName || "Unknown User"}
-                          </span>
-                          <span className="text-xs text-gray-500 flex-shrink-0">
-                            {formatMessageTime(message.createdAt || new Date())}
-                          </span>
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-sm font-medium text-gray-900 truncate">
+                              {message.sender?.fullName || "Unknown User"}
+                            </span>
+                            <span className="text-xs text-gray-500 flex-shrink-0">
+                              {formatMessageTime(message.createdAt || new Date())}
+                            </span>
+                          </div>
+                          {isAdmin && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-700 hover:bg-red-50"
+                              onClick={() => deleteMessageMutation.mutate(message.id)}
+                              disabled={deleteMessageMutation.isPending}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          )}
                         </div>
                         <p className="text-sm text-gray-700 break-words">{message.content}</p>
                       </div>

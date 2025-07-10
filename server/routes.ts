@@ -239,6 +239,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete group chat message (admin only)
+  app.delete("/api/group-chat/messages/:id", async (req, res) => {
+    try {
+      const messageId = parseInt(req.params.id);
+      const { adminUserId } = req.body;
+
+      // Check if the user is an admin (has @glory.media email)
+      const adminUser = await storage.getUser(adminUserId);
+      if (!adminUser || !adminUser.email.endsWith('@glory.media')) {
+        return res.status(403).json({ error: "Only GLORY team members can delete messages" });
+      }
+
+      await storage.deleteGroupChatMessage(messageId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Delete group chat message error:", error);
+      res.status(500).json({ error: "Failed to delete message" });
+    }
+  });
+
   // Submit a question for a panel
   app.post("/api/questions", async (req, res) => {
     try {
