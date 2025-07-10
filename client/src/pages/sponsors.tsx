@@ -25,7 +25,7 @@ const sponsors: Sponsor[] = [
   {
     id: "ge",
     name: "GE Appliances",
-    website: "https://www.geappliances.com",
+    website: "https://geappliances.ca",
     brandColor: "bg-blue-600",
     textColor: "text-white",
     logoSvg: `<img src="${geAppliancesLogo}" alt="GE Appliances" className="w-full h-full object-contain" />`,
@@ -42,7 +42,7 @@ const sponsors: Sponsor[] = [
   {
     id: "boss",
     name: "BOSS",
-    website: "https://www.boss.info",
+    website: "https://www.hugoboss.com/ca/en/home",
     brandColor: "bg-black",
     textColor: "text-white",
     logoSvg: `<img src="${bossLogo}" alt="BOSS" className="w-full h-full object-contain" />`
@@ -58,7 +58,7 @@ const sponsors: Sponsor[] = [
   {
     id: "mas",
     name: "Mas+",
-    website: "https://www.masplus.com",
+    website: "https://www.masbymessi.com/en-ca/",
     brandColor: "bg-orange-500",
     textColor: "text-white",
     logoSvg: `<img src="${masByMessiLogo}" alt="Mas+ by Messi" className="w-full h-full object-contain" />`
@@ -66,7 +66,7 @@ const sponsors: Sponsor[] = [
   {
     id: "rabanne",
     name: "Rabanne",
-    website: "https://www.rabanne.com",
+    website: "https://www.rabanne.com/ww/en/",
     brandColor: "bg-purple-700",
     textColor: "text-white",
     logoSvg: `<img src="${rabanneLogo}" alt="Rabanne" className="w-full h-full object-contain" />`
