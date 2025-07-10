@@ -450,6 +450,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Send survey notification emails
+  app.post("/api/surveys/:surveyId/notify", async (req, res) => {
+    try {
+      const surveyId = parseInt(req.params.surveyId);
+      const { userIds, sendToAll } = req.body;
+      
+      // Get the survey details
+      const survey = await storage.getSurvey(surveyId);
+      if (!survey) {
+        return res.status(404).json({ error: "Survey not found" });
+      }
+
+      // Get users to notify
+      let usersToNotify = [];
+      if (sendToAll) {
+        usersToNotify = await storage.getAllUsers();
+      } else if (userIds && Array.isArray(userIds)) {
+        usersToNotify = await Promise.all(
+          userIds.map((id: number) => storage.getUserById(id))
+        );
+        usersToNotify = usersToNotify.filter(Boolean);
+      } else {
+        return res.status(400).json({ error: "Must specify userIds or sendToAll" });
+      }
+
+      // Import email function dynamically
+      const { sendSurveyNotification } = await import('./email');
+      
+      // Send emails
+      const results = await Promise.allSettled(
+        usersToNotify.map(user => {
+          if (!user.email) return Promise.resolve(false);
+          
+          return sendSurveyNotification(
+            user.email,
+            user.fullName || 'Attendee',
+            survey.title,
+            survey.description || '',
+            survey.emailSubject || `Survey: ${survey.title}`,
+            survey.emailBody || 'Please take a moment to complete this survey.',
+            `${process.env.FRONTEND_URL || 'http://localhost:5000'}/survey/${survey.id}`
+          );
+        })
+      );
+
+      const successful = results.filter(result => 
+        result.status === 'fulfilled' && result.value === true
+      ).length;
+      
+      const failed = results.length - successful;
+
+      res.json({
+        success: true,
+        sent: successful,
+        failed: failed,
+        total: usersToNotify.length
+      });
+    } catch (error) {
+      console.error("Failed to send survey notifications:", error);
+      res.status(500).json({ error: "Failed to send survey notifications" });
+    }
+  });
+
   // Get survey statistics
   app.get("/api/surveys/:surveyId/stats", async (req, res) => {
     try {

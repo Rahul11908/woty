@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Send, Users, Circle, MessageSquare, Edit, Upload, Trash2 } from "lucide-react";
+import { Send, Users, Circle, MessageSquare, Edit, Upload, Trash2, FileText, CheckCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,12 +10,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { apiRequest } from "@/lib/queryClient";
-import type { User, MessageWithSender } from "@shared/schema";
+import type { User, MessageWithSender, Survey } from "@shared/schema";
 import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
 
 export default function Network() {
   const [newMessage, setNewMessage] = useState("");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isSurveyDialogOpen, setIsSurveyDialogOpen] = useState(false);
   const [editForm, setEditForm] = useState({
     fullName: "",
     jobTitle: "",
@@ -69,6 +70,11 @@ export default function Network() {
   const { data: freshUserData, isLoading: userLoading, error: userError } = useQuery<User>({
     queryKey: [`/api/users/${currentUserId}`],
     enabled: !!currentUserId,
+  });
+
+  // Query to get latest surveys
+  const { data: surveys = [] } = useQuery<Survey[]>({
+    queryKey: ["/api/surveys"],
   });
 
   // If user doesn't exist in database, reset to user ID 1
@@ -242,6 +248,15 @@ export default function Network() {
     }
   };
 
+  // Get the latest survey
+  const latestSurvey = surveys.find(survey => survey.status === 'active') || surveys[surveys.length - 1];
+
+  const handleSurveyClick = () => {
+    if (latestSurvey) {
+      setIsSurveyDialogOpen(true);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
@@ -316,8 +331,82 @@ export default function Network() {
                 </div>
               </div>
 
-              {/* Edit Profile Button */}
-              <div className="flex-shrink-0">
+              {/* Action Buttons */}
+              <div className="flex-shrink-0 flex space-x-2">
+                {/* Survey Button */}
+                {latestSurvey && (
+                  <Dialog open={isSurveyDialogOpen} onOpenChange={setIsSurveyDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="h-8 px-3">
+                        <FileText className="h-4 w-4 mr-1" />
+                        Survey
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[500px]">
+                      <DialogHeader>
+                        <DialogTitle className="flex items-center space-x-2">
+                          <FileText className="w-5 h-5" />
+                          <span>{latestSurvey.title}</span>
+                        </DialogTitle>
+                        <DialogDescription>
+                          {latestSurvey.description}
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <CheckCircle className="w-5 h-5 text-blue-600" />
+                            <span className="font-medium text-blue-900">Survey Available</span>
+                          </div>
+                          <p className="text-sm text-blue-700 mb-3">
+                            Please take a moment to complete this survey. Your feedback is important to us!
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <div className="text-xs text-blue-600">
+                              Type: {latestSurvey.type === 'during_event' ? 'During Event' : 'Post Event'}
+                            </div>
+                            <Badge variant="outline" className="text-blue-700 border-blue-300">
+                              {latestSurvey.status}
+                            </Badge>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <FileText className="w-5 h-5 text-amber-600" />
+                            <span className="font-medium text-amber-900">Email Follow-up</span>
+                          </div>
+                          <p className="text-sm text-amber-700">
+                            If you can't complete the survey now, it will also be sent to your email following the event.
+                          </p>
+                        </div>
+
+                        <div className="flex space-x-3 pt-4">
+                          <Button 
+                            variant="outline" 
+                            onClick={() => setIsSurveyDialogOpen(false)}
+                            className="flex-1"
+                          >
+                            Later
+                          </Button>
+                          <Button 
+                            onClick={() => {
+                              // For now, just close the dialog - in a real implementation, 
+                              // this would navigate to the survey or open a survey form
+                              setIsSurveyDialogOpen(false);
+                              alert("Survey feature will be fully implemented in the next phase. Thank you for your interest!");
+                            }}
+                            className="flex-1"
+                          >
+                            Take Survey
+                          </Button>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                )}
+
+                {/* Edit Profile Button */}
                 <Dialog open={isEditingProfile} onOpenChange={setIsEditingProfile}>
                   <DialogTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
