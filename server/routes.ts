@@ -282,6 +282,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete question (admin only)
+  app.delete("/api/questions/:id", async (req, res) => {
+    try {
+      const questionId = parseInt(req.params.id);
+      await storage.deleteQuestion(questionId);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete question" });
+    }
+  });
+
   // Survey Management Routes
   
   // Create a survey

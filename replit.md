@@ -140,6 +140,9 @@ The application uses four main entities:
 ✓ Created proper schema validation for group chat messages separate from private conversations
 ✓ Updated question submission to use correct API parameters and current user authentication
 ✓ Restored functionality for all interactive features in networking and program tabs
+✓ Added question deletion functionality to admin panel Questions tab with proper API endpoints
+✓ Implemented delete buttons with confirmation dialogs for question management
+✓ Enhanced admin question management with complete CRUD operations
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.

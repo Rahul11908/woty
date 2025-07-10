@@ -77,6 +77,7 @@ export interface IStorage {
   getQuestions(panelName?: string): Promise<Question[]>;
   getQuestionsByUser(userId: number): Promise<Question[]>;
   markQuestionAsAnswered(questionId: number): Promise<void>;
+  deleteQuestion(questionId: number): Promise<void>;
 
   // Surveys
   createSurvey(survey: InsertSurvey): Promise<Survey>;
@@ -512,6 +513,10 @@ export class MemStorage implements IStorage {
       question.isAnswered = true;
       this.questions.set(questionId, question);
     }
+  }
+
+  async deleteQuestion(questionId: number): Promise<void> {
+    this.questions.delete(questionId);
   }
 
   private async initializeGroupChat() {
@@ -1203,6 +1208,10 @@ export class DatabaseStorage implements IStorage {
     await db.update(questions)
       .set({ isAnswered: true })
       .where(eq(questions.id, questionId));
+  }
+
+  async deleteQuestion(questionId: number): Promise<void> {
+    await db.delete(questions).where(eq(questions.id, questionId));
   }
 
   // Surveys - simplified implementations

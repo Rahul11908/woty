@@ -209,6 +209,26 @@ export default function Admin() {
     },
   });
 
+  // Delete question mutation
+  const deleteQuestionMutation = useMutation({
+    mutationFn: async (questionId: number) => {
+      await apiRequest(`/api/questions/${questionId}`, "DELETE");
+    },
+    onSuccess: () => {
+      toast({
+        title: "Question deleted successfully!",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/questions"] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error deleting question",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const onSubmitSurvey = (data: SurveyFormData) => {
     createSurveyMutation.mutate(data);
   };
@@ -381,6 +401,19 @@ export default function Admin() {
                               Mark as Answered
                             </Button>
                           )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              if (window.confirm("Are you sure you want to delete this question?")) {
+                                deleteQuestionMutation.mutate(question.id);
+                              }
+                            }}
+                            disabled={deleteQuestionMutation.isPending}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
                         </div>
                       </div>
                     </CardContent>
