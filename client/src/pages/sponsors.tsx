@@ -122,11 +122,11 @@ export default function Sponsors() {
           <div className="mb-8">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Powered By</h3>
             <Card 
-              className="cursor-pointer hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] w-full h-32"
+              className="cursor-pointer hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] w-full h-36"
               onClick={() => handleSponsorClick(sponsors[0].website)}
             >
-              <CardContent className={`${sponsors[0].brandColor} ${sponsors[0].textColor} h-full flex items-center justify-center rounded-lg px-6 py-4`}>
-                <div className="w-72 h-20" dangerouslySetInnerHTML={{ __html: sponsors[0].logoSvg }} />
+              <CardContent className={`${sponsors[0].brandColor} ${sponsors[0].textColor} h-full flex items-center justify-center rounded-lg px-8 py-6`}>
+                <div className="w-80 h-24 flex items-center justify-center" dangerouslySetInnerHTML={{ __html: sponsors[0].logoSvg }} />
               </CardContent>
             </Card>
           </div>
