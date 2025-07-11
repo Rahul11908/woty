@@ -61,3 +61,21 @@
     font-family: 'Inter', system-ui, sans-serif;
   }
 }
+
+/* Custom avatar styling to prevent fisheye/zoom effects */
+@layer components {
+  .avatar-image-flat {
+    object-fit: cover;
+    object-position: center;
+    transform: none;
+    filter: none;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  .rounded-full img {
+    object-fit: cover;
+    object-position: center;
+  }
+}

@@ -233,7 +233,7 @@ export default function CreateProfile() {
                       <img
                         src={imagePreview}
                         alt="Profile preview"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full avatar-image-flat"
                       />
                     </div>
                   )}

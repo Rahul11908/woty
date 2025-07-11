@@ -38,7 +38,7 @@ const SpeakerPhoto = ({ name, photo, size = "normal" }: { name: string; photo?: 
       <img 
         src={photo} 
         alt={name}
-        className={`${sizeClasses} rounded-full object-cover border-2 border-gray-200`}
+        className={`${sizeClasses} rounded-full avatar-image-flat border-2 border-gray-200`}
         onError={(e) => {
           // Fallback to initials if image fails to load
           const target = e.target as HTMLImageElement;

@@ -159,6 +159,7 @@ The application uses four main entities:
 ✓ Modified user engagement chart to display posts, messages, and questions over time with enhanced visualization
 ✓ Updated "Panel Discussions" text to "Panel Discussions - Submit Your Questions" for better UX clarity
 ✓ Centered the "Panel Discussions - Submit Your Questions" heading for improved visual layout
+✓ Fixed user profile photo distortion by implementing custom avatar-image-flat CSS class to prevent fisheye/zoom effects
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
