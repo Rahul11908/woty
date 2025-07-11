@@ -160,6 +160,8 @@ The application uses four main entities:
 ✓ Updated "Panel Discussions" text to "Panel Discussions - Submit Your Questions" for better UX clarity
 ✓ Centered the "Panel Discussions - Submit Your Questions" heading for improved visual layout
 ✓ Fixed user profile photo distortion by implementing custom avatar-image-flat CSS class to prevent fisheye/zoom effects
+✓ Added question submission confirmation toast notifications with success and error messages
+✓ Implemented automatic text field clearing after successful question submission
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.

@@ -258,7 +258,7 @@ export default function Profile() {
   }, []);
 
   const submitQuestionMutation = useMutation({
-    mutationFn: async ({ panelName, question }: { panelName: string; question: string }) => {
+    mutationFn: async ({ panelId, panelName, question }: { panelId: string; panelName: string; question: string }) => {
       await apiRequest("/api/questions", "POST", {
         userId: currentUserId,
         panelName,
@@ -266,7 +266,7 @@ export default function Profile() {
       });
     },
     onSuccess: (_, variables) => {
-      setQuestions(prev => ({ ...prev, [variables.panelName]: "" }));
+      setQuestions(prev => ({ ...prev, [variables.panelId]: "" }));
       queryClient.invalidateQueries({ queryKey: ["/api/questions"] });
       toast({
         title: "Question submitted successfully!",
@@ -286,7 +286,7 @@ export default function Profile() {
   const handleQuestionSubmit = (panelId: string, panelTitle: string) => {
     const question = questions[panelId];
     if (question?.trim()) {
-      submitQuestionMutation.mutate({ panelName: panelTitle, question: question.trim() });
+      submitQuestionMutation.mutate({ panelId, panelName: panelTitle, question: question.trim() });
     }
   };
 
