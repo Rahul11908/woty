@@ -184,6 +184,9 @@ export const insertSurveyAnswerSchema = createInsertSchema(surveyAnswers).omit({
 // Analytics Schema
 export const insertUserSessionSchema = createInsertSchema(userSessions).omit({
   id: true,
+}).extend({
+  sessionStart: z.union([z.date(), z.string().transform((str) => new Date(str))]).optional(),
+  sessionEnd: z.union([z.date(), z.string().transform((str) => new Date(str))]).optional(),
 });
 
 export const insertUserActivitySchema = createInsertSchema(userActivity).omit({

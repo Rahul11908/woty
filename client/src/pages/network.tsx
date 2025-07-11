@@ -24,9 +24,9 @@ import kyleMcMannPhoto from "@assets/Kyle McMann_1752262505617.png";
 import dwayneDeRosarioPhoto from "@assets/Dwayne De Rosario_1752262505617.png";
 import teresaReschPhoto from "@assets/Teresa Resch_1752262505617.png";
 import marcusHansonPhoto from "@assets/Marcus Hanson_1752262505617.png";
-import lanceChungPhoto from "@assets/Lance Chung_1752260577401.png";
-import anastasiaBucsisPhoto from "@assets/Anastasia Bucsis_1752260577401.png";
-import alysonWalkerPhoto from "@assets/Alyson Walker_1752260577401.png";
+import lanceChungPhoto from "@assets/Lance Chung_1752262505617.png";
+import anastasiaBucsisPhoto from "@assets/Anastasia Bucsis_1752262505617.png";
+import alysonWalkerPhoto from "@assets/Alyson Walker_1752262505617.png";
 
 export default function Network() {
   const [newMessage, setNewMessage] = useState("");
