@@ -348,7 +348,12 @@ export default function CreateProfile() {
                                 </p>
                                 
                                 <p>
-                                  <strong>10. Contact Information</strong><br />
+                                  <strong>10. Newsletter and Communications</strong><br />
+                                  By using this App and accepting these terms, you provide explicit consent to receive newsletters, updates, event announcements, and promotional communications from GLORY Media. You may unsubscribe from these communications at any time by following the unsubscribe instructions in any email or by contacting us directly.
+                                </p>
+                                
+                                <p>
+                                  <strong>11. Contact Information</strong><br />
                                   For any questions or concerns about these Usage Terms or your personal data, please contact:<br />
                                   2294462 Ontario Inc. (O/A GLORY Media)<br />
                                   501-800 Bathurst Street, Toronto, Ontario<br />

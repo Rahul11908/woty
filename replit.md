@@ -167,6 +167,7 @@ The application uses four main entities:
 ✓ Enhanced click tracking system with comprehensive button interaction monitoring across all app features
 ✓ Updated admin analytics dashboard to display accurate real-time data with proper metrics
 ✓ Updated Terms of Use with official July 14th, 2025 legal document from GLORY Media including comprehensive privacy policy, data protection compliance with PIPEDA, and complete Canadian legal framework
+✓ Added newsletter and communications consent clause (Section 10) allowing GLORY Media to send newsletters, updates, and promotional communications with unsubscribe options
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
