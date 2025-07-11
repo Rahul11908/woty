@@ -9,8 +9,19 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { analytics } from "@/lib/analytics";
 import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
-import bobParkPhoto from "@assets/bobpark_1752004236296.webp";
+import bobParkPhoto from "@assets/Bob Park_1752260577401.png";
 import sharonBollenbachPhoto from "@assets/Sharon Bollenbach_1752004236296.png";
+import lanceChungPhoto from "@assets/Lance Chung_1752260577401.png";
+import marcusHansonPhoto from "@assets/Marcus Hanson_1752260577401.png";
+import ellenHyslopPhoto from "@assets/Ellen Hyslop_1752260577401.png";
+import anastasiaBucsisPhoto from "@assets/Anastasia Bucsis_1752260577401.png";
+import dianaMatheson1Photo from "@assets/Diana Matheson (2)_1752260577401.png";
+import dianaMatheson2Photo from "@assets/Diana Matheson_1752260577401.png";
+import alysonWalkerPhoto from "@assets/Alyson Walker_1752260577401.png";
+import jesseMartschPhoto from "@assets/Jesse Marsch_1752260577401.png";
+import dwayneDeRosarioPhoto from "@assets/Dwayne De Rosario_1752260577401.png";
+import kyleMcMannPhoto from "@assets/Kyle McMann_1752260577401.png";
+import andiPetrilloPhoto from "@assets/Andi Petrillo_1752260577401.png";
 
 interface Panel {
   id: string;
@@ -85,27 +96,27 @@ const SpeakerPhoto = ({ name, photo, size = "normal" }: { name: string; photo?: 
 // Speaker photo URLs - Using actual photos when available
 const speakerPhotos: Record<string, string> = {
   // Panel 1
-  "Dwayne De Rosario": "/photos/dwayne-de-rosario.jpg",
+  "Dwayne De Rosario": dwayneDeRosarioPhoto,
   "Sharon Bollenbach": sharonBollenbachPhoto, 
-  "Marcus Hanson": "/photos/marcus-hanson.jpg",
-  "Ellen Hyslop": "/photos/ellen-hyslop.jpg",
+  "Marcus Hanson": marcusHansonPhoto,
+  "Ellen Hyslop": ellenHyslopPhoto,
   
   // Panel 2
-  "Diana Matheson": "/photos/diana-matheson.jpg",
-  "Anastasia Bucsis": "/photos/anastasia-bucsis.jpg",
-  "Lance Chung": "/photos/lance-chung.jpg",
+  "Diana Matheson": dianaMatheson2Photo, // Using the action shot photo
+  "Anastasia Bucsis": anastasiaBucsisPhoto,
+  "Lance Chung": lanceChungPhoto,
   
   // Panel 3
-  "Teresa Resch": "/photos/teresa-resch.jpg",
-  "Kyle McMann": "/photos/kyle-mcmann.jpg",
-  "Saroya Tinker": "/photos/saroya-tinker.jpg",
-  "Alyson Walker": "/photos/alyson-walker.jpg",
+  "Teresa Resch": "/photos/teresa-resch.jpg", // No new photo provided
+  "Kyle McMann": kyleMcMannPhoto,
+  "Saroya Tinker": "/photos/saroya-tinker.jpg", // No new photo provided
+  "Alyson Walker": alysonWalkerPhoto,
   
   // Panel 4
-  "Jesse Marsch": "/photos/jesse-marsch.jpg",
+  "Jesse Marsch": jesseMartschPhoto,
   "Bob Park": bobParkPhoto,
-  "Kevin Blue": "/photos/kevin-blue.jpg",
-  "Andi Petrillo": "/photos/andi-petrillo.jpg"
+  "Kevin Blue": "/photos/kevin-blue.jpg", // No new photo provided
+  "Andi Petrillo": andiPetrilloPhoto
 };
 
 const panels: Panel[] = [

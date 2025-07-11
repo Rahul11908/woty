@@ -168,6 +168,8 @@ The application uses four main entities:
 ✓ Updated admin analytics dashboard to display accurate real-time data with proper metrics
 ✓ Updated Terms of Use with official July 14th, 2025 legal document from GLORY Media including comprehensive privacy policy, data protection compliance with PIPEDA, and complete Canadian legal framework
 ✓ Added newsletter and communications consent clause (Section 10) allowing GLORY Media to send newsletters, updates, and promotional communications with unsubscribe options
+✓ Fixed user deletion functionality by correcting foreign key constraint issues with proper cascade delete order
+✓ Updated all speaker photos in Program panel with new professional headshots including Lance Chung, Marcus Hanson, Ellen Hyslop, Anastasia Bucsis, Diana Matheson, Alyson Walker, Jesse Marsch, Dwayne De Rosario, Kyle McMann, Bob Park, and Andi Petrillo
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
