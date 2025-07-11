@@ -12,6 +12,21 @@ import { Label } from "@/components/ui/label";
 import { apiRequest } from "@/lib/queryClient";
 import type { User, MessageWithSender, Survey } from "@shared/schema";
 import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
+import bobParkPhoto from "@assets/Bob Park_1752262280808.png";
+import andiPetrilloPhoto from "@assets/Andi Petrillo_1752262280808.png";
+import saroyaTinkerPhoto from "@assets/Saroya Tinker_1752262280808.png";
+import dianaMatheson1Photo from "@assets/Diana Matheson_1752262280808.png";
+import dianaMatheson2Photo from "@assets/Diana Matheson (2)_1752262280808.png";
+import jesseMartschPhoto from "@assets/Jesse Marsch_1752262280808.png";
+import ellenHyslopPhoto from "@assets/Ellen Hyslop_1752262280808.png";
+import sharonBollenbachPhoto from "@assets/Sharon Bollenbach_1752262280808.png";
+import kyleMcMannPhoto from "@assets/Kyle McMann_1752262280808.png";
+import dwayneDeRosarioPhoto from "@assets/Dwayne De Rosario_1752262280808.png";
+import teresaReschPhoto from "@assets/Teresa Resch_1752262280808.png";
+import marcusHansonPhoto from "@assets/Marcus Hanson_1752262280808.png";
+import lanceChungPhoto from "@assets/Lance Chung_1752262280808.png";
+import anastasiaBucsisPhoto from "@assets/Anastasia Bucsis_1752262280808.png";
+import alysonWalkerPhoto from "@assets/Alyson Walker_1752262280808.png";
 
 export default function Network() {
   const [newMessage, setNewMessage] = useState("");
@@ -205,10 +220,32 @@ export default function Network() {
       .toUpperCase();
   };
 
+  // Speaker photo mapping for Network attendees
+  const speakerPhotos: Record<string, string> = {
+    "Bob Park": bobParkPhoto,
+    "Andi Petrillo": andiPetrilloPhoto,
+    "Saroya Tinker": saroyaTinkerPhoto,
+    "Diana Matheson": dianaMatheson1Photo,
+    "Jesse Marsch": jesseMartschPhoto,
+    "Ellen Hyslop": ellenHyslopPhoto,
+    "Sharon Bollenbach": sharonBollenbachPhoto,
+    "Kyle McMann": kyleMcMannPhoto,
+    "Dwayne De Rosario": dwayneDeRosarioPhoto,
+    "Teresa Resch": teresaReschPhoto,
+    "Marcus Hanson": marcusHansonPhoto,
+    "Lance Chung": lanceChungPhoto,
+    "Anastasia Bucsis": anastasiaBucsisPhoto,
+    "Alyson Walker": alysonWalkerPhoto,
+  };
+
   // Get user photo URL based on their name
   const getUserPhoto = (fullName: string) => {
     if (!fullName) return "";
-    // Convert full name to expected photo filename format
+    // First check if we have a speaker photo
+    if (speakerPhotos[fullName]) {
+      return speakerPhotos[fullName];
+    }
+    // Fallback to generic photo path
     const photoFileName = fullName.toLowerCase().replace(/\s+/g, '-') + '.jpg';
     return `/photos/${photoFileName}`;
   };
@@ -579,7 +616,7 @@ export default function Network() {
                     <div key={message.id} className="flex space-x-3 group">
                       <Avatar className="w-8 h-8 flex-shrink-0">
                         <AvatarImage 
-                          src={message.sender?.avatar} 
+                          src={message.sender?.avatar || getUserPhoto(message.sender?.fullName || "")} 
                           alt={message.sender?.fullName || "User"}
                         />
                         <AvatarFallback className={`text-xs bg-gradient-to-br ${getUserAvatarColor(message.sender?.fullName || "")} text-white`}>
@@ -663,7 +700,7 @@ export default function Network() {
                           <div className="relative flex-shrink-0">
                             <Avatar className="w-16 h-16">
                               <AvatarImage 
-                                src={attendee.avatar} 
+                                src={attendee.avatar || getUserPhoto(attendee.fullName)} 
                                 alt={attendee.fullName}
                               />
                               <AvatarFallback className={`bg-gradient-to-br ${getUserAvatarColor(attendee.fullName)} text-white font-semibold text-lg`}>
