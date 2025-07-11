@@ -9,19 +9,21 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { analytics } from "@/lib/analytics";
 import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
-import bobParkPhoto from "@assets/Bob Park_1752260577401.png";
-import sharonBollenbachPhoto from "@assets/Sharon Bollenbach_1752004236296.png";
+import bobParkPhoto from "@assets/Bob Park_1752262505617.png";
+import sharonBollenbachPhoto from "@assets/Sharon Bollenbach_1752262505617.png";
 import lanceChungPhoto from "@assets/Lance Chung_1752260577401.png";
-import marcusHansonPhoto from "@assets/Marcus Hanson_1752260577401.png";
-import ellenHyslopPhoto from "@assets/Ellen Hyslop_1752260577401.png";
+import marcusHansonPhoto from "@assets/Marcus Hanson_1752262505617.png";
+import ellenHyslopPhoto from "@assets/Ellen Hyslop_1752262505617.png";
 import anastasiaBucsisPhoto from "@assets/Anastasia Bucsis_1752260577401.png";
-import dianaMatheson1Photo from "@assets/Diana Matheson (2)_1752260577401.png";
-import dianaMatheson2Photo from "@assets/Diana Matheson_1752260577401.png";
+import dianaMatheson1Photo from "@assets/Diana Matheson (2)_1752262505617.png";
+import dianaMatheson2Photo from "@assets/Diana Matheson_1752262505617.png";
 import alysonWalkerPhoto from "@assets/Alyson Walker_1752260577401.png";
-import jesseMartschPhoto from "@assets/Jesse Marsch_1752260577401.png";
-import dwayneDeRosarioPhoto from "@assets/Dwayne De Rosario_1752260577401.png";
-import kyleMcMannPhoto from "@assets/Kyle McMann_1752260577401.png";
-import andiPetrilloPhoto from "@assets/Andi Petrillo_1752260577401.png";
+import jesseMartschPhoto from "@assets/Jesse Marsch_1752262505617.png";
+import dwayneDeRosarioPhoto from "@assets/Dwayne De Rosario_1752262505617.png";
+import kyleMcMannPhoto from "@assets/Kyle McMann_1752262505617.png";
+import andiPetrilloPhoto from "@assets/Andi Petrillo_1752262505617.png";
+import saroyaTinkerPhoto from "@assets/Saroya Tinker_1752262505617.png";
+import teresaReschPhoto from "@assets/Teresa Resch_1752262505617.png";
 
 interface Panel {
   id: string;
@@ -107,9 +109,9 @@ const speakerPhotos: Record<string, string> = {
   "Lance Chung": lanceChungPhoto,
   
   // Panel 3
-  "Teresa Resch": "/photos/teresa-resch.jpg", // No new photo provided
+  "Teresa Resch": teresaReschPhoto, // Updated with new photo
   "Kyle McMann": kyleMcMannPhoto,
-  "Saroya Tinker": "/photos/saroya-tinker.jpg", // No new photo provided
+  "Saroya Tinker": saroyaTinkerPhoto, // Updated with new photo
   "Alyson Walker": alysonWalkerPhoto,
   
   // Panel 4
