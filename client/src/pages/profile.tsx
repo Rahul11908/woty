@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
 import bobParkPhoto from "@assets/bobpark_1752004236296.webp";
@@ -230,6 +231,7 @@ export default function Profile() {
   const [questions, setQuestions] = useState<{ [key: string]: string }>({});
   const [currentUserId, setCurrentUserId] = useState<number>(1);
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   // Get current user ID from localStorage
   useEffect(() => {
@@ -266,6 +268,18 @@ export default function Profile() {
     onSuccess: (_, variables) => {
       setQuestions(prev => ({ ...prev, [variables.panelName]: "" }));
       queryClient.invalidateQueries({ queryKey: ["/api/questions"] });
+      toast({
+        title: "Question submitted successfully!",
+        description: "Your question has been submitted and will be considered for the panel discussion.",
+        variant: "default",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to submit question",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
     }
   });
 
