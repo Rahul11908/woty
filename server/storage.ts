@@ -1120,7 +1120,7 @@ export class DatabaseStorage implements IStorage {
       
       // 6. Delete user sessions and activities (if tables exist)
       try {
-        await db.delete(userActivities).where(eq(userActivities.userId, id));
+        await db.delete(userActivity).where(eq(userActivity.userId, id));
         await db.delete(userSessions).where(eq(userSessions.userId, id));
       } catch (e) {
         console.log("Analytics tables might not exist:", e.message);
