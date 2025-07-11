@@ -365,7 +365,7 @@ export default function Profile() {
 
           {/* Panel Discussions */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900">Panel Discussions - Submit Your Questions</h3>
+            <h3 className="font-semibold text-gray-900 text-center">Panel Discussions - Submit Your Questions</h3>
             {panels.map((panel, index) => (
               <Card key={panel.id}>
                 <CardContent className="pt-6">
