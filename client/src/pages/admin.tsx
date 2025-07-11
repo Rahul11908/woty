@@ -883,9 +883,9 @@ export default function Admin() {
                   <p className="text-xs text-muted-foreground">Speaker questions</p>
                 </Card>
                 <Card className="p-4">
-                  <h4 className="font-medium text-sm text-muted-foreground">Connections</h4>
-                  <p className="text-2xl font-bold">{analyticsSummary?.totalConnections || 0}</p>
-                  <p className="text-xs text-muted-foreground">Professional networking</p>
+                  <h4 className="font-medium text-sm text-muted-foreground">Clicks</h4>
+                  <p className="text-2xl font-bold">{analyticsSummary?.totalClicks || 0}</p>
+                  <p className="text-xs text-muted-foreground">User interactions</p>
                 </Card>
                 <Card className="p-4">
                   <h4 className="font-medium text-sm text-muted-foreground">Active Today</h4>
@@ -928,8 +928,8 @@ export default function Admin() {
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm">User Connections</span>
-                      <span className="font-medium">{analyticsSummary?.totalConnections || 0}</span>
+                      <span className="text-sm">Total Clicks</span>
+                      <span className="font-medium">{analyticsSummary?.totalClicks || 0}</span>
                     </div>
                   </div>
                 </Card>

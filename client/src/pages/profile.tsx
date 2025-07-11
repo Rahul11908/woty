@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { analytics } from "@/lib/analytics";
 import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
 import bobParkPhoto from "@assets/bobpark_1752004236296.webp";
 import sharonBollenbachPhoto from "@assets/Sharon Bollenbach_1752004236296.png";
@@ -413,7 +414,13 @@ export default function Profile() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setExpandedPanel(expandedPanel === panel.id ? null : panel.id)}
+                      onClick={() => {
+                        const isExpanding = expandedPanel !== panel.id;
+                        setExpandedPanel(expandedPanel === panel.id ? null : panel.id);
+                        if (isExpanding) {
+                          analytics.trackPanelExpanded(panel.id, panel.title);
+                        }
+                      }}
                     >
                       {expandedPanel === panel.id ? (
                         <ChevronUp className="w-4 h-4" />
@@ -474,7 +481,10 @@ export default function Profile() {
                             rows={3}
                           />
                           <Button
-                            onClick={() => handleQuestionSubmit(panel.id, panel.title)}
+                            onClick={() => {
+                              analytics.trackButtonClick('submit_question', 'program_panel', { panelId: panel.id, panelTitle: panel.title });
+                              handleQuestionSubmit(panel.id, panel.title);
+                            }}
                             disabled={!questions[panel.id]?.trim() || submitQuestionMutation.isPending}
                             size="sm"
                             className="w-full"

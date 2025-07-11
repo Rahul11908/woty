@@ -1434,7 +1434,7 @@ export class DatabaseStorage implements IStorage {
     activeUsersToday: number;
     avgSessionDuration: number;
     totalMessages: number;
-    totalConnections: number;
+    totalClicks: number;
     popularPages: Array<{ page: string; views: number }>;
     userEngagement: Array<{ date: string; activeUsers: number; messages: number; questions: number; posts: number }>;
   }> {
@@ -1451,9 +1451,9 @@ export class DatabaseStorage implements IStorage {
       const questionsResult = await db.select({ count: sql<number>`count(*)` }).from(questions);
       const totalQuestions = questionsResult[0]?.count || 0;
 
-      // Get total connections
-      const connectionsResult = await db.select({ count: sql<number>`count(*)` }).from(connections);
-      const totalConnections = connectionsResult[0]?.count || 0;
+      // Get total clicks (all user activity interactions)
+      const clicksResult = await db.select({ count: sql<number>`count(*)` }).from(userActivity);
+      const totalClicks = clicksResult[0]?.count || 0;
 
       // Get group chat messages count (posts)
       const groupChatMessagesResult = await db.select({ count: sql<number>`count(*)` })
@@ -1476,7 +1476,7 @@ export class DatabaseStorage implements IStorage {
       .from(messages)
       .where(and(
         eq(messages.conversationId, 999), // Group chat only
-        sql`${messages.createdAt} >= ${last7Days}`
+        sql`${messages.createdAt} >= ${last7Days.toISOString()}`
       ))
       .groupBy(sql`DATE(${messages.createdAt})`);
 
@@ -1486,7 +1486,7 @@ export class DatabaseStorage implements IStorage {
         count: sql<number>`count(*) as count`
       })
       .from(questions)
-      .where(sql`${questions.createdAt} >= ${last7Days}`)
+      .where(sql`${questions.createdAt} >= ${last7Days.toISOString()}`)
       .groupBy(sql`DATE(${questions.createdAt})`);
 
       // Get daily user activity (unique users who posted or asked questions)
@@ -1496,7 +1496,7 @@ export class DatabaseStorage implements IStorage {
       })
       .from(userActivity)
       .where(and(
-        sql`${userActivity.createdAt} >= ${last7Days}`,
+        sql`${userActivity.createdAt} >= ${last7Days.toISOString()}`,
         or(
           eq(userActivity.activityType, 'message_sent'),
           eq(userActivity.activityType, 'question_submitted')
@@ -1528,7 +1528,7 @@ export class DatabaseStorage implements IStorage {
         activeUsersToday: userEngagement[userEngagement.length - 1]?.activeUsers || 0,
         avgSessionDuration: 0, // Simplified for now
         totalMessages,
-        totalConnections,
+        totalClicks,
         popularPages: [], // Removed as requested
         userEngagement
       };
@@ -1540,7 +1540,7 @@ export class DatabaseStorage implements IStorage {
         activeUsersToday: 0,
         avgSessionDuration: 0,
         totalMessages: 0,
-        totalConnections: 0,
+        totalClicks: 0,
         popularPages: [],
         userEngagement: []
       };

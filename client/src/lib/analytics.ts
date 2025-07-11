@@ -162,6 +162,22 @@ class AnalyticsTracker {
   public trackTabChanged(tabName: string) {
     this.trackActivity('tab_changed', { tabName });
   }
+
+  public trackButtonClick(buttonType: string, location: string, details: any = {}) {
+    this.trackActivity('button_click', { buttonType, location, ...details });
+  }
+
+  public trackPanelExpanded(panelId: string, panelTitle: string) {
+    this.trackActivity('panel_expanded', { panelId, panelTitle });
+  }
+
+  public trackSurveyDialogOpened(surveyId: number) {
+    this.trackActivity('survey_dialog_opened', { surveyId });
+  }
+
+  public trackProfileEditOpened() {
+    this.trackActivity('profile_edit_opened', {});
+  }
 }
 
 // Create singleton instance
