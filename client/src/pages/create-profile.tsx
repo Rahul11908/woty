@@ -267,36 +267,92 @@ export default function CreateProfile() {
                                 Please review and accept the terms of use
                               </DialogDescription>
                             </DialogHeader>
-                            <ScrollArea className="h-64">
+                            <ScrollArea className="h-96">
                               <div className="space-y-4 text-sm">
-                                <p>
-                                  <strong>GLORY Sports Summit 2025 - Terms of Use</strong>
-                                </p>
-                                <p>
-                                  By creating a profile and participating in the GLORY Sports Summit 2025, you agree to the following terms and conditions:
-                                </p>
-                                <p>
-                                  <strong>1. Event Participation</strong><br />
-                                  You confirm your attendance at the GLORY Sports Summit 2025 and agree to participate in networking activities and panel discussions in a professional manner.
-                                </p>
-                                <p>
-                                  <strong>2. Professional Conduct</strong><br />
-                                  All participants must maintain professional standards during interactions, networking sessions, and communications within the platform.
-                                </p>
-                                <p>
-                                  <strong>3. Data Usage</strong><br />
-                                  Your profile information may be shared with other summit attendees to facilitate networking and professional connections.
-                                </p>
-                                <p>
-                                  <strong>4. Privacy</strong><br />
-                                  We respect your privacy and will handle your personal information in accordance with our privacy policy.
-                                </p>
-                                <p>
-                                  <strong>5. Platform Usage</strong><br />
-                                  This platform is exclusively for GLORY Sports Summit 2025 attendees and should be used solely for professional networking purposes.
-                                </p>
                                 <p className="text-xs text-gray-500">
-                                  These terms are subject to updates. Please check back periodically for any changes.
+                                  Effective Date: July 14th, 2025<br />
+                                  Produced by 2294462 Ontario Inc. (O/A GLORY Media)<br />
+                                  Registered in Ontario, Canada
+                                </p>
+                                
+                                <p>
+                                  <strong>1. Acceptance of Terms</strong><br />
+                                  By accessing or using the 2025 GLORY Sports Summit web app ("App"), you agree to comply with and be bound by these Usage Terms and all applicable laws and regulations. If you do not agree with any part of these terms, you must not use the App.
+                                </p>
+                                
+                                <p>
+                                  <strong>2. Eligibility</strong><br />
+                                  Use of the App is limited to individuals who are 16 years of age or older. If you are under 18, you must have the consent of a parent or legal guardian.
+                                </p>
+                                
+                                <p>
+                                  <strong>3. Privacy & Data Protection</strong><br />
+                                  GLORY Media is committed to protecting your privacy. All data collected through the App will be handled in compliance with the Personal Information Protection and Electronic Documents Act (PIPEDA) and applicable Ontario privacy laws.
+                                </p>
+                                
+                                <p>
+                                  <strong>3.1 Data Collection</strong><br />
+                                  We may collect the following personal information:
+                                  • Name and contact information<br />
+                                  • Event preferences and usage data<br />
+                                  • Voluntary survey responses or interaction data<br />
+                                  This information is collected for the purpose of:
+                                  • Providing access to App features<br />
+                                  • Improving user experience<br />
+                                  • Offering customer support<br />
+                                  • Internal analytics and reporting for GLORY Media only
+                                </p>
+                                
+                                <p>
+                                  <strong>3.2 No Third-Party Sharing</strong><br />
+                                  Your personal information will not be shared, sold, rented, or disclosed to third parties without your explicit consent, unless required by law or in the event of a legal investigation.
+                                </p>
+                                
+                                <p>
+                                  <strong>3.3 Data Security</strong><br />
+                                  We use secure protocols, data encryption, and firewalls to protect your personal information. Despite these precautions, no system is completely secure. Use of the App is at your own risk.
+                                </p>
+                                
+                                <p>
+                                  <strong>4. User Conduct</strong><br />
+                                  By using the App, you agree to:
+                                  • Use the App only for lawful purposes<br />
+                                  • Not misuse, hack, or interfere with the App's services<br />
+                                  • Not upload or transmit any harmful or malicious content<br />
+                                  GLORY Media reserves the right to suspend or terminate access for users who violate these terms.
+                                </p>
+                                
+                                <p>
+                                  <strong>5. Intellectual Property</strong><br />
+                                  All content, features, and designs in the App, including text, graphics, logos, and videos, are the intellectual property of GLORY Media or its partners and are protected under Canadian copyright law. You may not copy, reproduce, or distribute any content without written permission.
+                                </p>
+                                
+                                <p>
+                                  <strong>6. Third-Party Links</strong><br />
+                                  The App may contain links to third-party websites. GLORY Media is not responsible for the content or privacy practices of these external sites. Use them at your own discretion.
+                                </p>
+                                
+                                <p>
+                                  <strong>7. Changes to Terms</strong><br />
+                                  GLORY Media may update these terms from time to time. Continued use of the App after changes are posted constitutes your acceptance of the revised terms. You are encouraged to review these terms regularly.
+                                </p>
+                                
+                                <p>
+                                  <strong>8. Limitation of Liability</strong><br />
+                                  To the extent permitted by law, GLORY Media shall not be liable for any damages or losses resulting from your use of or inability to use the App, including but not limited to loss of data, business interruption, or personal injury.
+                                </p>
+                                
+                                <p>
+                                  <strong>9. Governing Law</strong><br />
+                                  These Terms are governed by and construed in accordance with the laws of the Province of Ontario and the laws of Canada applicable therein. Any disputes shall be resolved in the courts located in Toronto, Ontario.
+                                </p>
+                                
+                                <p>
+                                  <strong>10. Contact Information</strong><br />
+                                  For any questions or concerns about these Usage Terms or your personal data, please contact:<br />
+                                  2294462 Ontario Inc. (O/A GLORY Media)<br />
+                                  501-800 Bathurst Street, Toronto, Ontario<br />
+                                  Email: info@glory.media
                                 </p>
                               </div>
                             </ScrollArea>
