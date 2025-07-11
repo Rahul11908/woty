@@ -54,7 +54,7 @@ export async function sendSurveyNotification(
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <div style="background-color: #f97316; padding: 20px; text-align: center;">
-        <h1 style="color: white; margin: 0;">GLORY Sports Summit</h1>
+        <h1 style="color: white; margin: 0;">2025 GLORY Sports Summit</h1>
       </div>
       
       <div style="padding: 30px; background-color: #ffffff;">

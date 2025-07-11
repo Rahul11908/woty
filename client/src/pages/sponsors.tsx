@@ -164,7 +164,7 @@ export default function Sponsors() {
                   Thank You to Our Sponsors
                 </h3>
                 <p className="text-gray-600 font-bold italic">
-                  The GLORY Sports Summit 2025 is made possible by the generous support of our sponsors. 
+                  The 2025 GLORY Sports Summit is made possible by the generous support of our sponsors. 
                   Their commitment to advancing sports innovation and community building makes this event extraordinary.
                 </p>
               </CardContent>

@@ -332,7 +332,7 @@ export default function Profile() {
             <CardContent className="pt-6">
               <div className="text-center mb-4">
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                  GLORY Sports Summit 2025
+                  2025 GLORY Sports Summit
                 </h2>
                 <p className="text-gray-600 mb-4">
                   July 15th • Sutton Place Hotel, Toronto
