@@ -180,7 +180,6 @@ class AnalyticsTracker {
   }
 }
 
-// Create singleton instance
-const analytics = new AnalyticsTracker();
-
+// Create and export a single instance
+export const analytics = new AnalyticsTracker();
 export default analytics;
