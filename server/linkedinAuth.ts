@@ -17,6 +17,22 @@ export function setupLinkedInAuth(app: Express) {
   if (!CLIENT_ID || !CLIENT_SECRET) {
     return;
   }
+  
+  console.log("Setting up LinkedIn auth with callback URL:", CALLBACK_URL);
+
+  // Passport session setup
+  passport.serializeUser((user: any, done) => {
+    done(null, user.id);
+  });
+
+  passport.deserializeUser(async (id: number, done) => {
+    try {
+      const user = await storage.getUser(id);
+      done(null, user);
+    } catch (error) {
+      done(error);
+    }
+  });
 
   passport.use(new LinkedInStrategy({
     clientID: CLIENT_ID,
