@@ -440,7 +440,7 @@ export default function Network() {
             </div>
           </div>
         </div>
-      ) : displayUser || currentUser ? (
+      ) : (displayUser || currentUser) ? (
         <div className="bg-white shadow-sm mx-4 mt-4 rounded-lg overflow-hidden">
           <div className="p-4">
             <div className="flex items-center space-x-4">
@@ -448,41 +448,42 @@ export default function Network() {
               <div className="relative">
                 <Avatar className="w-16 h-16">
                   <AvatarImage 
-                    src={displayUser.avatar} 
-                    alt={displayUser.fullName}
+                    src={(displayUser || currentUser)?.avatar} 
+                    alt={(displayUser || currentUser)?.fullName}
                   />
                   <AvatarFallback 
-                    className={`text-white text-lg font-semibold bg-gradient-to-br ${getUserAvatarColor(displayUser.fullName)}`}
+                    className={`text-white text-lg font-semibold bg-gradient-to-br ${getUserAvatarColor((displayUser || currentUser)?.fullName || "")}`}
                   >
-                    {getUserInitials(displayUser.fullName)}
+                    {getUserInitials((displayUser || currentUser)?.fullName || "")}
                   </AvatarFallback>
                 </Avatar>
               </div>
 
               {/* User Info */}
               <div className="flex-1">
-                <h2 className="text-lg font-semibold text-gray-900">{displayUser.fullName || "User"}</h2>
-                {displayUser.jobTitle && (
-                  <p className="text-sm text-gray-600">{displayUser.jobTitle}</p>
+                <h2 className="text-lg font-semibold text-gray-900">{(displayUser || currentUser)?.fullName || "User"}</h2>
+                {(displayUser || currentUser)?.jobTitle && (
+                  <p className="text-sm text-gray-600">{(displayUser || currentUser)?.jobTitle}</p>
                 )}
-                {displayUser.company && (
-                  <p className="text-sm text-gray-500">{displayUser.company}</p>
+                {(displayUser || currentUser)?.company && (
+                  <p className="text-sm text-gray-500">{(displayUser || currentUser)?.company}</p>
                 )}
-                {displayUser.email && (
-                  <p className="text-xs text-gray-400 mt-1">{displayUser.email}</p>
+                {(displayUser || currentUser)?.email && (
+                  <p className="text-xs text-gray-400 mt-1">{(displayUser || currentUser)?.email}</p>
                 )}
-                {(displayUser.linkedinProfileUrl || displayUser.linkedinId) && (
+                {((displayUser || currentUser)?.linkedinProfileUrl || (displayUser || currentUser)?.linkedinId) && (
                   <div className="mt-2">
                     <Button
                       variant="outline"
                       size="sm"
                       className="text-xs h-7 px-3 text-blue-600 border-blue-600 hover:bg-blue-50"
                       onClick={() => {
-                        if (displayUser.linkedinProfileUrl && displayUser.linkedinProfileUrl.includes('linkedin.com/in/') && !displayUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
-                          window.open(displayUser.linkedinProfileUrl, '_blank');
+                        const user = displayUser || currentUser;
+                        if (user?.linkedinProfileUrl && user.linkedinProfileUrl.includes('linkedin.com/in/') && !user.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
+                          window.open(user.linkedinProfileUrl, '_blank');
                         } else {
                           // Search for user on LinkedIn by name
-                          const searchQuery = encodeURIComponent(displayUser.fullName || "");
+                          const searchQuery = encodeURIComponent(user?.fullName || "");
                           const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`;
                           window.open(searchUrl, '_blank');
                         }
@@ -494,9 +495,9 @@ export default function Network() {
                 )}
                 <div className="flex items-center mt-2 space-x-2">
                   <Badge 
-                    className={`text-xs ${getUserRoleBadge(displayUser.userRole || "attendee", displayUser.email).color}`}
+                    className={`text-xs ${getUserRoleBadge((displayUser || currentUser)?.userRole || "attendee", (displayUser || currentUser)?.email).color}`}
                   >
-                    {getUserRoleBadge(displayUser.userRole || "attendee", displayUser.email).label}
+                    {getUserRoleBadge((displayUser || currentUser)?.userRole || "attendee", (displayUser || currentUser)?.email).label}
                   </Badge>
                 </div>
               </div>
@@ -718,40 +719,8 @@ export default function Network() {
       ) : (
         <div className="bg-white shadow-sm mx-4 mt-4 rounded-lg overflow-hidden">
           <div className="p-4">
-            <div className="flex items-center space-x-4">
-              {/* This fallback is no longer needed since we get user directly from localStorage */}
-              {currentUser ? (
-                <>
-                  <div className="relative">
-                    <Avatar className="w-16 h-16">
-                      <AvatarImage 
-                        src={currentUser.avatar} 
-                        alt={currentUser.fullName}
-                      />
-                      <AvatarFallback className={`text-white text-lg font-semibold bg-gradient-to-br ${getUserAvatarColor(currentUser.fullName)}`}>
-                        {getUserInitials(currentUser.fullName)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <div className="flex-1">
-                    <h2 className="text-lg font-semibold text-gray-900">{currentUser.fullName}</h2>
-                    {currentUser.jobTitle && <p className="text-sm text-gray-600">{currentUser.jobTitle}</p>}
-                    {currentUser.company && <p className="text-sm text-gray-500">{currentUser.company}</p>}
-                    {currentUser.email && <p className="text-xs text-gray-400 mt-1">{currentUser.email}</p>}
-                    <div className="flex items-center mt-2 space-x-2">
-                      <Badge 
-                        className={`text-xs ${getUserRoleBadge(currentUser.userRole || "attendee", currentUser.email).color}`}
-                      >
-                        {getUserRoleBadge(currentUser.userRole || "attendee", currentUser.email).label}
-                      </Badge>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="text-center text-gray-500">
-                  <p>Loading your profile...</p>
-                </div>
-              )}
+            <div className="text-center text-gray-500">
+              <p>Loading your profile...</p>
             </div>
           </div>
         </div>
