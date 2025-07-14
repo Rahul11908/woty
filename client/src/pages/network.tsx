@@ -359,6 +359,11 @@ export default function Network() {
                 {displayUser.email && (
                   <p className="text-xs text-gray-400 mt-1">{displayUser.email}</p>
                 )}
+                {displayUser.linkedinId && (
+                  <p className="text-xs text-blue-600 mt-1">
+                    LinkedIn: {displayUser.linkedinId}
+                  </p>
+                )}
                 <div className="flex items-center mt-2 space-x-2">
                   <Badge 
                     className={`text-xs ${getUserRoleBadge(displayUser.userRole || "attendee", displayUser.email).color}`}
@@ -525,6 +530,22 @@ export default function Network() {
                           placeholder="Enter your company"
                         />
                       </div>
+
+                      {/* LinkedIn ID (read-only for LinkedIn users) */}
+                      {displayUser.linkedinId && (
+                        <div className="grid gap-2">
+                          <Label htmlFor="linkedinId">LinkedIn ID</Label>
+                          <Input
+                            id="linkedinId"
+                            value={displayUser.linkedinId}
+                            disabled
+                            className="bg-gray-100 text-gray-600"
+                          />
+                          <p className="text-xs text-gray-500">
+                            LinkedIn ID is automatically synced and cannot be edited
+                          </p>
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex justify-end space-x-2">
@@ -712,8 +733,17 @@ export default function Network() {
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
                                 <h4 className="font-semibold text-gray-900 text-lg mb-1">{attendee.fullName}</h4>
-                                <p className="text-sm text-gray-600 mb-2">{attendee.jobTitle}</p>
-                                <p className="text-sm text-gray-500 mb-3">{attendee.companyName}</p>
+                                {attendee.jobTitle && (
+                                  <p className="text-sm text-gray-600 mb-1">{attendee.jobTitle}</p>
+                                )}
+                                {attendee.company && (
+                                  <p className="text-sm text-gray-500 mb-1">{attendee.company}</p>
+                                )}
+                                {attendee.linkedinId && (
+                                  <p className="text-xs text-blue-600 mb-2">
+                                    LinkedIn: {attendee.linkedinId}
+                                  </p>
+                                )}
                                 <div className="flex items-center space-x-2">
                                   <Badge 
                                     className={`text-xs ${getUserRoleBadge(attendee.userRole || "attendee", attendee.email).color}`}
