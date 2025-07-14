@@ -38,7 +38,7 @@ export function setupLinkedInAuth(app: Express) {
     clientID: CLIENT_ID,
     clientSecret: CLIENT_SECRET,
     callbackURL: CALLBACK_URL,
-    scope: ['r_liteprofile', 'r_emailaddress']
+    scope: ['openid', 'profile', 'email']
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const email = profile.emails?.[0]?.value;
@@ -94,7 +94,7 @@ export function setupLinkedInAuth(app: Express) {
 
   // LinkedIn authentication routes
   app.get("/auth/linkedin", passport.authenticate("linkedin", {
-    scope: ['r_liteprofile', 'r_emailaddress']
+    scope: ['openid', 'profile', 'email']
   }));
 
   app.get("/auth/linkedin/callback",
