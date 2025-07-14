@@ -834,7 +834,6 @@ export default function Network({ currentUser }: NetworkProps) {
               <CardTitle className="text-lg flex items-center space-x-2">
                 <Users className="w-5 h-5" />
                 <span>Event Attendees</span>
-                <Badge variant="outline">{eventAttendees.length}</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
