@@ -13,6 +13,7 @@ import {
   dailyMetrics,
   type User, 
   type InsertUser,
+  type LoginData,
   type Conversation,
   type InsertConversation,
   type Message,
@@ -40,6 +41,7 @@ import {
   type DailyMetrics,
   type InsertDailyMetrics,
 } from "@shared/schema";
+import bcrypt from "bcrypt";
 
 export interface IStorage {
   // Users
@@ -51,8 +53,12 @@ export interface IStorage {
   updateUser(id: number, updates: Partial<User>): Promise<User>;
   updateUserOnlineStatus(id: number, isOnline: boolean): Promise<void>;
   getSuggestedConnections(userId: number, limit?: number): Promise<User[]>;
+  authenticateUser(credentials: LoginData): Promise<User | undefined>;
   getEventAttendees(limit?: number): Promise<User[]>;
   deleteUser(id: number): Promise<void>;
+  
+  // Authentication
+  authenticateUser(credentials: LoginData): Promise<User | undefined>;
 
   // Conversations
   getConversationsForUser(userId: number): Promise<ConversationWithParticipant[]>;
@@ -950,6 +956,20 @@ export class MemStorage implements IStorage {
     return metrics.sort((a, b) => a.date.localeCompare(b.date));
   }
 
+  async authenticateUser(credentials: LoginData): Promise<User | undefined> {
+    const user = await this.getUserByEmail(credentials.email);
+    if (!user) {
+      return undefined;
+    }
+
+    // For MemStorage, we'll use a simple string comparison for development
+    if (credentials.password === "password123") {
+      return user;
+    }
+
+    return undefined;
+  }
+
   async getAnalyticsSummary(): Promise<{
     totalUsers: number;
     activeUsersToday: number;
@@ -1046,10 +1066,14 @@ export class DatabaseStorage implements IStorage {
       ? 'glory_team' 
       : insertUser.userRole || "attendee";
 
+    // Hash password before storing
+    const hashedPassword = await bcrypt.hash(insertUser.password, 10);
+
     const [user] = await db
       .insert(users)
       .values({
         ...insertUser,
+        password: hashedPassword,
         userRole,
         isOnline: insertUser.isOnline || false,
         hasAcceptedTerms: insertUser.hasAcceptedTerms || false,
@@ -1498,6 +1522,21 @@ export class DatabaseStorage implements IStorage {
         userEngagement: []
       };
     }
+  }
+
+  // Authentication
+  async authenticateUser(credentials: LoginData): Promise<User | undefined> {
+    const user = await this.getUserByEmail(credentials.email);
+    if (!user) {
+      return undefined;
+    }
+
+    const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+    if (!isPasswordValid) {
+      return undefined;
+    }
+
+    return user;
   }
 }
 

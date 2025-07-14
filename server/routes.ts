@@ -12,7 +12,8 @@ import {
   insertSurveyAnswerSchema,
   insertUserSessionSchema,
   insertUserActivitySchema,
-  insertDailyMetricsSchema
+  insertDailyMetricsSchema,
+  loginSchema
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -35,7 +36,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Login by email
+  // Login authentication
+  app.post("/api/login", async (req, res) => {
+    try {
+      const loginData = loginSchema.parse(req.body);
+      const user = await storage.authenticateUser(loginData);
+      
+      if (!user) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+      
+      res.json(user);
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Login by email (keeping for backward compatibility)
   app.post("/api/users/by-email", async (req, res) => {
     try {
       const { email } = req.body;

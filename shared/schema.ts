@@ -6,6 +6,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   fullName: text("full_name").notNull(),
   email: text("email").notNull().unique(),
+  password: text("password").notNull(),
   company: text("company"),
   jobTitle: text("job_title"),
   avatar: text("avatar"),
@@ -131,6 +132,13 @@ export const dailyMetrics = pgTable("daily_metrics", {
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
+}).extend({
+  password: z.string().min(8, "Password must be at least 8 characters long"),
+});
+
+export const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
 });
 
 export const insertConversationSchema = createInsertSchema(conversations).omit({
@@ -199,6 +207,7 @@ export const insertDailyMetricsSchema = createInsertSchema(dailyMetrics).omit({
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type LoginData = z.infer<typeof loginSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertConversation = z.infer<typeof insertConversationSchema>;
 export type Conversation = typeof conversations.$inferSelect;

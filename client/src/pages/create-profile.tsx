@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { Eye, EyeOff, Lock, Mail, User, Building2, Briefcase, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -17,7 +18,12 @@ import { useToast } from "@/hooks/use-toast";
 import { insertUserSchema } from "@shared/schema";
 import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (2)_1751991903966.png";
 
-const createProfileSchema = insertUserSchema;
+const createProfileSchema = insertUserSchema.extend({
+  confirmPassword: z.string().min(1, "Please confirm your password"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
 
 type CreateProfileData = z.infer<typeof createProfileSchema>;
 
@@ -27,12 +33,16 @@ export default function CreateProfile() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [showTerms, setShowTerms] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<CreateProfileData>({
     resolver: zodResolver(createProfileSchema),
     defaultValues: {
       fullName: "",
       email: "",
+      password: "",
+      confirmPassword: "",
       company: "",
       jobTitle: "",
       avatar: "",
@@ -42,12 +52,14 @@ export default function CreateProfile() {
 
   const createUserMutation = useMutation({
     mutationFn: async (data: CreateProfileData) => {
-      return await apiRequest("/api/users", "POST", data);
+      // Remove confirmPassword before sending to API
+      const { confirmPassword, ...userData } = data;
+      return await apiRequest("/api/users", "POST", userData);
     },
     onSuccess: (user) => {
       toast({
         title: "Profile created successfully!",
-        description: `Welcome to GLORY Sports Summit, ${user.fullName}!`,
+        description: `Welcome to 2025 GLORY Sports Summit, ${user.fullName}!`,
       });
       // Store user session and redirect to main app
       localStorage.setItem("currentUserId", user.id.toString());
@@ -166,7 +178,10 @@ export default function CreateProfile() {
                   <FormItem>
                     <FormLabel>Full Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your full name" {...field} />
+                      <div className="relative">
+                        <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Input placeholder="Enter your full name" {...field} className="pl-10" />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -180,7 +195,10 @@ export default function CreateProfile() {
                   <FormItem>
                     <FormLabel>Email Address</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="Enter your email" {...field} />
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Input type="email" placeholder="Enter your email" {...field} className="pl-10" />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -194,7 +212,10 @@ export default function CreateProfile() {
                   <FormItem>
                     <FormLabel>Company</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your company" {...field} />
+                      <div className="relative">
+                        <Building2 className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Input placeholder="Enter your company" {...field} className="pl-10" />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -208,14 +229,73 @@ export default function CreateProfile() {
                   <FormItem>
                     <FormLabel>Job Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your job title" {...field} />
+                      <div className="relative">
+                        <Briefcase className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Input placeholder="Enter your job title" {...field} className="pl-10" />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Input
+                          placeholder="Enter password (minimum 8 characters)"
+                          {...field}
+                          type={showPassword ? "text" : "password"}
+                          className="pl-10 pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-3 h-4 w-4 text-gray-400 hover:text-gray-600"
+                        >
+                          {showPassword ? <EyeOff /> : <Eye />}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Input
+                          placeholder="Confirm your password"
+                          {...field}
+                          type={showConfirmPassword ? "text" : "password"}
+                          className="pl-10 pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          className="absolute right-3 top-3 h-4 w-4 text-gray-400 hover:text-gray-600"
+                        >
+                          {showConfirmPassword ? <EyeOff /> : <Eye />}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
