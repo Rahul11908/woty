@@ -836,32 +836,15 @@ export default function Network({ currentUser }: NetworkProps) {
                                 >
                                   {attendee.fullName}
                                 </h4>
-                                {attendee.jobTitle && (
-                                  <p className="text-sm text-gray-600 mb-1">{attendee.jobTitle}</p>
+                                {/* Show job title - fallback to LinkedIn headline if no job title */}
+                                {(attendee.jobTitle || attendee.linkedinHeadline) && (
+                                  <p className="text-sm text-gray-600 mb-1">
+                                    {attendee.jobTitle || attendee.linkedinHeadline}
+                                  </p>
                                 )}
+                                {/* Show company */}
                                 {attendee.company && (
                                   <p className="text-sm text-gray-500 mb-1">{attendee.company}</p>
-                                )}
-                                {(attendee.linkedinId || attendee.linkedinProfileUrl) && (
-                                  <div className="mb-2">
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="text-xs h-7 px-3 text-blue-600 border-blue-600 hover:bg-blue-50"
-                                      onClick={() => {
-                                        if (attendee.linkedinProfileUrl && attendee.linkedinProfileUrl.includes('linkedin.com/in/') && !attendee.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
-                                          window.open(attendee.linkedinProfileUrl, '_blank');
-                                        } else {
-                                          // Search for user on LinkedIn by name
-                                          const searchQuery = encodeURIComponent(attendee.fullName || "");
-                                          const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`;
-                                          window.open(searchUrl, '_blank');
-                                        }
-                                      }}
-                                    >
-                                      Find on LinkedIn
-                                    </Button>
-                                  </div>
                                 )}
                                 <div className="flex items-center space-x-2">
                                   <Badge 
@@ -927,35 +910,55 @@ export default function Network({ currentUser }: NetworkProps) {
                 </div>
               </div>
 
-              {/* Contact Information */}
+              {/* Professional Information */}
               <div className="grid gap-3">
-                {selectedUser.linkedinHeadline && (
+                {/* Show job title - fallback to LinkedIn headline if no job title */}
+                {(selectedUser.jobTitle || selectedUser.linkedinHeadline) && (
                   <div className="grid gap-1">
-                    <Label className="text-sm font-medium text-gray-700">LinkedIn Headline</Label>
-                    <p className="text-sm text-gray-600">{selectedUser.linkedinHeadline}</p>
+                    <Label className="text-sm font-medium text-gray-700">Position</Label>
+                    <p className="text-sm text-gray-600">{selectedUser.jobTitle || selectedUser.linkedinHeadline}</p>
+                  </div>
+                )}
+                
+                {/* Show company */}
+                {selectedUser.company && (
+                  <div className="grid gap-1">
+                    <Label className="text-sm font-medium text-gray-700">Company</Label>
+                    <p className="text-sm text-gray-600">{selectedUser.company}</p>
                   </div>
                 )}
 
-                <div className="grid gap-1">
-                  <Label className="text-sm font-medium text-gray-700">Connect</Label>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-blue-600 border-blue-600 hover:bg-blue-50 w-fit"
-                    onClick={() => {
-                      if (selectedUser.linkedinProfileUrl && selectedUser.linkedinProfileUrl.includes('linkedin.com/in/') && !selectedUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
-                        window.open(selectedUser.linkedinProfileUrl, '_blank');
-                      } else {
-                        // Search for user on LinkedIn by name
-                        const searchQuery = encodeURIComponent(selectedUser.fullName || "");
-                        const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`;
-                        window.open(searchUrl, '_blank');
-                      }
-                    }}
-                  >
-                    Find on LinkedIn
-                  </Button>
-                </div>
+                {/* Show bio if available */}
+                {selectedUser.bio && (
+                  <div className="grid gap-1">
+                    <Label className="text-sm font-medium text-gray-700">Bio</Label>
+                    <p className="text-sm text-gray-600">{selectedUser.bio}</p>
+                  </div>
+                )}
+
+                {/* Show LinkedIn networking button only if user has LinkedIn profile */}
+                {(selectedUser.linkedinId || selectedUser.linkedinProfileUrl) && (
+                  <div className="grid gap-1">
+                    <Label className="text-sm font-medium text-gray-700">Connect</Label>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-blue-600 border-blue-600 hover:bg-blue-50 w-fit"
+                      onClick={() => {
+                        if (selectedUser.linkedinProfileUrl && selectedUser.linkedinProfileUrl.includes('linkedin.com/in/') && !selectedUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
+                          window.open(selectedUser.linkedinProfileUrl, '_blank');
+                        } else {
+                          // Search for user on LinkedIn by name
+                          const searchQuery = encodeURIComponent(selectedUser.fullName || "");
+                          const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`;
+                          window.open(searchUrl, '_blank');
+                        }
+                      }}
+                    >
+                      Find on LinkedIn
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           ) : (
