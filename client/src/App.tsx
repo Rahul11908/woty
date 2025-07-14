@@ -34,6 +34,7 @@ function Router() {
           setCurrentUser(user);
           // Store in localStorage for consistency
           localStorage.setItem("currentUser", JSON.stringify(user));
+          localStorage.setItem("currentUserId", user.id.toString());
           setIsLoading(false);
           return;
         }
@@ -46,10 +47,24 @@ function Router() {
       if (storedUser) {
         try {
           const user = JSON.parse(storedUser);
-          setCurrentUser(user);
+          // Verify the stored user is still valid
+          const userResponse = await fetch(`/api/users/${user.id}`, {
+            credentials: 'include'
+          });
+          if (userResponse.ok) {
+            const validUser = await userResponse.json();
+            setCurrentUser(validUser);
+            localStorage.setItem("currentUserId", validUser.id.toString());
+          } else {
+            console.log("Invalid user ID, resetting to user ID 1");
+            // Clear invalid stored data
+            localStorage.removeItem("currentUser");
+            localStorage.removeItem("currentUserId");
+          }
         } catch (error) {
           console.error("Error parsing stored user:", error);
           localStorage.removeItem("currentUser");
+          localStorage.removeItem("currentUserId");
         }
       }
       setIsLoading(false);

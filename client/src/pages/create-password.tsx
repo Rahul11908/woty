@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -40,12 +40,20 @@ export default function CreatePasswordPage() {
         password: data.password,
       });
     },
-    onSuccess: () => {
+    onSuccess: (user) => {
       toast({
         title: "Password Created",
-        description: "Your password has been set successfully. You can now log in.",
+        description: "Your password has been set successfully. Welcome to the Summit!",
       });
-      setLocation("/");
+      
+      // Store user session and trigger app refresh
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      window.dispatchEvent(new CustomEvent('userLogin', { detail: user }));
+      
+      // Small delay to ensure the event is processed
+      setTimeout(() => {
+        setLocation("/network");
+      }, 100);
     },
     onError: (error) => {
       toast({
