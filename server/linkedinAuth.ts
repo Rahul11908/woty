@@ -117,15 +117,22 @@ export function setupLinkedInAuth(app: Express) {
   app.get("/auth/linkedin/callback",
     passport.authenticate("linkedin", { failureRedirect: "/login" }),
     (req, res) => {
-      // Check if user needs to create a password
       const user = req.user as any;
+      if (!user) {
+        console.error("No user found in LinkedIn callback");
+        return res.redirect("/login?error=auth_failed");
+      }
+      
+      console.log("LinkedIn authentication successful for user:", user.fullName, user.email);
+      
+      // Check if user needs to create a password
       if (!user.password) {
         // Store user ID in session and redirect to password creation
-        req.session.pendingPasswordUserId = user.id;
-        res.redirect("/create-password");
+        (req.session as any).pendingPasswordUserId = user.id;
+        return res.redirect("/create-password");
       } else {
         // User already has password, redirect to app
-        res.redirect("/");
+        return res.redirect("/network");
       }
     }
   );
