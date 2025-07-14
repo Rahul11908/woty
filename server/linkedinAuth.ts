@@ -134,10 +134,12 @@ export function setupLinkedInAuth(app: Express) {
       if (!user.password) {
         // Store user ID in session and redirect to password creation
         (req.session as any).pendingPasswordUserId = user.id;
+        console.log("Redirecting to create-password");
         return res.redirect("/create-password");
       } else {
         // User already has password, redirect to app
-        return res.redirect("/network");
+        console.log("Redirecting to main app");
+        return res.redirect("/");
       }
     }
   );

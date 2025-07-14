@@ -22,18 +22,40 @@ function Router() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already logged in
-    const storedUser = localStorage.getItem("currentUser");
-    if (storedUser) {
+    // Check for server-side authentication first (LinkedIn/OAuth users)
+    const checkServerAuth = async () => {
       try {
-        const user = JSON.parse(storedUser);
-        setCurrentUser(user);
+        const response = await fetch("/api/auth/current-user", {
+          credentials: 'include'
+        });
+        
+        if (response.ok) {
+          const user = await response.json();
+          setCurrentUser(user);
+          // Store in localStorage for consistency
+          localStorage.setItem("currentUser", JSON.stringify(user));
+          setIsLoading(false);
+          return;
+        }
       } catch (error) {
-        console.error("Error parsing stored user:", error);
-        localStorage.removeItem("currentUser");
+        console.log("No server-side authentication found");
       }
-    }
-    setIsLoading(false);
+      
+      // Fallback to localStorage check (for email/password users)
+      const storedUser = localStorage.getItem("currentUser");
+      if (storedUser) {
+        try {
+          const user = JSON.parse(storedUser);
+          setCurrentUser(user);
+        } catch (error) {
+          console.error("Error parsing stored user:", error);
+          localStorage.removeItem("currentUser");
+        }
+      }
+      setIsLoading(false);
+    };
+    
+    checkServerAuth();
 
     // Listen for storage changes (when user is created in another tab/component)
     const handleStorageChange = () => {

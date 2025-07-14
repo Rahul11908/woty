@@ -13,11 +13,25 @@ import {
   insertUserSessionSchema,
   insertUserActivitySchema,
   insertDailyMetricsSchema,
-  loginSchema
+  loginSchema,
+  type User
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
+  app.get("/api/auth/current-user", async (req, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
+      const user = req.user as User;
+      res.json(user);
+    } catch (error) {
+      console.error("Error getting current user:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
   app.post("/api/users", async (req, res) => {
     try {
       const userData = req.body;
