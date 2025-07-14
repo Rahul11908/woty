@@ -218,6 +218,7 @@ The application uses four main entities:
 ✓ Created admin utility endpoint to update existing LinkedIn users with parsed job title and company information
 ✓ Added "Find on LinkedIn" buttons to user profile dialogs and suggested connection cards for enhanced networking
 ✓ Enhanced LinkedIn search functionality to include company information for more accurate profile discovery
+✓ Removed LinkedIn sign-in option from login page, keeping only email/password authentication
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
