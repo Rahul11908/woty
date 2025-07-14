@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -62,46 +62,29 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center p-4">
+      {/* Back Button */}
+      <Button
+        onClick={() => setLocation("/")}
+        variant="ghost"
+        className="absolute top-4 left-4 text-gray-600 hover:text-gray-800"
+      >
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Back to Homepage
+      </Button>
+      
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-4">
           <div className="flex justify-center">
             <img src={gloryLogo} alt="2025 GLORY Sports Summit" className="h-20 w-auto" />
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
-            Join the Summit
+            Sign In
           </CardTitle>
           <CardDescription className="text-gray-600">
-            Create your profile or sign in to your account
+            Welcome back to the 2025 GLORY Sports Summit
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {/* Create Profile Section - First Priority */}
-          <div className="space-y-4">
-            <div className="text-center">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">New to the Summit?</h3>
-              <p className="text-gray-600 text-sm mb-4">Join the 2025 GLORY Sports Summit networking experience</p>
-              <Button
-                onClick={() => setLocation("/create-profile")}
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white"
-              >
-                Create Profile
-              </Button>
-            </div>
-
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Already have an account?</span>
-              </div>
-            </div>
-
-            {/* Email/Password Sign In Label */}
-            <div className="text-center mb-4">
-              <h3 className="text-md font-medium text-gray-700">Sign in with your email</h3>
-            </div>
-          </div>
 
           {/* Email/Password Sign In Form */}
           <Form {...form}>

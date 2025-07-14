@@ -13,6 +13,7 @@ import Login from "@/pages/login";
 import CreateProfile from "@/pages/create-profile";
 import EmailLogin from "@/pages/email-login";
 import CreatePassword from "@/pages/create-password";
+import Homepage from "@/pages/homepage";
 import BottomNavigation from "@/components/bottom-navigation";
 import { useState, useEffect } from "react";
 import { User } from "@shared/schema";
@@ -123,12 +124,12 @@ function Router() {
     return (
       <div className="max-w-md mx-auto bg-white min-h-screen">
         <Switch>
-          <Route path="/" component={Login} />
+          <Route path="/" component={Homepage} />
           <Route path="/login" component={Login} />
           <Route path="/create-profile" component={CreateProfile} />
           <Route path="/email-login" component={EmailLogin} />
           <Route path="/create-password" component={CreatePassword} />
-          <Route component={Login} />
+          <Route component={Homepage} />
         </Switch>
       </div>
     );

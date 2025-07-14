@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Eye, EyeOff, Lock, Mail, User, Building2, Briefcase, Camera } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, User, Building2, Briefcase, Camera, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -150,6 +150,16 @@ export default function CreateProfile() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 py-8">
+      {/* Back Button */}
+      <Button
+        onClick={() => setLocation("/")}
+        variant="ghost"
+        className="absolute top-4 left-4 text-gray-600 hover:text-gray-800"
+      >
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Back to Homepage
+      </Button>
+      
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
