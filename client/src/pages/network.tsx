@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Send, Users, Circle, MessageSquare, Edit, Upload, Trash2, FileText, CheckCircle, User as UserIcon, Share2 } from "lucide-react";
+import { Send, Users, Circle, MessageSquare, Edit, Upload, Trash2, FileText, CheckCircle, User as UserIcon, Share2, ZoomIn, X, ExternalLink } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,6 +40,9 @@ export default function Network({ currentUser }: NetworkProps) {
   const [isSurveyDialogOpen, setIsSurveyDialogOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [isUserProfileDialogOpen, setIsUserProfileDialogOpen] = useState(false);
+  const [isPhotoViewerOpen, setIsPhotoViewerOpen] = useState(false);
+  const [selectedPhotoUrl, setSelectedPhotoUrl] = useState("");
+  const [selectedPhotoUser, setSelectedPhotoUser] = useState<User | null>(null);
   const [editForm, setEditForm] = useState({
     fullName: "",
     jobTitle: "",
@@ -119,6 +122,12 @@ export default function Network({ currentUser }: NetworkProps) {
   const openUserProfile = (userId: number) => {
     setSelectedUserId(userId);
     setIsUserProfileDialogOpen(true);
+  };
+
+  const openPhotoViewer = (photoUrl: string, user: User) => {
+    setSelectedPhotoUrl(photoUrl);
+    setSelectedPhotoUser(user);
+    setIsPhotoViewerOpen(true);
   };
 
 
@@ -724,18 +733,35 @@ export default function Network({ currentUser }: NetworkProps) {
                 ) : (
                   groupMessages.map((message) => (
                     <div key={message.id} className="flex space-x-3 group">
-                      <Avatar 
-                        className="w-8 h-8 flex-shrink-0 cursor-pointer hover:ring-2 hover:ring-blue-300 transition-all"
-                        onClick={() => message.sender?.id && openUserProfile(message.sender.id)}
-                      >
-                        <AvatarImage 
-                          src={message.sender?.avatar || getUserPhoto(message.sender?.fullName || "")} 
-                          alt={message.sender?.fullName || "User"}
-                        />
-                        <AvatarFallback className={`text-xs bg-gradient-to-br ${getUserAvatarColor(message.sender?.fullName || "")} text-white`}>
-                          {getUserInitials(message.sender?.fullName || "")}
-                        </AvatarFallback>
-                      </Avatar>
+                      <div className="relative group">
+                        <Avatar 
+                          className="w-8 h-8 flex-shrink-0 cursor-pointer hover:ring-2 hover:ring-blue-300 transition-all"
+                          onClick={() => message.sender?.id && openUserProfile(message.sender.id)}
+                        >
+                          <AvatarImage 
+                            src={message.sender?.avatar || getUserPhoto(message.sender?.fullName || "")} 
+                            alt={message.sender?.fullName || "User"}
+                          />
+                          <AvatarFallback className={`text-xs bg-gradient-to-br ${getUserAvatarColor(message.sender?.fullName || "")} text-white`}>
+                            {getUserInitials(message.sender?.fullName || "")}
+                          </AvatarFallback>
+                        </Avatar>
+                        {/* Small photo zoom button for messages */}
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="absolute -top-1 -right-1 w-4 h-4 p-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/70 hover:bg-black/80 text-white rounded-full"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const photoUrl = message.sender?.avatar || getUserPhoto(message.sender?.fullName || "");
+                            if (photoUrl && message.sender) {
+                              openPhotoViewer(photoUrl, message.sender);
+                            }
+                          }}
+                        >
+                          <ZoomIn className="w-2 h-2" />
+                        </Button>
+                      </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
                           <div className="flex items-center space-x-2">
@@ -830,18 +856,38 @@ export default function Network({ currentUser }: NetworkProps) {
                       >
                         <div className="flex items-start space-x-4">
                           <div className="relative flex-shrink-0">
-                            <Avatar 
-                              className="w-16 h-16 cursor-pointer hover:ring-4 hover:ring-blue-300 hover:scale-110 transition-all duration-300"
-                              onClick={() => openUserProfile(attendee.id)}
-                            >
-                              <AvatarImage 
-                                src={attendee.avatar || getUserPhoto(attendee.fullName)} 
-                                alt={attendee.fullName}
-                              />
-                              <AvatarFallback className={`bg-gradient-to-br ${getUserAvatarColor(attendee.fullName)} text-white font-semibold text-lg`}>
-                                {getUserInitials(attendee.fullName)}
-                              </AvatarFallback>
-                            </Avatar>
+                            <div className="relative group">
+                              <Avatar 
+                                className="w-16 h-16 cursor-pointer hover:ring-4 hover:ring-blue-300 hover:scale-110 transition-all duration-300"
+                                onClick={() => openUserProfile(attendee.id)}
+                              >
+                                <AvatarImage 
+                                  src={attendee.avatar || getUserPhoto(attendee.fullName)} 
+                                  alt={attendee.fullName}
+                                />
+                                <AvatarFallback className={`bg-gradient-to-br ${getUserAvatarColor(attendee.fullName)} text-white font-semibold text-lg`}>
+                                  {getUserInitials(attendee.fullName)}
+                                </AvatarFallback>
+                              </Avatar>
+                              {attendee.isOnline && (
+                                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+                              )}
+                              {/* Photo zoom button */}
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                className="absolute top-0 right-0 w-6 h-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/70 hover:bg-black/80 text-white rounded-full"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const photoUrl = attendee.avatar || getUserPhoto(attendee.fullName);
+                                  if (photoUrl) {
+                                    openPhotoViewer(photoUrl, attendee);
+                                  }
+                                }}
+                              >
+                                <ZoomIn className="w-3 h-3" />
+                              </Button>
+                            </div>
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between">
@@ -899,15 +945,32 @@ export default function Network({ currentUser }: NetworkProps) {
             <div className="space-y-4">
               {/* User Avatar and Basic Info */}
               <div className="flex items-start space-x-4">
-                <Avatar className="w-20 h-20">
-                  <AvatarImage 
-                    src={selectedUser.avatar || getUserPhoto(selectedUser.fullName)} 
-                    alt={selectedUser.fullName}
-                  />
-                  <AvatarFallback className={`text-white text-xl font-semibold bg-gradient-to-br ${getUserAvatarColor(selectedUser.fullName)}`}>
-                    {getUserInitials(selectedUser.fullName)}
-                  </AvatarFallback>
-                </Avatar>
+                <div className="relative group">
+                  <Avatar className="w-20 h-20 cursor-pointer hover:scale-105 transition-transform duration-300">
+                    <AvatarImage 
+                      src={selectedUser.avatar || getUserPhoto(selectedUser.fullName)} 
+                      alt={selectedUser.fullName}
+                    />
+                    <AvatarFallback className={`text-white text-xl font-semibold bg-gradient-to-br ${getUserAvatarColor(selectedUser.fullName)}`}>
+                      {getUserInitials(selectedUser.fullName)}
+                    </AvatarFallback>
+                  </Avatar>
+                  {/* Photo zoom button for user profile dialog */}
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="absolute top-0 right-0 w-6 h-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/70 hover:bg-black/80 text-white rounded-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const photoUrl = selectedUser.avatar || getUserPhoto(selectedUser.fullName);
+                      if (photoUrl) {
+                        openPhotoViewer(photoUrl, selectedUser);
+                      }
+                    }}
+                  >
+                    <ZoomIn className="w-3 h-3" />
+                  </Button>
+                </div>
                 <div className="flex-1">
                   <h2 className="text-xl font-semibold text-gray-900">{selectedUser.fullName}</h2>
                   {selectedUser.jobTitle && (
@@ -985,6 +1048,88 @@ export default function Network({ currentUser }: NetworkProps) {
               <div className="text-gray-500">Loading user profile...</div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Photo Viewer Dialog */}
+      <Dialog open={isPhotoViewerOpen} onOpenChange={setIsPhotoViewerOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] p-0 bg-black/95 border-0">
+          <div className="relative flex items-center justify-center min-h-[60vh]">
+            {/* Close Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute top-4 right-4 z-10 text-white hover:bg-white/20 rounded-full w-10 h-10 p-0"
+              onClick={() => setIsPhotoViewerOpen(false)}
+            >
+              <X className="w-5 h-5" />
+            </Button>
+
+            {/* User Info Header */}
+            {selectedPhotoUser && (
+              <div className="absolute top-4 left-4 z-10 bg-black/70 text-white px-4 py-2 rounded-lg">
+                <h3 className="font-semibold">{selectedPhotoUser.fullName}</h3>
+                {selectedPhotoUser.jobTitle && (
+                  <p className="text-sm opacity-80">{selectedPhotoUser.jobTitle}</p>
+                )}
+                {selectedPhotoUser.company && (
+                  <p className="text-xs opacity-60">{selectedPhotoUser.company}</p>
+                )}
+              </div>
+            )}
+
+            {/* Large Profile Image */}
+            <div className="relative w-full h-full flex items-center justify-center p-8">
+              {selectedPhotoUrl ? (
+                <img
+                  src={selectedPhotoUrl}
+                  alt={selectedPhotoUser?.fullName || "Profile photo"}
+                  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                  style={{ maxHeight: '70vh' }}
+                />
+              ) : (
+                <div className="w-96 h-96 bg-gradient-to-br from-gray-400 to-gray-600 rounded-lg flex items-center justify-center text-white text-4xl font-bold">
+                  {selectedPhotoUser ? selectedPhotoUser.fullName.split(' ').map(n => n[0]).join('') : '?'}
+                </div>
+              )}
+            </div>
+
+            {/* Action Buttons */}
+            {selectedPhotoUser && (
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-3">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                  onClick={() => openUserProfile(selectedPhotoUser.id)}
+                >
+                  <UserIcon className="w-4 h-4 mr-2" />
+                  View Profile
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                  onClick={() => {
+                    if (selectedPhotoUser.linkedinProfileUrl && selectedPhotoUser.linkedinProfileUrl.includes('linkedin.com/in/') && !selectedPhotoUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
+                      window.open(selectedPhotoUser.linkedinProfileUrl, '_blank');
+                    } else {
+                      let searchQuery = selectedPhotoUser.fullName || "";
+                      if (selectedPhotoUser.company) {
+                        searchQuery += ` ${selectedPhotoUser.company}`;
+                      }
+                      const encodedQuery = encodeURIComponent(searchQuery);
+                      const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${encodedQuery}`;
+                      window.open(searchUrl, '_blank');
+                    }
+                  }}
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Find on LinkedIn
+                </Button>
+              </div>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>
