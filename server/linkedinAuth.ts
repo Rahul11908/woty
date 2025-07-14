@@ -1,5 +1,5 @@
 import passport from "passport";
-import { Strategy as LinkedInStrategy } from "passport-linkedin-oauth2";
+import { Strategy as OAuth2Strategy } from "passport-oauth2";
 import type { Express } from "express";
 import { storage } from "./storage";
 import { v4 as uuidv4 } from "uuid";
@@ -34,24 +34,38 @@ export function setupLinkedInAuth(app: Express) {
     }
   });
 
-  passport.use(new LinkedInStrategy({
+  passport.use('linkedin', new OAuth2Strategy({
+    authorizationURL: 'https://www.linkedin.com/oauth/v2/authorization',
+    tokenURL: 'https://www.linkedin.com/oauth/v2/accessToken',
     clientID: CLIENT_ID,
     clientSecret: CLIENT_SECRET,
     callbackURL: CALLBACK_URL,
-    scope: ['openid', 'profile', 'email'],
-    profileURL: 'https://api.linkedin.com/v2/userinfo'
+    scope: ['openid', 'profile', 'email']
   }, async (accessToken, refreshToken, profile, done) => {
     try {
-      console.log("LinkedIn profile data:", JSON.stringify(profile, null, 2));
+      // Fetch user profile from LinkedIn API
+      const profileResponse = await fetch('https://api.linkedin.com/v2/userinfo', {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!profileResponse.ok) {
+        throw new Error(`LinkedIn API error: ${profileResponse.status} ${profileResponse.statusText}`);
+      }
+
+      const linkedinProfile = await profileResponse.json();
+      console.log("LinkedIn profile data:", JSON.stringify(linkedinProfile, null, 2));
       
-      const email = profile.emails?.[0]?.value || profile.email;
-      const firstName = profile.name?.givenName || profile.given_name || "";
-      const lastName = profile.name?.familyName || profile.family_name || "";
-      const fullName = profile.displayName || `${firstName} ${lastName}`.trim() || profile.name;
-      const linkedinId = profile.id || profile.sub;
-      const linkedinHeadline = profile.headline || profile.summary || "";
-      const linkedinProfileUrl = profile.profileUrl || profile.profile || "";
-      const avatar = profile.photos?.[0]?.value || profile.picture || "";
+      const email = linkedinProfile.email;
+      const firstName = linkedinProfile.given_name || "";
+      const lastName = linkedinProfile.family_name || "";
+      const fullName = linkedinProfile.name || `${firstName} ${lastName}`.trim();
+      const linkedinId = linkedinProfile.sub;
+      const linkedinHeadline = linkedinProfile.headline || "";
+      const linkedinProfileUrl = linkedinProfile.profile || "";
+      const avatar = linkedinProfile.picture || "";
 
       if (!email) {
         return done(new Error("Email is required for LinkedIn authentication"));
@@ -80,8 +94,8 @@ export function setupLinkedInAuth(app: Express) {
           linkedinProfileUrl,
           avatar,
           authProvider: "linkedin",
-          company: profile.company || null,
-          jobTitle: profile.title || null,
+          company: null,
+          jobTitle: null,
           userRole: email.includes('@glory.media') ? 'glory_team' : 'attendee',
           isOnline: true,
           hasAcceptedTerms: false
