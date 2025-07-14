@@ -359,13 +359,16 @@ export default function Network() {
                 {displayUser.email && (
                   <p className="text-xs text-gray-400 mt-1">{displayUser.email}</p>
                 )}
-                {displayUser.linkedinId && (
+                {(displayUser.linkedinProfileUrl || displayUser.linkedinId) && (
                   <div className="mt-2">
                     <Button
                       variant="outline"
                       size="sm"
                       className="text-xs h-7 px-3 text-blue-600 border-blue-600 hover:bg-blue-50"
-                      onClick={() => window.open(`https://www.linkedin.com/in/${displayUser.linkedinId}`, '_blank')}
+                      onClick={() => {
+                        const profileUrl = displayUser.linkedinProfileUrl || `https://www.linkedin.com/in/${displayUser.linkedinId}`;
+                        window.open(profileUrl, '_blank');
+                      }}
                     >
                       Connect on LinkedIn
                     </Button>
@@ -539,13 +542,13 @@ export default function Network() {
                       </div>
 
                       {/* LinkedIn Profile (read-only for LinkedIn users) */}
-                      {displayUser.linkedinId && (
+                      {(displayUser.linkedinProfileUrl || displayUser.linkedinId) && (
                         <div className="grid gap-2">
                           <Label htmlFor="linkedinProfile">LinkedIn Profile</Label>
                           <div className="flex space-x-2">
                             <Input
                               id="linkedinProfile"
-                              value={`linkedin.com/in/${displayUser.linkedinId}`}
+                              value={displayUser.linkedinProfileUrl || `https://www.linkedin.com/in/${displayUser.linkedinId}`}
                               disabled
                               className="bg-gray-100 text-gray-600 flex-1"
                             />
@@ -553,7 +556,10 @@ export default function Network() {
                               variant="outline"
                               size="sm"
                               className="text-blue-600 border-blue-600 hover:bg-blue-50"
-                              onClick={() => window.open(`https://www.linkedin.com/in/${displayUser.linkedinId}`, '_blank')}
+                              onClick={() => {
+                                const profileUrl = displayUser.linkedinProfileUrl || `https://www.linkedin.com/in/${displayUser.linkedinId}`;
+                                window.open(profileUrl, '_blank');
+                              }}
                             >
                               View Profile
                             </Button>
@@ -756,13 +762,16 @@ export default function Network() {
                                 {attendee.company && (
                                   <p className="text-sm text-gray-500 mb-1">{attendee.company}</p>
                                 )}
-                                {attendee.linkedinId && (
+                                {(attendee.linkedinProfileUrl || attendee.linkedinId) && (
                                   <div className="mb-2">
                                     <Button
                                       variant="outline"
                                       size="sm"
                                       className="text-xs h-7 px-3 text-blue-600 border-blue-600 hover:bg-blue-50"
-                                      onClick={() => window.open(`https://www.linkedin.com/in/${attendee.linkedinId}`, '_blank')}
+                                      onClick={() => {
+                                        const profileUrl = attendee.linkedinProfileUrl || `https://www.linkedin.com/in/${attendee.linkedinId}`;
+                                        window.open(profileUrl, '_blank');
+                                      }}
                                     >
                                       Connect on LinkedIn
                                     </Button>

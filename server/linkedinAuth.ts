@@ -56,7 +56,7 @@ export function setupLinkedInAuth(app: Express) {
       }
 
       const linkedinProfile = await profileResponse.json();
-      console.log("LinkedIn profile data received");
+      console.log("LinkedIn profile data received:", JSON.stringify(linkedinProfile, null, 2));
       
       const email = linkedinProfile.email;
       const firstName = linkedinProfile.given_name || "";
@@ -64,7 +64,8 @@ export function setupLinkedInAuth(app: Express) {
       const fullName = linkedinProfile.name || `${firstName} ${lastName}`.trim();
       const linkedinId = linkedinProfile.sub;
       const linkedinHeadline = linkedinProfile.headline || "";
-      const linkedinProfileUrl = linkedinProfile.profile || "";
+      // Use the actual profile URL from LinkedIn or construct from sub
+      const linkedinProfileUrl = linkedinProfile.profile || `https://www.linkedin.com/in/${linkedinProfile.sub}`;
       const avatar = linkedinProfile.picture || "";
 
       if (!email) {
