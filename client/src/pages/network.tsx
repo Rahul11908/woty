@@ -892,13 +892,6 @@ export default function Network() {
 
               {/* Contact Information */}
               <div className="grid gap-3">
-                {selectedUser.email && (
-                  <div className="grid gap-1">
-                    <Label className="text-sm font-medium text-gray-700">Email</Label>
-                    <p className="text-sm text-gray-600">{selectedUser.email}</p>
-                  </div>
-                )}
-
                 {selectedUser.linkedinHeadline && (
                   <div className="grid gap-1">
                     <Label className="text-sm font-medium text-gray-700">LinkedIn Headline</Label>
@@ -906,28 +899,26 @@ export default function Network() {
                   </div>
                 )}
 
-                {(selectedUser.linkedinId || selectedUser.linkedinProfileUrl) && (
-                  <div className="grid gap-1">
-                    <Label className="text-sm font-medium text-gray-700">LinkedIn Profile</Label>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-blue-600 border-blue-600 hover:bg-blue-50 w-fit"
-                      onClick={() => {
-                        if (selectedUser.linkedinProfileUrl && selectedUser.linkedinProfileUrl.includes('linkedin.com/in/') && !selectedUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
-                          window.open(selectedUser.linkedinProfileUrl, '_blank');
-                        } else {
-                          // Search for user on LinkedIn by name
-                          const searchQuery = encodeURIComponent(selectedUser.fullName || "");
-                          const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`;
-                          window.open(searchUrl, '_blank');
-                        }
-                      }}
-                    >
-                      Find on LinkedIn
-                    </Button>
-                  </div>
-                )}
+                <div className="grid gap-1">
+                  <Label className="text-sm font-medium text-gray-700">Connect</Label>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-blue-600 border-blue-600 hover:bg-blue-50 w-fit"
+                    onClick={() => {
+                      if (selectedUser.linkedinProfileUrl && selectedUser.linkedinProfileUrl.includes('linkedin.com/in/') && !selectedUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
+                        window.open(selectedUser.linkedinProfileUrl, '_blank');
+                      } else {
+                        // Search for user on LinkedIn by name
+                        const searchQuery = encodeURIComponent(selectedUser.fullName || "");
+                        const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`;
+                        window.open(searchUrl, '_blank');
+                      }
+                    }}
+                  >
+                    Find on LinkedIn
+                  </Button>
+                </div>
               </div>
             </div>
           ) : (
