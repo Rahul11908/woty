@@ -38,17 +38,20 @@ export function setupLinkedInAuth(app: Express) {
     clientID: CLIENT_ID,
     clientSecret: CLIENT_SECRET,
     callbackURL: CALLBACK_URL,
-    scope: ['openid', 'profile', 'email']
+    scope: ['openid', 'profile', 'email'],
+    profileURL: 'https://api.linkedin.com/v2/userinfo'
   }, async (accessToken, refreshToken, profile, done) => {
     try {
-      const email = profile.emails?.[0]?.value;
-      const firstName = profile.name?.givenName || "";
-      const lastName = profile.name?.familyName || "";
-      const fullName = `${firstName} ${lastName}`.trim();
-      const linkedinId = profile.id;
-      const linkedinHeadline = profile.headline || "";
-      const linkedinProfileUrl = profile.profileUrl || "";
-      const avatar = profile.photos?.[0]?.value || "";
+      console.log("LinkedIn profile data:", JSON.stringify(profile, null, 2));
+      
+      const email = profile.emails?.[0]?.value || profile.email;
+      const firstName = profile.name?.givenName || profile.given_name || "";
+      const lastName = profile.name?.familyName || profile.family_name || "";
+      const fullName = profile.displayName || `${firstName} ${lastName}`.trim() || profile.name;
+      const linkedinId = profile.id || profile.sub;
+      const linkedinHeadline = profile.headline || profile.summary || "";
+      const linkedinProfileUrl = profile.profileUrl || profile.profile || "";
+      const avatar = profile.photos?.[0]?.value || profile.picture || "";
 
       if (!email) {
         return done(new Error("Email is required for LinkedIn authentication"));
