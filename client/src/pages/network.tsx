@@ -366,12 +366,19 @@ export default function Network() {
                       size="sm"
                       className="text-xs h-7 px-3 text-blue-600 border-blue-600 hover:bg-blue-50"
                       onClick={() => {
+                        console.log("LinkedIn button clicked for user:", displayUser.fullName);
+                        console.log("LinkedIn profile URL:", displayUser.linkedinProfileUrl);
+                        console.log("LinkedIn ID:", displayUser.linkedinId);
+                        
                         if (displayUser.linkedinProfileUrl) {
+                          console.log("Opening LinkedIn profile URL:", displayUser.linkedinProfileUrl);
                           window.open(displayUser.linkedinProfileUrl, '_blank');
                         } else {
                           // Search for user on LinkedIn by name
-                          const searchQuery = encodeURIComponent(displayUser.fullName);
-                          window.open(`https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`, '_blank');
+                          const searchQuery = encodeURIComponent(displayUser.fullName || "");
+                          const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`;
+                          console.log("Opening LinkedIn search:", searchUrl);
+                          window.open(searchUrl, '_blank');
                         }
                       }}
                     >
@@ -547,13 +554,13 @@ export default function Network() {
                       </div>
 
                       {/* LinkedIn Profile (read-only for LinkedIn users) */}
-                      {(displayUser.linkedinProfileUrl || displayUser.linkedinId) && (
+                      {(displayUser.linkedinId || displayUser.linkedinProfileUrl) && (
                         <div className="grid gap-2">
                           <Label htmlFor="linkedinProfile">LinkedIn Profile</Label>
                           <div className="flex space-x-2">
                             <Input
                               id="linkedinProfile"
-                              value={displayUser.linkedinProfileUrl || `https://www.linkedin.com/in/${displayUser.linkedinId}`}
+                              value={displayUser.linkedinProfileUrl || "Connected via LinkedIn"}
                               disabled
                               className="bg-gray-100 text-gray-600 flex-1"
                             />
@@ -562,12 +569,19 @@ export default function Network() {
                               size="sm"
                               className="text-blue-600 border-blue-600 hover:bg-blue-50"
                               onClick={() => {
-                                if (displayUser.linkedinProfileUrl) {
+                                console.log("Profile dialog LinkedIn button clicked for user:", displayUser.fullName);
+                                console.log("Profile dialog LinkedIn profile URL:", displayUser.linkedinProfileUrl);
+                                console.log("Profile dialog LinkedIn ID:", displayUser.linkedinId);
+                                
+                                if (displayUser.linkedinProfileUrl && displayUser.linkedinProfileUrl.includes('linkedin.com/in/')) {
+                                  console.log("Opening profile dialog LinkedIn profile URL:", displayUser.linkedinProfileUrl);
                                   window.open(displayUser.linkedinProfileUrl, '_blank');
                                 } else {
                                   // Search for user on LinkedIn by name
-                                  const searchQuery = encodeURIComponent(displayUser.fullName);
-                                  window.open(`https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`, '_blank');
+                                  const searchQuery = encodeURIComponent(displayUser.fullName || "");
+                                  const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`;
+                                  console.log("Opening profile dialog LinkedIn search:", searchUrl);
+                                  window.open(searchUrl, '_blank');
                                 }
                               }}
                             >
@@ -772,19 +786,26 @@ export default function Network() {
                                 {attendee.company && (
                                   <p className="text-sm text-gray-500 mb-1">{attendee.company}</p>
                                 )}
-                                {(attendee.linkedinProfileUrl || attendee.linkedinId) && (
+                                {(attendee.linkedinId || attendee.linkedinProfileUrl) && (
                                   <div className="mb-2">
                                     <Button
                                       variant="outline"
                                       size="sm"
                                       className="text-xs h-7 px-3 text-blue-600 border-blue-600 hover:bg-blue-50"
                                       onClick={() => {
+                                        console.log("LinkedIn button clicked for attendee:", attendee.fullName);
+                                        console.log("Attendee LinkedIn profile URL:", attendee.linkedinProfileUrl);
+                                        console.log("Attendee LinkedIn ID:", attendee.linkedinId);
+                                        
                                         if (attendee.linkedinProfileUrl) {
+                                          console.log("Opening attendee LinkedIn profile URL:", attendee.linkedinProfileUrl);
                                           window.open(attendee.linkedinProfileUrl, '_blank');
                                         } else {
                                           // Search for user on LinkedIn by name
-                                          const searchQuery = encodeURIComponent(attendee.fullName);
-                                          window.open(`https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`, '_blank');
+                                          const searchQuery = encodeURIComponent(attendee.fullName || "");
+                                          const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`;
+                                          console.log("Opening attendee LinkedIn search:", searchUrl);
+                                          window.open(searchUrl, '_blank');
                                         }
                                       }}
                                     >
