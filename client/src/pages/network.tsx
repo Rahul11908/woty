@@ -360,9 +360,16 @@ export default function Network() {
                   <p className="text-xs text-gray-400 mt-1">{displayUser.email}</p>
                 )}
                 {displayUser.linkedinId && (
-                  <p className="text-xs text-blue-600 mt-1">
-                    LinkedIn: {displayUser.linkedinId}
-                  </p>
+                  <div className="mt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs h-7 px-3 text-blue-600 border-blue-600 hover:bg-blue-50"
+                      onClick={() => window.open(`https://www.linkedin.com/in/${displayUser.linkedinId}`, '_blank')}
+                    >
+                      Connect on LinkedIn
+                    </Button>
+                  </div>
                 )}
                 <div className="flex items-center mt-2 space-x-2">
                   <Badge 
@@ -531,18 +538,28 @@ export default function Network() {
                         />
                       </div>
 
-                      {/* LinkedIn ID (read-only for LinkedIn users) */}
+                      {/* LinkedIn Profile (read-only for LinkedIn users) */}
                       {displayUser.linkedinId && (
                         <div className="grid gap-2">
-                          <Label htmlFor="linkedinId">LinkedIn ID</Label>
-                          <Input
-                            id="linkedinId"
-                            value={displayUser.linkedinId}
-                            disabled
-                            className="bg-gray-100 text-gray-600"
-                          />
+                          <Label htmlFor="linkedinProfile">LinkedIn Profile</Label>
+                          <div className="flex space-x-2">
+                            <Input
+                              id="linkedinProfile"
+                              value={`linkedin.com/in/${displayUser.linkedinId}`}
+                              disabled
+                              className="bg-gray-100 text-gray-600 flex-1"
+                            />
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                              onClick={() => window.open(`https://www.linkedin.com/in/${displayUser.linkedinId}`, '_blank')}
+                            >
+                              View Profile
+                            </Button>
+                          </div>
                           <p className="text-xs text-gray-500">
-                            LinkedIn ID is automatically synced and cannot be edited
+                            LinkedIn profile is automatically synced from your LinkedIn account
                           </p>
                         </div>
                       )}
@@ -740,9 +757,16 @@ export default function Network() {
                                   <p className="text-sm text-gray-500 mb-1">{attendee.company}</p>
                                 )}
                                 {attendee.linkedinId && (
-                                  <p className="text-xs text-blue-600 mb-2">
-                                    LinkedIn: {attendee.linkedinId}
-                                  </p>
+                                  <div className="mb-2">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="text-xs h-7 px-3 text-blue-600 border-blue-600 hover:bg-blue-50"
+                                      onClick={() => window.open(`https://www.linkedin.com/in/${attendee.linkedinId}`, '_blank')}
+                                    >
+                                      Connect on LinkedIn
+                                    </Button>
+                                  </div>
                                 )}
                                 <div className="flex items-center space-x-2">
                                   <Badge 
