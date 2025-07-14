@@ -21,12 +21,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
   app.get("/api/auth/current-user", async (req, res) => {
     try {
-      if (!req.isAuthenticated() || !req.user) {
-        return res.status(401).json({ message: "Not authenticated" });
+      // Check passport authentication first
+      if (req.isAuthenticated() && req.user) {
+        const user = req.user as User;
+        return res.json(user);
       }
       
-      const user = req.user as User;
-      res.json(user);
+      // Check session-based authentication (LinkedIn users)
+      const session = req.session as any;
+      if (session.userId && session.user) {
+        return res.json(session.user);
+      }
+      
+      return res.status(401).json({ message: "Not authenticated" });
     } catch (error) {
       console.error("Error getting current user:", error);
       res.status(500).json({ message: "Internal server error" });
@@ -78,6 +85,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const user = await storage.setUserPassword(session.pendingPasswordUserId, password);
+      
+      // Set up the session for the authenticated user
+      session.userId = user.id;
+      session.user = user;
       
       // Clear the pending session
       delete session.pendingPasswordUserId;

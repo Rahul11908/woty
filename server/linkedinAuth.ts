@@ -150,6 +150,10 @@ export function setupLinkedInAuth(app: Express) {
       
       console.log("LinkedIn authentication successful for user:", user.fullName, user.email);
       
+      // Store user in session for authentication
+      (req.session as any).userId = user.id;
+      (req.session as any).user = user;
+      
       // Check if user needs to create a password
       if (!user.password) {
         // Store user ID in session and redirect to password creation
