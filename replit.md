@@ -219,6 +219,9 @@ The application uses four main entities:
 ✓ Added "Find on LinkedIn" buttons to user profile dialogs and suggested connection cards for enhanced networking
 ✓ Enhanced LinkedIn search functionality to include company information for more accurate profile discovery
 ✓ Removed LinkedIn sign-in option from login page, keeping only email/password authentication
+✓ Created homepage with "Enter Event" and "Sign In" options matching original flow structure
+✓ Added back buttons to login and create profile pages for easy navigation
+✓ Linked GLORY logo to www.glory.media across all authentication pages with hover effects
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.

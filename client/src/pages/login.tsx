@@ -75,7 +75,9 @@ export default function Login() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-4">
           <div className="flex justify-center">
-            <img src={gloryLogo} alt="2025 GLORY Sports Summit" className="h-20 w-auto" />
+            <a href="https://www.glory.media" target="_blank" rel="noopener noreferrer">
+              <img src={gloryLogo} alt="2025 GLORY Sports Summit" className="h-20 w-auto hover:opacity-80 transition-opacity cursor-pointer" />
+            </a>
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
             Sign In

@@ -164,11 +164,13 @@ export default function CreateProfile() {
         <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
             <div className="w-64 h-32">
-              <img 
-                src={gloryLogo} 
-                alt="GLORY Logo" 
-                className="w-full h-full object-contain"
-              />
+              <a href="https://www.glory.media" target="_blank" rel="noopener noreferrer">
+                <img 
+                  src={gloryLogo} 
+                  alt="GLORY Logo" 
+                  className="w-full h-full object-contain hover:opacity-80 transition-opacity cursor-pointer"
+                />
+              </a>
             </div>
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
