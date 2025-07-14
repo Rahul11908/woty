@@ -1085,8 +1085,11 @@ export class DatabaseStorage implements IStorage {
       ? 'glory_team' 
       : insertUser.userRole || "attendee";
 
-    // Hash password before storing
-    const hashedPassword = await bcrypt.hash(insertUser.password, 10);
+    // Hash password before storing if password is provided
+    let hashedPassword = null;
+    if (insertUser.password) {
+      hashedPassword = await bcrypt.hash(insertUser.password, 10);
+    }
 
     const [user] = await db
       .insert(users)
