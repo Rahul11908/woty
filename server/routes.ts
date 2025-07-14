@@ -53,6 +53,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create password for LinkedIn users
+  app.post("/api/create-password", async (req, res) => {
+    try {
+      const { password } = req.body;
+      const session = req.session as any;
+      
+      if (!session.pendingPasswordUserId) {
+        return res.status(400).json({ message: "No pending password creation session" });
+      }
+      
+      const user = await storage.setUserPassword(session.pendingPasswordUserId, password);
+      
+      // Clear the pending session
+      delete session.pendingPasswordUserId;
+      
+      res.json(user);
+    } catch (error) {
+      console.error("Password creation error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // Login by email (keeping for backward compatibility)
   app.post("/api/users/by-email", async (req, res) => {
     try {

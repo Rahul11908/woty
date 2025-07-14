@@ -6,13 +6,17 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   fullName: text("full_name").notNull(),
   email: text("email").notNull().unique(),
-  password: text("password").notNull(),
+  password: text("password"),
   company: text("company"),
   jobTitle: text("job_title"),
   avatar: text("avatar"),
   userRole: text("user_role").default("attendee"), // attendee, panelist, moderator, glory_team
   isOnline: boolean("is_online").default(false),
   hasAcceptedTerms: boolean("has_accepted_terms").default(false),
+  linkedinId: text("linkedin_id").unique(),
+  linkedinHeadline: text("linkedin_headline"),
+  linkedinProfileUrl: text("linkedin_profile_url"),
+  authProvider: text("auth_provider").default("password"), // password, linkedin
   createdAt: timestamp("created_at").defaultNow(),
 });
 

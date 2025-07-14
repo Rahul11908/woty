@@ -12,6 +12,7 @@ import Conversation from "@/pages/conversation";
 import Login from "@/pages/login";
 import CreateProfile from "@/pages/create-profile";
 import EmailLogin from "@/pages/email-login";
+import CreatePassword from "@/pages/create-password";
 import BottomNavigation from "@/components/bottom-navigation";
 import { useState, useEffect } from "react";
 import { User } from "@shared/schema";
@@ -80,6 +81,7 @@ function Router() {
           <Route path="/login" component={Login} />
           <Route path="/create-profile" component={CreateProfile} />
           <Route path="/email-login" component={EmailLogin} />
+          <Route path="/create-password" component={CreatePassword} />
           <Route component={Login} />
         </Switch>
       </div>

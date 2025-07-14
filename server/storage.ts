@@ -59,6 +59,7 @@ export interface IStorage {
   
   // Authentication
   authenticateUser(credentials: LoginData): Promise<User | undefined>;
+  setUserPassword(userId: number, password: string): Promise<User>;
 
   // Conversations
   getConversationsForUser(userId: number): Promise<ConversationWithParticipant[]>;
@@ -293,7 +294,14 @@ export class MemStorage implements IStorage {
     ];
 
     for (const userData of sampleUsers) {
-      await this.createUser(userData);
+      await this.createUser({
+        ...userData,
+        password: await bcrypt.hash("password123", 10), // Default password for sample users
+        linkedinId: null,
+        linkedinHeadline: null,
+        linkedinProfileUrl: null,
+        authProvider: "password"
+      });
     }
   }
 
@@ -326,12 +334,17 @@ export class MemStorage implements IStorage {
     const user: User = { 
       ...insertUser, 
       id,
+      password: insertUser.password || null,
       company: insertUser.company || null,
       jobTitle: insertUser.jobTitle || null,
       avatar: insertUser.avatar || null,
       userRole,
       isOnline: insertUser.isOnline || false,
       hasAcceptedTerms: insertUser.hasAcceptedTerms || false,
+      linkedinId: insertUser.linkedinId || null,
+      linkedinHeadline: insertUser.linkedinHeadline || null,
+      linkedinProfileUrl: insertUser.linkedinProfileUrl || null,
+      authProvider: insertUser.authProvider || "password",
       createdAt: new Date()
     };
     this.users.set(id, user);
@@ -958,16 +971,22 @@ export class MemStorage implements IStorage {
 
   async authenticateUser(credentials: LoginData): Promise<User | undefined> {
     const user = await this.getUserByEmail(credentials.email);
-    if (!user) {
+    if (!user || !user.password) {
       return undefined;
     }
 
-    // For MemStorage, we'll use a simple string comparison for development
-    if (credentials.password === "password123") {
-      return user;
+    // For MemStorage, we'll use bcrypt for password comparison
+    const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+    if (!isPasswordValid) {
+      return undefined;
     }
 
-    return undefined;
+    return user;
+  }
+
+  async setUserPassword(userId: number, password: string): Promise<User> {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    return this.updateUser(userId, { password: hashedPassword });
   }
 
   async getAnalyticsSummary(): Promise<{
@@ -1527,7 +1546,7 @@ export class DatabaseStorage implements IStorage {
   // Authentication
   async authenticateUser(credentials: LoginData): Promise<User | undefined> {
     const user = await this.getUserByEmail(credentials.email);
-    if (!user) {
+    if (!user || !user.password) {
       return undefined;
     }
 
@@ -1537,6 +1556,11 @@ export class DatabaseStorage implements IStorage {
     }
 
     return user;
+  }
+
+  async setUserPassword(userId: number, password: string): Promise<User> {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    return this.updateUser(userId, { password: hashedPassword });
   }
 }
 
