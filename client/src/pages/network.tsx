@@ -370,7 +370,7 @@ export default function Network() {
                         console.log("LinkedIn profile URL:", displayUser.linkedinProfileUrl);
                         console.log("LinkedIn ID:", displayUser.linkedinId);
                         
-                        if (displayUser.linkedinProfileUrl) {
+                        if (displayUser.linkedinProfileUrl && displayUser.linkedinProfileUrl.includes('linkedin.com/in/') && !displayUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
                           console.log("Opening LinkedIn profile URL:", displayUser.linkedinProfileUrl);
                           window.open(displayUser.linkedinProfileUrl, '_blank');
                         } else {
@@ -573,7 +573,7 @@ export default function Network() {
                                 console.log("Profile dialog LinkedIn profile URL:", displayUser.linkedinProfileUrl);
                                 console.log("Profile dialog LinkedIn ID:", displayUser.linkedinId);
                                 
-                                if (displayUser.linkedinProfileUrl && displayUser.linkedinProfileUrl.includes('linkedin.com/in/')) {
+                                if (displayUser.linkedinProfileUrl && displayUser.linkedinProfileUrl.includes('linkedin.com/in/') && !displayUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
                                   console.log("Opening profile dialog LinkedIn profile URL:", displayUser.linkedinProfileUrl);
                                   window.open(displayUser.linkedinProfileUrl, '_blank');
                                 } else {
@@ -797,7 +797,7 @@ export default function Network() {
                                         console.log("Attendee LinkedIn profile URL:", attendee.linkedinProfileUrl);
                                         console.log("Attendee LinkedIn ID:", attendee.linkedinId);
                                         
-                                        if (attendee.linkedinProfileUrl) {
+                                        if (attendee.linkedinProfileUrl && attendee.linkedinProfileUrl.includes('linkedin.com/in/') && !attendee.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
                                           console.log("Opening attendee LinkedIn profile URL:", attendee.linkedinProfileUrl);
                                           window.open(attendee.linkedinProfileUrl, '_blank');
                                         } else {

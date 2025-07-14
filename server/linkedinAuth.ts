@@ -83,8 +83,8 @@ export function setupLinkedInAuth(app: Express) {
       const fullName = linkedinProfile.name || `${firstName} ${lastName}`.trim();
       const linkedinId = linkedinProfile.sub;
       const linkedinHeadline = linkedinProfile.headline || "";
-      // Use the public profile URL from LinkedIn People API or store the sub for later use
-      const linkedinProfileUrl = publicProfileUrl || null;
+      // Only store valid LinkedIn profile URLs, not the sub ID
+      const linkedinProfileUrl = (publicProfileUrl && publicProfileUrl.includes('linkedin.com/in/')) ? publicProfileUrl : null;
       const avatar = linkedinProfile.picture || "";
 
       if (!email) {
