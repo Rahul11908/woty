@@ -128,8 +128,8 @@ function Router() {
   return (
     <div className="max-w-md mx-auto bg-white min-h-screen relative">
       <Switch>
-        <Route path="/" component={() => <Network />} />
-        <Route path="/network" component={Network} />
+        <Route path="/" component={() => <Network currentUser={currentUser} />} />
+        <Route path="/network" component={() => <Network currentUser={currentUser} />} />
         <Route path="/sponsors" component={Sponsors} />
         <Route path="/profile" component={Profile} />
         <Route path="/admin" component={Admin} />

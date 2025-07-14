@@ -30,7 +30,11 @@ import lanceChungPhoto from "@assets/Lance Chung_1752262505617.png";
 import anastasiaBucsisPhoto from "@assets/Anastasia Bucsis_1752262505617.png";
 import alysonWalkerPhoto from "@assets/Alyson Walker_1752262505617.png";
 
-export default function Network() {
+interface NetworkProps {
+  currentUser: User | null;
+}
+
+export default function Network({ currentUser }: NetworkProps) {
   const [newMessage, setNewMessage] = useState("");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isSurveyDialogOpen, setIsSurveyDialogOpen] = useState(false);
@@ -42,73 +46,21 @@ export default function Network() {
     company: "",
     avatar: ""
   });
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const currentUserId = currentUser?.id || null;
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
-  // Initialize current user from localStorage and server auth
+  // Initialize edit form when currentUser changes
   useEffect(() => {
-    const initializeUser = async () => {
-      // First try localStorage immediately (for password-based auth)
-      const storedUser = localStorage.getItem("currentUser");
-      const storedUserId = localStorage.getItem("currentUserId");
-      
-      if (storedUser && storedUserId) {
-        try {
-          const user = JSON.parse(storedUser);
-          setCurrentUser(user);
-          setCurrentUserId(user?.id || parseInt(storedUserId));
-          console.log("Loaded user from localStorage:", user.fullName, "ID:", user.id);
-        } catch (error) {
-          console.error("Error parsing stored user:", error);
-          localStorage.removeItem("currentUser");
-          localStorage.removeItem("currentUserId");
-        }
-      }
-
-      // Also try server-side authentication (for LinkedIn/OAuth users)
-      try {
-        const response = await fetch("/api/auth/current-user", {
-          credentials: 'include'
-        });
-        
-        if (response.ok) {
-          const user = await response.json();
-          setCurrentUser(user);
-          setCurrentUserId(user.id);
-          localStorage.setItem("currentUser", JSON.stringify(user));
-          localStorage.setItem("currentUserId", user.id.toString());
-          console.log("Loaded user from server:", user.fullName, "ID:", user.id);
-          return;
-        }
-      } catch (error) {
-        console.log("No server-side authentication found");
-      }
-    };
-
-    initializeUser();
-
-    // Listen for user updates
-    const handleUserUpdated = (event: CustomEvent) => {
-      const updatedUser = event.detail;
-      setCurrentUser(updatedUser);
-      setCurrentUserId(updatedUser?.id);
-    };
-
-    const handleUserLogin = (event: CustomEvent) => {
-      const user = event.detail;
-      setCurrentUser(user);
-      setCurrentUserId(user?.id);
-    };
-
-    window.addEventListener('userUpdated', handleUserUpdated as EventListener);
-    window.addEventListener('userLogin', handleUserLogin as EventListener);
-    return () => {
-      window.removeEventListener('userUpdated', handleUserUpdated as EventListener);
-      window.removeEventListener('userLogin', handleUserLogin as EventListener);
-    };
-  }, []);
+    if (currentUser) {
+      setEditForm({
+        fullName: currentUser.fullName || "",
+        jobTitle: currentUser.jobTitle || "",
+        company: currentUser.company || "",
+        avatar: currentUser.avatar || ""
+      });
+    }
+  }, [currentUser]);
 
   const { data: groupMessages = [], isLoading: messagesLoading } = useQuery<MessageWithSender[]>({
     queryKey: ["/api/group-chat/messages"],
@@ -169,37 +121,10 @@ export default function Network() {
     setIsUserProfileDialogOpen(true);
   };
 
-  // If user doesn't exist in database, clear stored data
-  useEffect(() => {
-    if (userError && currentUserId) {
-      console.log("User not found, clearing stored data");
-      setCurrentUserId(null);
-      setCurrentUser(null);
-      localStorage.removeItem("currentUser");
-      localStorage.removeItem("currentUserId");
-    }
-  }, [userError, currentUserId]);
 
-  // Use fresh data from server or fallback to localStorage data
+
+  // Use fresh data from server or fallback to prop data
   const displayUser = freshUserData || currentUser;
-
-  // Also try to load user from localStorage immediately if no server auth
-  useEffect(() => {
-    if (!currentUser && !currentUserId) {
-      const storedUser = localStorage.getItem("currentUser");
-      const storedUserId = localStorage.getItem("currentUserId");
-      
-      if (storedUser && storedUserId) {
-        try {
-          const user = JSON.parse(storedUser);
-          setCurrentUser(user);
-          setCurrentUserId(parseInt(storedUserId));
-        } catch (error) {
-          console.error("Error parsing stored user:", error);
-        }
-      }
-    }
-  }, [currentUser, currentUserId]);
 
 
 
