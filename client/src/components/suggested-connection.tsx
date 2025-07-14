@@ -61,14 +61,38 @@ export default function SuggestedConnection({ user }: SuggestedConnectionProps) 
       />
       <h4 className="font-medium text-gray-900 text-sm">{user.fullName}</h4>
       <p className="text-xs text-gray-600 mb-3">{user.title || 'Sports Professional'}</p>
-      <Button 
-        className="w-full text-sm font-medium"
-        variant={getButtonVariant()}
-        onClick={handleConnect}
-        disabled={connectMutation.isPending || connectionStatus !== 'none'}
-      >
-        {getButtonText()}
-      </Button>
+      <div className="space-y-2">
+        <Button 
+          className="w-full text-sm font-medium"
+          variant={getButtonVariant()}
+          onClick={handleConnect}
+          disabled={connectMutation.isPending || connectionStatus !== 'none'}
+        >
+          {getButtonText()}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full text-xs text-blue-600 border-blue-600 hover:bg-blue-50"
+          onClick={() => {
+            if (user.linkedinProfileUrl && user.linkedinProfileUrl.includes('linkedin.com/in/') && !user.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
+              // Direct LinkedIn profile link
+              window.open(user.linkedinProfileUrl, '_blank');
+            } else {
+              // Search for user on LinkedIn by name and company
+              let searchQuery = user.fullName || "";
+              if (user.company) {
+                searchQuery += ` ${user.company}`;
+              }
+              const encodedQuery = encodeURIComponent(searchQuery);
+              const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${encodedQuery}`;
+              window.open(searchUrl, '_blank');
+            }
+          }}
+        >
+          Find on LinkedIn
+        </Button>
+      </div>
     </div>
   );
 }
