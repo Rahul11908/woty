@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { MessageCircle, Star, Calendar, Settings } from "lucide-react";
+import { MessageCircle, Star, Calendar, Settings, User as UserIcon } from "lucide-react";
 import { User } from "@shared/schema";
 import analytics from "@/lib/analytics";
 
@@ -57,6 +57,17 @@ export default function BottomNavigation({ currentUser }: BottomNavigationProps)
         >
           <Star className={`w-6 h-6 transition-transform duration-300 ${isActive("/sponsors") ? "animate-pulse" : ""}`} />
           <span className="text-xs font-medium">Sponsors</span>
+        </Link>
+
+        <Link 
+          href="/user-profile" 
+          onClick={() => handleTabClick('Profile')}
+          className={`flex flex-col items-center space-y-1 p-2 transition-all duration-300 transform hover:scale-110 ${
+            isActive("/user-profile") ? "text-primary scale-105" : "text-gray-500 hover:text-primary"
+          }`}
+        >
+          <UserIcon className={`w-6 h-6 transition-transform duration-300 ${isActive("/user-profile") ? "animate-pulse" : ""}`} />
+          <span className="text-xs font-medium">Profile</span>
         </Link>
 
         {isAdmin && (

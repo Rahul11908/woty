@@ -281,6 +281,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update user profile (PUT method for frontend compatibility)
+  app.put("/api/users/:id", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const updates = req.body;
+      
+      // Validate required fields
+      if (!updates.fullName?.trim()) {
+        return res.status(400).json({ error: "Full name is required" });
+      }
+      
+      const updatedUser = await storage.updateUser(userId, updates);
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      if (error instanceof Error && error.message.includes('not found')) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.status(500).json({ error: "Failed to update user" });
+    }
+  });
+
   // Delete user by ID (admin only)
   app.delete("/api/users/:id", async (req, res) => {
     try {
