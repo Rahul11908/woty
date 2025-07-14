@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Send, Users, Circle, MessageSquare, Edit, Upload, Trash2, FileText, CheckCircle } from "lucide-react";
+import { Send, Users, Circle, MessageSquare, Edit, Upload, Trash2, FileText, CheckCircle, User as UserIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import type { User, MessageWithSender, Survey } from "@shared/schema";
 import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
 import bobParkPhoto from "@assets/Bob Park_1752262505617.png";
@@ -32,6 +33,8 @@ export default function Network() {
   const [newMessage, setNewMessage] = useState("");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isSurveyDialogOpen, setIsSurveyDialogOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [isUserProfileDialogOpen, setIsUserProfileDialogOpen] = useState(false);
   const [editForm, setEditForm] = useState({
     fullName: "",
     jobTitle: "",
@@ -91,6 +94,20 @@ export default function Network() {
   const { data: surveys = [] } = useQuery<Survey[]>({
     queryKey: ["/api/surveys"],
   });
+
+  // Fetch selected user data for profile dialog
+  const { data: selectedUser } = useQuery({
+    queryKey: [`/api/users/${selectedUserId}`],
+    enabled: !!selectedUserId && isUserProfileDialogOpen,
+  });
+
+  const { toast } = useToast();
+
+  // Function to open user profile dialog
+  const openUserProfile = (userId: number) => {
+    setSelectedUserId(userId);
+    setIsUserProfileDialogOpen(true);
+  };
 
   // If user doesn't exist in database, reset to user ID 1
   useEffect(() => {
@@ -366,18 +383,12 @@ export default function Network() {
                       size="sm"
                       className="text-xs h-7 px-3 text-blue-600 border-blue-600 hover:bg-blue-50"
                       onClick={() => {
-                        console.log("LinkedIn button clicked for user:", displayUser.fullName);
-                        console.log("LinkedIn profile URL:", displayUser.linkedinProfileUrl);
-                        console.log("LinkedIn ID:", displayUser.linkedinId);
-                        
                         if (displayUser.linkedinProfileUrl && displayUser.linkedinProfileUrl.includes('linkedin.com/in/') && !displayUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
-                          console.log("Opening LinkedIn profile URL:", displayUser.linkedinProfileUrl);
                           window.open(displayUser.linkedinProfileUrl, '_blank');
                         } else {
                           // Search for user on LinkedIn by name
                           const searchQuery = encodeURIComponent(displayUser.fullName || "");
                           const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`;
-                          console.log("Opening LinkedIn search:", searchUrl);
                           window.open(searchUrl, '_blank');
                         }
                       }}
@@ -569,18 +580,12 @@ export default function Network() {
                               size="sm"
                               className="text-blue-600 border-blue-600 hover:bg-blue-50"
                               onClick={() => {
-                                console.log("Profile dialog LinkedIn button clicked for user:", displayUser.fullName);
-                                console.log("Profile dialog LinkedIn profile URL:", displayUser.linkedinProfileUrl);
-                                console.log("Profile dialog LinkedIn ID:", displayUser.linkedinId);
-                                
                                 if (displayUser.linkedinProfileUrl && displayUser.linkedinProfileUrl.includes('linkedin.com/in/') && !displayUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
-                                  console.log("Opening profile dialog LinkedIn profile URL:", displayUser.linkedinProfileUrl);
                                   window.open(displayUser.linkedinProfileUrl, '_blank');
                                 } else {
                                   // Search for user on LinkedIn by name
                                   const searchQuery = encodeURIComponent(displayUser.fullName || "");
                                   const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`;
-                                  console.log("Opening profile dialog LinkedIn search:", searchUrl);
                                   window.open(searchUrl, '_blank');
                                 }
                               }}
@@ -682,7 +687,10 @@ export default function Network() {
                 ) : (
                   groupMessages.map((message) => (
                     <div key={message.id} className="flex space-x-3 group">
-                      <Avatar className="w-8 h-8 flex-shrink-0">
+                      <Avatar 
+                        className="w-8 h-8 flex-shrink-0 cursor-pointer hover:ring-2 hover:ring-blue-300 transition-all"
+                        onClick={() => message.sender?.id && openUserProfile(message.sender.id)}
+                      >
                         <AvatarImage 
                           src={message.sender?.avatar || getUserPhoto(message.sender?.fullName || "")} 
                           alt={message.sender?.fullName || "User"}
@@ -694,7 +702,10 @@ export default function Network() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
                           <div className="flex items-center space-x-2">
-                            <span className="text-sm font-medium text-gray-900 truncate">
+                            <span 
+                              className="text-sm font-medium text-gray-900 truncate cursor-pointer hover:text-blue-600 hover:underline transition-colors"
+                              onClick={() => message.sender?.id && openUserProfile(message.sender.id)}
+                            >
                               {message.sender?.fullName || "Unknown User"}
                             </span>
                             <span className="text-xs text-gray-500 flex-shrink-0">
@@ -766,7 +777,10 @@ export default function Network() {
                       <div key={attendee.id} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow w-full">
                         <div className="flex items-start space-x-4">
                           <div className="relative flex-shrink-0">
-                            <Avatar className="w-16 h-16">
+                            <Avatar 
+                              className="w-16 h-16 cursor-pointer hover:ring-2 hover:ring-blue-300 transition-all"
+                              onClick={() => openUserProfile(attendee.id)}
+                            >
                               <AvatarImage 
                                 src={attendee.avatar || getUserPhoto(attendee.fullName)} 
                                 alt={attendee.fullName}
@@ -779,7 +793,12 @@ export default function Network() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
-                                <h4 className="font-semibold text-gray-900 text-lg mb-1">{attendee.fullName}</h4>
+                                <h4 
+                                  className="font-semibold text-gray-900 text-lg mb-1 cursor-pointer hover:text-blue-600 hover:underline transition-colors"
+                                  onClick={() => openUserProfile(attendee.id)}
+                                >
+                                  {attendee.fullName}
+                                </h4>
                                 {attendee.jobTitle && (
                                   <p className="text-sm text-gray-600 mb-1">{attendee.jobTitle}</p>
                                 )}
@@ -793,18 +812,12 @@ export default function Network() {
                                       size="sm"
                                       className="text-xs h-7 px-3 text-blue-600 border-blue-600 hover:bg-blue-50"
                                       onClick={() => {
-                                        console.log("LinkedIn button clicked for attendee:", attendee.fullName);
-                                        console.log("Attendee LinkedIn profile URL:", attendee.linkedinProfileUrl);
-                                        console.log("Attendee LinkedIn ID:", attendee.linkedinId);
-                                        
                                         if (attendee.linkedinProfileUrl && attendee.linkedinProfileUrl.includes('linkedin.com/in/') && !attendee.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
-                                          console.log("Opening attendee LinkedIn profile URL:", attendee.linkedinProfileUrl);
                                           window.open(attendee.linkedinProfileUrl, '_blank');
                                         } else {
                                           // Search for user on LinkedIn by name
                                           const searchQuery = encodeURIComponent(attendee.fullName || "");
                                           const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`;
-                                          console.log("Opening attendee LinkedIn search:", searchUrl);
                                           window.open(searchUrl, '_blank');
                                         }
                                       }}
@@ -833,6 +846,97 @@ export default function Network() {
           </Card>
         </div>
       </main>
+
+      {/* User Profile Dialog */}
+      <Dialog open={isUserProfileDialogOpen} onOpenChange={setIsUserProfileDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-2">
+              <UserIcon className="w-5 h-5" />
+              <span>User Profile</span>
+            </DialogTitle>
+            <DialogDescription>
+              View user information and connect with fellow summit attendees.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedUser ? (
+            <div className="space-y-4">
+              {/* User Avatar and Basic Info */}
+              <div className="flex items-start space-x-4">
+                <Avatar className="w-20 h-20">
+                  <AvatarImage 
+                    src={selectedUser.avatar || getUserPhoto(selectedUser.fullName)} 
+                    alt={selectedUser.fullName}
+                  />
+                  <AvatarFallback className={`text-white text-xl font-semibold bg-gradient-to-br ${getUserAvatarColor(selectedUser.fullName)}`}>
+                    {getUserInitials(selectedUser.fullName)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <h2 className="text-xl font-semibold text-gray-900">{selectedUser.fullName}</h2>
+                  {selectedUser.jobTitle && (
+                    <p className="text-sm text-gray-600 mt-1">{selectedUser.jobTitle}</p>
+                  )}
+                  {selectedUser.company && (
+                    <p className="text-sm text-gray-500 mt-1">{selectedUser.company}</p>
+                  )}
+                  <div className="flex items-center mt-2">
+                    <Badge 
+                      className={`text-xs ${getUserRoleBadge(selectedUser.userRole || "attendee", selectedUser.email).color}`}
+                    >
+                      {getUserRoleBadge(selectedUser.userRole || "attendee", selectedUser.email).label}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Information */}
+              <div className="grid gap-3">
+                {selectedUser.email && (
+                  <div className="grid gap-1">
+                    <Label className="text-sm font-medium text-gray-700">Email</Label>
+                    <p className="text-sm text-gray-600">{selectedUser.email}</p>
+                  </div>
+                )}
+
+                {selectedUser.linkedinHeadline && (
+                  <div className="grid gap-1">
+                    <Label className="text-sm font-medium text-gray-700">LinkedIn Headline</Label>
+                    <p className="text-sm text-gray-600">{selectedUser.linkedinHeadline}</p>
+                  </div>
+                )}
+
+                {(selectedUser.linkedinId || selectedUser.linkedinProfileUrl) && (
+                  <div className="grid gap-1">
+                    <Label className="text-sm font-medium text-gray-700">LinkedIn Profile</Label>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-blue-600 border-blue-600 hover:bg-blue-50 w-fit"
+                      onClick={() => {
+                        if (selectedUser.linkedinProfileUrl && selectedUser.linkedinProfileUrl.includes('linkedin.com/in/') && !selectedUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
+                          window.open(selectedUser.linkedinProfileUrl, '_blank');
+                        } else {
+                          // Search for user on LinkedIn by name
+                          const searchQuery = encodeURIComponent(selectedUser.fullName || "");
+                          const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`;
+                          window.open(searchUrl, '_blank');
+                        }
+                      }}
+                    >
+                      Find on LinkedIn
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="flex justify-center py-8">
+              <div className="text-gray-500">Loading user profile...</div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
