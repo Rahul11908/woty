@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 // LinkedIn OAuth configuration
 const CLIENT_ID = process.env.LINKEDIN_CLIENT_ID;
 const CLIENT_SECRET = process.env.LINKEDIN_CLIENT_SECRET;
-const CALLBACK_URL = process.env.LINKEDIN_CALLBACK_URL || "http://localhost:5000/auth/linkedin/callback";
+const CALLBACK_URL = process.env.LINKEDIN_CALLBACK_URL || `https://${process.env.REPLIT_DOMAINS}/auth/linkedin/callback`;
 
 if (!CLIENT_ID || !CLIENT_SECRET) {
   console.warn("LinkedIn OAuth credentials not found. LinkedIn Sign-In will be disabled.");
