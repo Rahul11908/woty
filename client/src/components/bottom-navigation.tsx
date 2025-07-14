@@ -29,33 +29,33 @@ export default function BottomNavigation({ currentUser }: BottomNavigationProps)
         <Link 
           href="/profile" 
           onClick={() => handleTabClick('Program')}
-          className={`flex flex-col items-center space-y-1 p-2 transition-colors ${
-            isActive("/profile") ? "text-primary" : "text-gray-500 hover:text-primary"
+          className={`flex flex-col items-center space-y-1 p-2 transition-all duration-300 transform hover:scale-110 ${
+            isActive("/profile") ? "text-primary scale-105" : "text-gray-500 hover:text-primary"
           }`}
         >
-          <Calendar className="w-6 h-6" />
+          <Calendar className={`w-6 h-6 transition-transform duration-300 ${isActive("/profile") ? "animate-pulse" : ""}`} />
           <span className="text-xs font-medium">Program</span>
         </Link>
 
         <Link 
           href="/network" 
           onClick={() => handleTabClick('Network')}
-          className={`flex flex-col items-center space-y-1 p-2 transition-colors ${
-            isActive("/network") ? "text-primary" : "text-gray-500 hover:text-primary"
+          className={`flex flex-col items-center space-y-1 p-2 transition-all duration-300 transform hover:scale-110 ${
+            isActive("/network") ? "text-primary scale-105" : "text-gray-500 hover:text-primary"
           }`}
         >
-          <MessageCircle className="w-6 h-6" />
+          <MessageCircle className={`w-6 h-6 transition-transform duration-300 ${isActive("/network") ? "animate-pulse" : ""}`} />
           <span className="text-xs font-medium">Network</span>
         </Link>
 
         <Link 
           href="/sponsors" 
           onClick={() => handleTabClick('Sponsors')}
-          className={`flex flex-col items-center space-y-1 p-2 transition-colors ${
-            isActive("/sponsors") ? "text-primary" : "text-gray-500 hover:text-primary"
+          className={`flex flex-col items-center space-y-1 p-2 transition-all duration-300 transform hover:scale-110 ${
+            isActive("/sponsors") ? "text-primary scale-105" : "text-gray-500 hover:text-primary"
           }`}
         >
-          <Star className="w-6 h-6" />
+          <Star className={`w-6 h-6 transition-transform duration-300 ${isActive("/sponsors") ? "animate-pulse" : ""}`} />
           <span className="text-xs font-medium">Sponsors</span>
         </Link>
 
@@ -63,11 +63,11 @@ export default function BottomNavigation({ currentUser }: BottomNavigationProps)
           <Link 
             href="/admin" 
             onClick={() => handleTabClick('Admin')}
-            className={`flex flex-col items-center space-y-1 p-2 transition-colors ${
-              isActive("/admin") ? "text-primary" : "text-gray-500 hover:text-primary"
+            className={`flex flex-col items-center space-y-1 p-2 transition-all duration-300 transform hover:scale-110 ${
+              isActive("/admin") ? "text-primary scale-105" : "text-gray-500 hover:text-primary"
             }`}
           >
-            <Settings className="w-6 h-6" />
+            <Settings className={`w-6 h-6 transition-transform duration-300 ${isActive("/admin") ? "animate-pulse" : ""}`} />
             <span className="text-xs font-medium">Admin</span>
           </Link>
         )}

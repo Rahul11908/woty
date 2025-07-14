@@ -31,37 +31,37 @@ export default function Homepage() {
 
           {/* Feature Cards */}
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto my-12">
-            <Card className="border-orange-200 hover:shadow-lg transition-shadow">
+            <Card className="border-orange-200 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group">
               <CardHeader className="text-center">
-                <Users className="w-12 h-12 text-orange-500 mx-auto mb-2" />
-                <CardTitle className="text-lg">Network</CardTitle>
+                <Users className="w-12 h-12 text-orange-500 mx-auto mb-2 group-hover:scale-110 transition-transform duration-300" />
+                <CardTitle className="text-lg group-hover:text-orange-600 transition-colors">Network</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription>
+                <CardDescription className="group-hover:text-gray-700 transition-colors">
                   Connect with industry professionals and build meaningful relationships
                 </CardDescription>
               </CardContent>
             </Card>
 
-            <Card className="border-orange-200 hover:shadow-lg transition-shadow">
+            <Card className="border-orange-200 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group">
               <CardHeader className="text-center">
-                <CalendarDays className="w-12 h-12 text-orange-500 mx-auto mb-2" />
-                <CardTitle className="text-lg">Panel Discussions</CardTitle>
+                <CalendarDays className="w-12 h-12 text-orange-500 mx-auto mb-2 group-hover:scale-110 transition-transform duration-300" />
+                <CardTitle className="text-lg group-hover:text-orange-600 transition-colors">Panel Discussions</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription>
+                <CardDescription className="group-hover:text-gray-700 transition-colors">
                   Engage with expert panels and submit your questions for live discussions
                 </CardDescription>
               </CardContent>
             </Card>
 
-            <Card className="border-orange-200 hover:shadow-lg transition-shadow">
+            <Card className="border-orange-200 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group">
               <CardHeader className="text-center">
-                <Trophy className="w-12 h-12 text-orange-500 mx-auto mb-2" />
-                <CardTitle className="text-lg">Excellence</CardTitle>
+                <Trophy className="w-12 h-12 text-orange-500 mx-auto mb-2 group-hover:scale-110 transition-transform duration-300" />
+                <CardTitle className="text-lg group-hover:text-orange-600 transition-colors">Excellence</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription>
+                <CardDescription className="group-hover:text-gray-700 transition-colors">
                   Learn from the best in sports business, media, and innovation
                 </CardDescription>
               </CardContent>
@@ -73,15 +73,20 @@ export default function Homepage() {
             <div className="space-y-4">
               <Button
                 onClick={() => setLocation("/create-profile")}
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white text-lg py-6"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white text-lg py-6 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
               >
-                Enter Event
+                <span className="flex items-center justify-center">
+                  Enter Event
+                  <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
               </Button>
               
               <Button
                 onClick={() => setLocation("/login")}
                 variant="outline"
-                className="w-full border-orange-300 text-orange-600 hover:bg-orange-50 text-lg py-6"
+                className="w-full border-orange-300 text-orange-600 hover:bg-orange-50 text-lg py-6 transform hover:scale-105 transition-all duration-300 hover:shadow-lg"
               >
                 Already Have an Account? Sign In
               </Button>
