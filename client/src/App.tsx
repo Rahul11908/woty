@@ -31,6 +31,15 @@ function Router() {
         
         if (response.ok) {
           const user = await response.json();
+          
+          // Check if LinkedIn user needs to create a password
+          if (user.authProvider === 'linkedin' && !user.hasPassword) {
+            // User authenticated with LinkedIn but needs to create password
+            setIsLoading(false);
+            setCurrentUser(null); // Don't set as authenticated until password is created
+            return;
+          }
+          
           setCurrentUser(user);
           // Store in localStorage for consistency
           localStorage.setItem("currentUser", JSON.stringify(user));

@@ -30,6 +30,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check session-based authentication (LinkedIn users)
       const session = req.session as any;
       if (session.userId && session.user) {
+        // Get fresh user data from storage to include hasPassword status
+        const freshUser = await storage.getUser(session.userId);
+        if (freshUser) {
+          return res.json({
+            ...freshUser,
+            hasPassword: !!freshUser.password
+          });
+        }
         return res.json(session.user);
       }
       
