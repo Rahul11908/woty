@@ -43,36 +43,66 @@ export default function Network() {
     avatar: ""
   });
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [currentUserId, setCurrentUserId] = useState<number>(1);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
-  // Initialize current user from localStorage
+  // Initialize current user from localStorage and server auth
   useEffect(() => {
-    const storedUser = localStorage.getItem("currentUser");
-    if (storedUser) {
+    const initializeUser = async () => {
+      // First try server-side authentication
       try {
-        const user = JSON.parse(storedUser);
-        setCurrentUser(user);
-        setCurrentUserId(user?.id || 1);
+        const response = await fetch("/api/auth/current-user", {
+          credentials: 'include'
+        });
+        
+        if (response.ok) {
+          const user = await response.json();
+          setCurrentUser(user);
+          setCurrentUserId(user.id);
+          localStorage.setItem("currentUser", JSON.stringify(user));
+          localStorage.setItem("currentUserId", user.id.toString());
+          return;
+        }
       } catch (error) {
-        console.error("Error parsing stored user:", error);
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("currentUserId");
-        setCurrentUserId(1);
+        console.log("No server-side authentication found");
       }
-    }
+
+      // Fallback to localStorage
+      const storedUser = localStorage.getItem("currentUser");
+      if (storedUser) {
+        try {
+          const user = JSON.parse(storedUser);
+          setCurrentUser(user);
+          setCurrentUserId(user?.id);
+        } catch (error) {
+          console.error("Error parsing stored user:", error);
+          localStorage.removeItem("currentUser");
+          localStorage.removeItem("currentUserId");
+        }
+      }
+    };
+
+    initializeUser();
 
     // Listen for user updates
     const handleUserUpdated = (event: CustomEvent) => {
       const updatedUser = event.detail;
       setCurrentUser(updatedUser);
-      setCurrentUserId(updatedUser?.id || 1);
+      setCurrentUserId(updatedUser?.id);
+    };
+
+    const handleUserLogin = (event: CustomEvent) => {
+      const user = event.detail;
+      setCurrentUser(user);
+      setCurrentUserId(user?.id);
     };
 
     window.addEventListener('userUpdated', handleUserUpdated as EventListener);
+    window.addEventListener('userLogin', handleUserLogin as EventListener);
     return () => {
       window.removeEventListener('userUpdated', handleUserUpdated as EventListener);
+      window.removeEventListener('userLogin', handleUserLogin as EventListener);
     };
   }, []);
 
@@ -135,11 +165,12 @@ export default function Network() {
     setIsUserProfileDialogOpen(true);
   };
 
-  // If user doesn't exist in database, reset to user ID 1
+  // If user doesn't exist in database, clear stored data
   useEffect(() => {
-    if (userError && currentUserId !== 1) {
-      console.log("User not found, resetting to user ID 1");
-      setCurrentUserId(1);
+    if (userError && currentUserId) {
+      console.log("User not found, clearing stored data");
+      setCurrentUserId(null);
+      setCurrentUser(null);
       localStorage.removeItem("currentUser");
       localStorage.removeItem("currentUserId");
     }
@@ -152,6 +183,9 @@ export default function Network() {
 
   const sendMessageMutation = useMutation({
     mutationFn: async (content: string) => {
+      if (!currentUserId) {
+        throw new Error("User not authenticated");
+      }
       await apiRequest("/api/group-chat/messages", "POST", {
         content,
         senderId: currentUserId,
@@ -160,6 +194,13 @@ export default function Network() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/group-chat/messages"] });
       setNewMessage("");
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send message",
+        variant: "destructive",
+      });
     },
   });
 
@@ -178,8 +219,14 @@ export default function Network() {
   const isAdmin = displayUser?.email?.endsWith('@glory.media') || false;
 
   const handleSendMessage = () => {
-    if (newMessage.trim()) {
+    if (newMessage.trim() && currentUserId) {
       sendMessageMutation.mutate(newMessage.trim());
+    } else if (!currentUserId) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to send messages",
+        variant: "destructive",
+      });
     }
   };
 

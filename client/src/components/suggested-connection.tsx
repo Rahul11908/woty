@@ -14,8 +14,14 @@ export default function SuggestedConnection({ user }: SuggestedConnectionProps) 
 
   const connectMutation = useMutation({
     mutationFn: async () => {
+      const storedUser = localStorage.getItem("currentUser");
+      if (!storedUser) {
+        throw new Error("No authenticated user found");
+      }
+      const currentUser = JSON.parse(storedUser);
+      
       await apiRequest("POST", "/api/connections", {
-        requesterId: 1, // In a real app, get from auth context
+        requesterId: currentUser.id,
         addresseeId: user.id,
         status: "pending"
       });

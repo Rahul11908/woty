@@ -16,7 +16,21 @@ export default function Conversation() {
   const queryClient = useQueryClient();
 
   const conversationId = parseInt(id!);
-  const currentUserId = 1; // In a real app, get from auth context
+  // Get current user ID from localStorage or server auth
+  const getCurrentUserId = () => {
+    const storedUser = localStorage.getItem("currentUser");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        return user.id;
+      } catch (error) {
+        console.error("Error parsing stored user:", error);
+      }
+    }
+    return null;
+  };
+  
+  const currentUserId = getCurrentUserId();
 
   const { data: messages = [], isLoading } = useQuery<MessageWithSender[]>({
     queryKey: ["/api/conversations", conversationId, "messages"],
