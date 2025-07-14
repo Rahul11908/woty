@@ -40,7 +40,7 @@ export function setupLinkedInAuth(app: Express) {
     clientID: CLIENT_ID,
     clientSecret: CLIENT_SECRET,
     callbackURL: CALLBACK_URL,
-    scope: ['openid', 'profile', 'email']
+    scope: ['openid', 'profile', 'email', 'w_member_social']
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       // Fetch user profile from LinkedIn API
@@ -58,14 +58,33 @@ export function setupLinkedInAuth(app: Express) {
       const linkedinProfile = await profileResponse.json();
       console.log("LinkedIn profile data received:", JSON.stringify(linkedinProfile, null, 2));
       
+      // Try to get the public profile URL from LinkedIn People API
+      let publicProfileUrl = null;
+      try {
+        const peopleResponse = await fetch('https://api.linkedin.com/v2/people/(id=' + linkedinProfile.sub + ')', {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (peopleResponse.ok) {
+          const peopleData = await peopleResponse.json();
+          console.log("LinkedIn people data:", JSON.stringify(peopleData, null, 2));
+          publicProfileUrl = peopleData.publicProfileUrl;
+        }
+      } catch (error) {
+        console.log("Could not fetch LinkedIn public profile URL:", error);
+      }
+      
       const email = linkedinProfile.email;
       const firstName = linkedinProfile.given_name || "";
       const lastName = linkedinProfile.family_name || "";
       const fullName = linkedinProfile.name || `${firstName} ${lastName}`.trim();
       const linkedinId = linkedinProfile.sub;
       const linkedinHeadline = linkedinProfile.headline || "";
-      // Use the actual profile URL from LinkedIn or construct from sub
-      const linkedinProfileUrl = linkedinProfile.profile || `https://www.linkedin.com/in/${linkedinProfile.sub}`;
+      // Use the public profile URL from LinkedIn People API or store the sub for later use
+      const linkedinProfileUrl = publicProfileUrl || null;
       const avatar = linkedinProfile.picture || "";
 
       if (!email) {

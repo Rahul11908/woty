@@ -366,11 +366,16 @@ export default function Network() {
                       size="sm"
                       className="text-xs h-7 px-3 text-blue-600 border-blue-600 hover:bg-blue-50"
                       onClick={() => {
-                        const profileUrl = displayUser.linkedinProfileUrl || `https://www.linkedin.com/in/${displayUser.linkedinId}`;
-                        window.open(profileUrl, '_blank');
+                        if (displayUser.linkedinProfileUrl) {
+                          window.open(displayUser.linkedinProfileUrl, '_blank');
+                        } else {
+                          // Search for user on LinkedIn by name
+                          const searchQuery = encodeURIComponent(displayUser.fullName);
+                          window.open(`https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`, '_blank');
+                        }
                       }}
                     >
-                      Connect on LinkedIn
+                      Find on LinkedIn
                     </Button>
                   </div>
                 )}
@@ -557,11 +562,16 @@ export default function Network() {
                               size="sm"
                               className="text-blue-600 border-blue-600 hover:bg-blue-50"
                               onClick={() => {
-                                const profileUrl = displayUser.linkedinProfileUrl || `https://www.linkedin.com/in/${displayUser.linkedinId}`;
-                                window.open(profileUrl, '_blank');
+                                if (displayUser.linkedinProfileUrl) {
+                                  window.open(displayUser.linkedinProfileUrl, '_blank');
+                                } else {
+                                  // Search for user on LinkedIn by name
+                                  const searchQuery = encodeURIComponent(displayUser.fullName);
+                                  window.open(`https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`, '_blank');
+                                }
                               }}
                             >
-                              View Profile
+                              Find Profile
                             </Button>
                           </div>
                           <p className="text-xs text-gray-500">
@@ -769,11 +779,16 @@ export default function Network() {
                                       size="sm"
                                       className="text-xs h-7 px-3 text-blue-600 border-blue-600 hover:bg-blue-50"
                                       onClick={() => {
-                                        const profileUrl = attendee.linkedinProfileUrl || `https://www.linkedin.com/in/${attendee.linkedinId}`;
-                                        window.open(profileUrl, '_blank');
+                                        if (attendee.linkedinProfileUrl) {
+                                          window.open(attendee.linkedinProfileUrl, '_blank');
+                                        } else {
+                                          // Search for user on LinkedIn by name
+                                          const searchQuery = encodeURIComponent(attendee.fullName);
+                                          window.open(`https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`, '_blank');
+                                        }
                                       }}
                                     >
-                                      Connect on LinkedIn
+                                      Find on LinkedIn
                                     </Button>
                                   </div>
                                 )}
