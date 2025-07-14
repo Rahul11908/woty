@@ -56,7 +56,7 @@ export function setupLinkedInAuth(app: Express) {
       }
 
       const linkedinProfile = await profileResponse.json();
-      console.log("LinkedIn profile data:", JSON.stringify(linkedinProfile, null, 2));
+      console.log("LinkedIn profile data received");
       
       const email = linkedinProfile.email;
       const firstName = linkedinProfile.given_name || "";
@@ -76,6 +76,7 @@ export function setupLinkedInAuth(app: Express) {
       
       if (user) {
         // Update existing user with LinkedIn data
+        console.log("Updating existing user:", user.id);
         user = await storage.updateUser(user.id, {
           linkedinId,
           linkedinHeadline,
@@ -83,8 +84,10 @@ export function setupLinkedInAuth(app: Express) {
           avatar: avatar || user.avatar,
           authProvider: "linkedin"
         });
+        console.log("User updated successfully");
       } else {
         // Create new user with LinkedIn data
+        console.log("Creating new user for:", email);
         user = await storage.createUser({
           fullName: fullName || email.split('@')[0],
           email,
@@ -100,8 +103,10 @@ export function setupLinkedInAuth(app: Express) {
           isOnline: true,
           hasAcceptedTerms: false
         });
+        console.log("New user created with ID:", user.id);
       }
 
+      console.log("Returning user from LinkedIn auth:", { id: user.id, email: user.email, hasPassword: !!user.password });
       return done(null, user);
     } catch (error) {
       console.error("LinkedIn authentication error:", error);
