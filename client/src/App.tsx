@@ -24,6 +24,10 @@ function Router() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Clear any existing localStorage data for fresh start
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("currentUserId");
+    
     // Check for server-side authentication first (LinkedIn/OAuth users)
     const checkServerAuth = async () => {
       try {
@@ -53,31 +57,6 @@ function Router() {
         console.log("No server-side authentication found");
       }
       
-      // Fallback to localStorage check (for email/password users)
-      const storedUser = localStorage.getItem("currentUser");
-      if (storedUser) {
-        try {
-          const user = JSON.parse(storedUser);
-          // Verify the stored user is still valid
-          const userResponse = await fetch(`/api/users/${user.id}`, {
-            credentials: 'include'
-          });
-          if (userResponse.ok) {
-            const validUser = await userResponse.json();
-            setCurrentUser(validUser);
-            localStorage.setItem("currentUserId", validUser.id.toString());
-          } else {
-            console.log("Invalid user ID, resetting to user ID 1");
-            // Clear invalid stored data
-            localStorage.removeItem("currentUser");
-            localStorage.removeItem("currentUserId");
-          }
-        } catch (error) {
-          console.error("Error parsing stored user:", error);
-          localStorage.removeItem("currentUser");
-          localStorage.removeItem("currentUserId");
-        }
-      }
       setIsLoading(false);
     };
     
