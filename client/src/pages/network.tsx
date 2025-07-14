@@ -50,7 +50,24 @@ export default function Network() {
   // Initialize current user from localStorage and server auth
   useEffect(() => {
     const initializeUser = async () => {
-      // First try server-side authentication
+      // First try localStorage immediately (for password-based auth)
+      const storedUser = localStorage.getItem("currentUser");
+      const storedUserId = localStorage.getItem("currentUserId");
+      
+      if (storedUser && storedUserId) {
+        try {
+          const user = JSON.parse(storedUser);
+          setCurrentUser(user);
+          setCurrentUserId(user?.id || parseInt(storedUserId));
+          console.log("Loaded user from localStorage:", user.fullName, "ID:", user.id);
+        } catch (error) {
+          console.error("Error parsing stored user:", error);
+          localStorage.removeItem("currentUser");
+          localStorage.removeItem("currentUserId");
+        }
+      }
+
+      // Also try server-side authentication (for LinkedIn/OAuth users)
       try {
         const response = await fetch("/api/auth/current-user", {
           credentials: 'include'
@@ -62,24 +79,11 @@ export default function Network() {
           setCurrentUserId(user.id);
           localStorage.setItem("currentUser", JSON.stringify(user));
           localStorage.setItem("currentUserId", user.id.toString());
+          console.log("Loaded user from server:", user.fullName, "ID:", user.id);
           return;
         }
       } catch (error) {
         console.log("No server-side authentication found");
-      }
-
-      // Fallback to localStorage
-      const storedUser = localStorage.getItem("currentUser");
-      if (storedUser) {
-        try {
-          const user = JSON.parse(storedUser);
-          setCurrentUser(user);
-          setCurrentUserId(user?.id);
-        } catch (error) {
-          console.error("Error parsing stored user:", error);
-          localStorage.removeItem("currentUser");
-          localStorage.removeItem("currentUserId");
-        }
       }
     };
 
@@ -178,6 +182,24 @@ export default function Network() {
 
   // Use fresh data from server or fallback to localStorage data
   const displayUser = freshUserData || currentUser;
+
+  // Also try to load user from localStorage immediately if no server auth
+  useEffect(() => {
+    if (!currentUser && !currentUserId) {
+      const storedUser = localStorage.getItem("currentUser");
+      const storedUserId = localStorage.getItem("currentUserId");
+      
+      if (storedUser && storedUserId) {
+        try {
+          const user = JSON.parse(storedUser);
+          setCurrentUser(user);
+          setCurrentUserId(parseInt(storedUserId));
+        } catch (error) {
+          console.error("Error parsing stored user:", error);
+        }
+      }
+    }
+  }, [currentUser, currentUserId]);
 
 
 
@@ -418,7 +440,7 @@ export default function Network() {
             </div>
           </div>
         </div>
-      ) : displayUser ? (
+      ) : displayUser || currentUser ? (
         <div className="bg-white shadow-sm mx-4 mt-4 rounded-lg overflow-hidden">
           <div className="p-4">
             <div className="flex items-center space-x-4">
@@ -727,7 +749,7 @@ export default function Network() {
                 </>
               ) : (
                 <div className="text-center text-gray-500">
-                  <p>Please log in to view your profile</p>
+                  <p>Loading your profile...</p>
                 </div>
               )}
             </div>
