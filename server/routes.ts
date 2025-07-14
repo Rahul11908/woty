@@ -729,6 +729,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Utility endpoint to update existing LinkedIn users' job titles and companies
+  app.post("/api/admin/update-linkedin-profiles", async (req, res) => {
+    try {
+      // Get all LinkedIn users
+      const users = await storage.getAllUsers();
+      const linkedInUsers = users.filter(user => user.authProvider === 'linkedin' && user.linkedinHeadline);
+      
+      let updatedCount = 0;
+      
+      for (const user of linkedInUsers) {
+        const { jobTitle, company } = parseLinkedInHeadline(user.linkedinHeadline);
+        
+        if (jobTitle || company) {
+          await storage.updateUser(user.id, {
+            jobTitle: user.jobTitle || jobTitle,
+            company: user.company || company
+          });
+          updatedCount++;
+        }
+      }
+      
+      res.json({ 
+        message: `Updated ${updatedCount} LinkedIn users with job title and company information`,
+        totalLinkedInUsers: linkedInUsers.length,
+        updatedUsers: updatedCount
+      });
+    } catch (error) {
+      console.error("Error updating LinkedIn profiles:", error);
+      res.status(500).json({ message: "Failed to update LinkedIn profiles" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
+
+// Function to parse job title and company from LinkedIn headline
+function parseLinkedInHeadline(headline: string): { jobTitle: string | null, company: string | null } {
+  if (!headline || headline.trim() === "") {
+    return { jobTitle: null, company: null };
+  }
+
+  // Common patterns in LinkedIn headlines:
+  // "Software Engineer at Google"
+  // "Marketing Manager | Microsoft"
+  // "CEO @ Startup Inc."
+  // "Product Manager - Apple"
+  // "Senior Developer, Netflix"
+  // "Founder & CEO at Company Name"
+  // "Account Manager, Glory Media"
+  
+  const separators = [' at ', ' @ ', ' | ', ' - ', ', ', ' — ', ' – '];
+  
+  for (const separator of separators) {
+    if (headline.includes(separator)) {
+      const parts = headline.split(separator);
+      if (parts.length >= 2) {
+        const jobTitle = parts[0].trim();
+        const company = parts[1].trim();
+        
+        // Clean up common title prefixes/suffixes
+        const cleanJobTitle = jobTitle
+          .replace(/^(Sr\.|Senior|Jr\.|Junior|Lead|Principal|Staff)\s+/i, '')
+          .replace(/\s+(I|II|III|IV|V)$/i, '')
+          .trim();
+        
+        // Clean up company names
+        const cleanCompany = company
+          .replace(/\s+(Inc\.?|LLC\.?|Ltd\.?|Corp\.?|Co\.?|Company)$/i, '')
+          .replace(/^(at|@)\s+/i, '')
+          .trim();
+        
+        return { 
+          jobTitle: cleanJobTitle || null, 
+          company: cleanCompany || null 
+        };
+      }
+    }
+  }
+  
+  // If no separator found, treat entire headline as job title
+  return { jobTitle: headline.trim(), company: null };
+}
 }

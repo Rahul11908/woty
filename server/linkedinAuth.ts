@@ -13,6 +13,54 @@ if (!CLIENT_ID || !CLIENT_SECRET) {
   console.warn("LinkedIn OAuth credentials not found. LinkedIn Sign-In will be disabled.");
 }
 
+// Function to parse job title and company from LinkedIn headline
+function parseLinkedInHeadline(headline: string): { jobTitle: string | null, company: string | null } {
+  if (!headline || headline.trim() === "") {
+    return { jobTitle: null, company: null };
+  }
+
+  // Common patterns in LinkedIn headlines:
+  // "Software Engineer at Google"
+  // "Marketing Manager | Microsoft"
+  // "CEO @ Startup Inc."
+  // "Product Manager - Apple"
+  // "Senior Developer, Netflix"
+  // "Founder & CEO at Company Name"
+  // "Account Manager, Glory Media"
+  
+  const separators = [' at ', ' @ ', ' | ', ' - ', ', ', ' — ', ' – '];
+  
+  for (const separator of separators) {
+    if (headline.includes(separator)) {
+      const parts = headline.split(separator);
+      if (parts.length >= 2) {
+        const jobTitle = parts[0].trim();
+        const company = parts[1].trim();
+        
+        // Clean up common title prefixes/suffixes
+        const cleanJobTitle = jobTitle
+          .replace(/^(Sr\.|Senior|Jr\.|Junior|Lead|Principal|Staff)\s+/i, '')
+          .replace(/\s+(I|II|III|IV|V)$/i, '')
+          .trim();
+        
+        // Clean up company names
+        const cleanCompany = company
+          .replace(/\s+(Inc\.?|LLC\.?|Ltd\.?|Corp\.?|Co\.?|Company)$/i, '')
+          .replace(/^(at|@)\s+/i, '')
+          .trim();
+        
+        return { 
+          jobTitle: cleanJobTitle || null, 
+          company: cleanCompany || null 
+        };
+      }
+    }
+  }
+  
+  // If no separator found, treat entire headline as job title
+  return { jobTitle: headline.trim(), company: null };
+}
+
 export function setupLinkedInAuth(app: Express) {
   if (!CLIENT_ID || !CLIENT_SECRET) {
     return;
@@ -87,6 +135,13 @@ export function setupLinkedInAuth(app: Express) {
       const linkedinProfileUrl = (publicProfileUrl && publicProfileUrl.includes('linkedin.com/in/')) ? publicProfileUrl : null;
       const avatar = linkedinProfile.picture || "";
 
+      // Parse job title and company from LinkedIn headline
+      const { jobTitle, company } = parseLinkedInHeadline(linkedinHeadline);
+      console.log("Parsed LinkedIn headline:", { 
+        original: linkedinHeadline, 
+        parsed: { jobTitle, company } 
+      });
+
       if (!email) {
         return done(new Error("Email is required for LinkedIn authentication"));
       }
@@ -102,7 +157,10 @@ export function setupLinkedInAuth(app: Express) {
           linkedinHeadline,
           linkedinProfileUrl,
           avatar: avatar || user.avatar,
-          authProvider: "linkedin"
+          authProvider: "linkedin",
+          // Update job title and company from LinkedIn headline if not already set
+          jobTitle: user.jobTitle || jobTitle,
+          company: user.company || company
         });
         console.log("User updated successfully");
       } else {
@@ -117,8 +175,8 @@ export function setupLinkedInAuth(app: Express) {
           linkedinProfileUrl,
           avatar,
           authProvider: "linkedin",
-          company: null,
-          jobTitle: null,
+          company: company,
+          jobTitle: jobTitle,
           userRole: email.includes('@glory.media') ? 'glory_team' : 'attendee',
           isOnline: true,
           hasAcceptedTerms: false
