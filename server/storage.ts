@@ -1326,6 +1326,17 @@ export class DatabaseStorage implements IStorage {
   async createGroupChatMessage(messageData: Omit<InsertMessage, 'conversationId'>): Promise<Message> {
     const GROUP_CHAT_ID = 999; // Special ID for group chat
     
+    // Ensure the special group chat conversation exists
+    try {
+      await db.insert(conversations).values({
+        id: GROUP_CHAT_ID,
+        participant1Id: 1, // System user
+        participant2Id: 1, // System user
+      }).onConflictDoNothing();
+    } catch (error) {
+      // Conversation already exists, continue
+    }
+    
     const [message] = await db.insert(messages).values({
       ...messageData,
       conversationId: GROUP_CHAT_ID
