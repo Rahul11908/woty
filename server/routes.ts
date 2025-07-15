@@ -787,6 +787,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/analytics/sessions", async (req, res) => {
     try {
       const sessionData = insertUserSessionSchema.parse(req.body);
+      
+      // Check if user exists before creating session
+      const user = await storage.getUser(sessionData.userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      
       const session = await storage.createUserSession(sessionData);
       res.json(session);
     } catch (error) {

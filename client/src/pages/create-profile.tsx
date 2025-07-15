@@ -154,10 +154,9 @@ export default function CreateProfile() {
       <Button
         onClick={() => setLocation("/")}
         variant="ghost"
-        className="absolute top-4 left-4 text-gray-600 hover:text-gray-800 z-10"
+        className="fixed top-4 left-4 text-gray-800 hover:text-gray-900 z-50 font-bold p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
       >
-        <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Homepage
+        <ArrowLeft className="w-6 h-6" />
       </Button>
       
       <Card className="w-full max-w-md">
