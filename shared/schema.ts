@@ -172,6 +172,10 @@ export const insertConnectionSchema = createInsertSchema(connections).omit({
 export const insertQuestionSchema = createInsertSchema(questions).omit({
   id: true,
   createdAt: true,
+}).extend({
+  panelName: z.string().min(1, "Panel name is required"),
+  question: z.string().min(1, "Question is required").max(1000, "Question must be less than 1000 characters"),
+  userId: z.number().int().positive("User ID must be a positive integer"),
 });
 
 export const insertGroupChatMessageSchema = createInsertSchema(messages).omit({

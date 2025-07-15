@@ -251,34 +251,42 @@ export default function Profile() {
   // Get current user ID from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
-    if (storedUser) {
+    const storedUserId = localStorage.getItem("currentUserId");
+    
+    if (storedUser && storedUserId) {
       try {
         const user = JSON.parse(storedUser);
-        // Validate that the user ID exists in the database (1, 2, 4, 5, 6)
-        const validUserIds = [1, 2, 4, 5, 6];
-        const userId = user?.id;
-        if (validUserIds.includes(userId)) {
+        const userId = parseInt(storedUserId);
+        
+        // Use the stored user ID if it's valid
+        if (userId && userId > 0) {
           setCurrentUserId(userId);
         } else {
-          console.log("Invalid user ID, resetting to user ID 1");
+          console.error("Invalid user ID in localStorage");
           setCurrentUserId(1);
-          localStorage.removeItem("currentUser");
-          localStorage.removeItem("currentUserId");
         }
       } catch (error) {
         console.error("Error parsing stored user:", error);
         setCurrentUserId(1);
       }
+    } else {
+      console.log("No stored user found, using default user ID 1");
+      setCurrentUserId(1);
     }
   }, []);
 
   const submitQuestionMutation = useMutation({
     mutationFn: async ({ panelId, panelName, question }: { panelId: string; panelName: string; question: string }) => {
-      await apiRequest("/api/questions", "POST", {
+      console.log("Submitting question with data:", { userId: currentUserId, panelName, question });
+      
+      const response = await apiRequest("/api/questions", "POST", {
         userId: currentUserId,
         panelName,
         question
       });
+      
+      console.log("Question submission response:", response);
+      return response;
     },
     onSuccess: (_, variables) => {
       setQuestions(prev => ({ ...prev, [variables.panelId]: "" }));
@@ -286,13 +294,13 @@ export default function Profile() {
       toast({
         title: "Question submitted successfully!",
         description: "Your question has been submitted and will be considered for the panel discussion.",
-        variant: "default",
       });
     },
     onError: (error) => {
+      console.error("Question submission error:", error);
       toast({
         title: "Failed to submit question",
-        description: "Please try again later.",
+        description: error.message || "Please try again later.",
         variant: "destructive",
       });
     }
@@ -300,8 +308,16 @@ export default function Profile() {
 
   const handleQuestionSubmit = (panelId: string, panelTitle: string) => {
     const question = questions[panelId];
-    if (question?.trim()) {
+    if (question?.trim() && currentUserId) {
+      console.log("Attempting to submit question:", { panelId, panelTitle, question: question.trim(), currentUserId });
       submitQuestionMutation.mutate({ panelId, panelName: panelTitle, question: question.trim() });
+    } else {
+      console.error("Cannot submit question - missing data:", { question: question?.trim(), currentUserId });
+      toast({
+        title: "Cannot submit question",
+        description: "Please make sure you're logged in and have entered a question.",
+        variant: "destructive",
+      });
     }
   };
 

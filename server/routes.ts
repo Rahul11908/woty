@@ -447,19 +447,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Submit a question for a panel
   app.post("/api/questions", async (req, res) => {
     try {
+      console.log("Question submission request body:", req.body);
+      
+      // Validate the question data
       const questionData = insertQuestionSchema.parse(req.body);
+      console.log("Parsed question data:", questionData);
+      
+      // Verify the user exists before creating the question
+      const user = await storage.getUser(questionData.userId);
+      if (!user) {
+        console.log("User not found:", questionData.userId);
+        return res.status(404).json({ error: "User not found" });
+      }
+      
+      // Create the question
       const question = await storage.createQuestion(questionData);
+      console.log("Question created successfully:", question);
       
       // Track user activity for submitting a question
-      await storage.createUserActivity({
-        userId: questionData.userId,
-        activityType: 'question_submitted',
-        activityDetails: { questionId: question.id, panelName: question.panelName }
-      });
+      try {
+        await storage.createUserActivity({
+          userId: questionData.userId,
+          activityType: 'question_submitted',
+          activityDetails: { questionId: question.id, panelName: question.panelName }
+        });
+      } catch (activityError) {
+        console.warn("Failed to track user activity:", activityError);
+        // Don't fail the whole request if activity tracking fails
+      }
       
       res.json(question);
     } catch (error) {
-      res.status(400).json({ error: "Invalid question data" });
+      console.error("Error submitting question:", error);
+      if (error.name === 'ZodError') {
+        return res.status(400).json({ error: "Invalid question data format", details: error.errors });
+      }
+      res.status(500).json({ error: "Failed to submit question" });
     }
   });
 
