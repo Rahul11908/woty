@@ -158,22 +158,23 @@ export default function UserProfile({ currentUser }: UserProfileProps) {
       {/* Main Content */}
       <main className="max-w-2xl mx-auto px-4 py-6">
         <Card className="shadow-lg">
-          <CardHeader className="text-center pb-4">
-            <div className="relative inline-block">
-              <Avatar className="w-24 h-24 mx-auto mb-4 border-4 border-white shadow-lg">
+          <CardHeader className="text-center pb-6">
+            <div className="relative inline-block mb-6">
+              <Avatar className="w-32 h-32 mx-auto border-4 border-white shadow-lg avatar-image-flat">
                 <AvatarImage 
                   src={isEditing ? editForm.avatar : currentUser.avatar} 
                   alt={currentUser.fullName}
+                  loading="lazy"
                 />
-                <AvatarFallback className={`text-2xl bg-gradient-to-br ${getUserAvatarColor(currentUser.fullName)} text-white`}>
+                <AvatarFallback className={`text-3xl bg-gradient-to-br ${getUserAvatarColor(currentUser.fullName)} text-white`}>
                   {getUserInitials(currentUser.fullName)}
                 </AvatarFallback>
               </Avatar>
               {isEditing && (
-                <div className="absolute bottom-0 right-0">
+                <div className="absolute bottom-2 right-2">
                   <label htmlFor="avatar-upload" className="cursor-pointer">
-                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white hover:bg-blue-600 transition-colors">
-                      <Upload className="w-4 h-4" />
+                    <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white hover:bg-blue-600 transition-colors shadow-lg">
+                      <Upload className="w-5 h-5" />
                     </div>
                   </label>
                   <input
@@ -187,19 +188,19 @@ export default function UserProfile({ currentUser }: UserProfileProps) {
               )}
             </div>
             
-            <div className="flex justify-center items-center space-x-2">
+            <div className="flex justify-center items-center mb-6">
               <Badge 
-                className={`${getUserRoleBadge(currentUser.userRole || "attendee", currentUser.email).color} px-3 py-1`}
+                className={`${getUserRoleBadge(currentUser.userRole || "attendee", currentUser.email).color} px-4 py-2 text-sm font-medium`}
               >
                 {getUserRoleBadge(currentUser.userRole || "attendee", currentUser.email).label}
               </Badge>
             </div>
 
             {!isEditing && (
-              <div className="flex justify-center mt-4">
+              <div className="flex justify-center">
                 <Button 
                   onClick={() => setIsEditing(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5"
                 >
                   <Edit className="w-4 h-4 mr-2" />
                   Edit Profile
@@ -300,67 +301,69 @@ export default function UserProfile({ currentUser }: UserProfileProps) {
             ) : (
               <>
                 {/* View Mode */}
-                <div className="space-y-4">
-                  <div className="text-center">
-                    <h2 className="text-2xl font-semibold text-gray-900">{currentUser.fullName}</h2>
+                <div className="space-y-6">
+                  <div className="text-center space-y-2">
+                    <h2 className="text-3xl font-bold text-gray-900">{currentUser.fullName}</h2>
                     {currentUser.jobTitle && (
-                      <p className="text-lg text-gray-600 mt-1">{currentUser.jobTitle}</p>
+                      <p className="text-lg text-gray-600 font-medium">{currentUser.jobTitle}</p>
                     )}
                     {currentUser.company && (
-                      <p className="text-md text-gray-500 mt-1">{currentUser.company}</p>
+                      <p className="text-base text-gray-500">{currentUser.company}</p>
                     )}
                     {currentUser.email && (
-                      <p className="text-sm text-gray-500 mt-2">{currentUser.email}</p>
+                      <p className="text-sm text-gray-500 mt-3">{currentUser.email}</p>
                     )}
                   </div>
 
                   {currentUser.bio && (
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h3 className="font-medium text-gray-900 mb-2">About</h3>
-                      <p className="text-gray-700 text-sm leading-relaxed">{currentUser.bio}</p>
+                    <div className="bg-gray-50 p-6 rounded-lg">
+                      <h3 className="font-semibold text-gray-900 mb-3 text-center">About</h3>
+                      <p className="text-gray-700 text-sm leading-relaxed text-center">{currentUser.bio}</p>
                     </div>
                   )}
 
                   {/* LinkedIn Connection */}
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <h3 className="font-medium text-gray-900 mb-2">Professional Network</h3>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-blue-600 border-blue-600 hover:bg-blue-50"
-                      onClick={() => {
-                        if (currentUser.linkedinProfileUrl && currentUser.linkedinProfileUrl.includes('linkedin.com/in/') && !currentUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
-                          window.open(currentUser.linkedinProfileUrl, '_blank');
-                        } else {
-                          let searchQuery = currentUser.fullName || "";
-                          if (currentUser.company) {
-                            searchQuery += ` ${currentUser.company}`;
+                  <div className="bg-blue-50 p-6 rounded-lg">
+                    <h3 className="font-semibold text-gray-900 mb-4 text-center">Professional Network</h3>
+                    <div className="flex justify-center">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-blue-600 border-blue-600 hover:bg-blue-50 px-6 py-2"
+                        onClick={() => {
+                          if (currentUser.linkedinProfileUrl && currentUser.linkedinProfileUrl.includes('linkedin.com/in/') && !currentUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
+                            window.open(currentUser.linkedinProfileUrl, '_blank');
+                          } else {
+                            let searchQuery = currentUser.fullName || "";
+                            if (currentUser.company) {
+                              searchQuery += ` ${currentUser.company}`;
+                            }
+                            const encodedQuery = encodeURIComponent(searchQuery);
+                            const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${encodedQuery}`;
+                            window.open(searchUrl, '_blank');
                           }
-                          const encodedQuery = encodeURIComponent(searchQuery);
-                          const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${encodedQuery}`;
-                          window.open(searchUrl, '_blank');
-                        }
-                      }}
-                    >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Find on LinkedIn
-                    </Button>
+                        }}
+                      >
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Find on LinkedIn
+                      </Button>
+                    </div>
                   </div>
 
                   {/* Account Information */}
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-medium text-gray-900 mb-2">Account Information</h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Member since:</span>
-                        <span className="text-gray-900">
+                  <div className="bg-gray-50 p-6 rounded-lg">
+                    <h3 className="font-semibold text-gray-900 mb-4 text-center">Account Information</h3>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600 font-medium">Member since:</span>
+                        <span className="text-gray-900 font-semibold">
                           {currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString() : 'N/A'}
                         </span>
                       </div>
                       {currentUser.linkedinId && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">LinkedIn Connected:</span>
-                          <span className="text-green-600 font-medium">Yes</span>
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600 font-medium">LinkedIn Connected:</span>
+                          <span className="text-green-600 font-semibold">Yes</span>
                         </div>
                       )}
                     </div>
