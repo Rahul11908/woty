@@ -1083,29 +1083,31 @@ export default function Network({ currentUser }: NetworkProps) {
 
                 {/* Show LinkedIn networking button for all users */}
                 <div className="grid gap-1">
-                  <Label className="text-sm font-medium text-gray-700">Connect</Label>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-blue-600 border-blue-600 hover:bg-blue-50 w-fit"
-                    onClick={() => {
-                      if (selectedUser.linkedinProfileUrl && selectedUser.linkedinProfileUrl.includes('linkedin.com/in/') && !selectedUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
-                        // Direct LinkedIn profile link
-                        window.open(selectedUser.linkedinProfileUrl, '_blank');
-                      } else {
-                        // Search for user on LinkedIn by name and company
-                        let searchQuery = selectedUser.fullName || "";
-                        if (selectedUser.company) {
-                          searchQuery += ` ${selectedUser.company}`;
+                  <Label className="text-sm font-medium text-gray-700 text-center">Connect</Label>
+                  <div className="flex justify-center">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                      onClick={() => {
+                        if (selectedUser.linkedinProfileUrl && selectedUser.linkedinProfileUrl.includes('linkedin.com/in/') && !selectedUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
+                          // Direct LinkedIn profile link
+                          window.open(selectedUser.linkedinProfileUrl, '_blank');
+                        } else {
+                          // Search for user on LinkedIn by name and company
+                          let searchQuery = selectedUser.fullName || "";
+                          if (selectedUser.company) {
+                            searchQuery += ` ${selectedUser.company}`;
+                          }
+                          const encodedQuery = encodeURIComponent(searchQuery);
+                          const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${encodedQuery}`;
+                          window.open(searchUrl, '_blank');
                         }
-                        const encodedQuery = encodeURIComponent(searchQuery);
-                        const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${encodedQuery}`;
-                        window.open(searchUrl, '_blank');
-                      }
-                    }}
-                  >
-                    Find on LinkedIn
-                  </Button>
+                      }}
+                    >
+                      Find on LinkedIn
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
