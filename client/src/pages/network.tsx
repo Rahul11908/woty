@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import { Send, Users, Circle, MessageSquare, Edit, Upload, Trash2, FileText, CheckCircle, User as UserIcon, Share2, ZoomIn, X, ExternalLink } from "lucide-react";
+import { Send, Users, Circle, MessageSquare, Upload, Trash2, FileText, CheckCircle, User as UserIcon, Share2, ZoomIn, X, ExternalLink } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,34 +38,17 @@ interface NetworkProps {
 export default function Network({ currentUser }: NetworkProps) {
   const [, setLocation] = useLocation();
   const [newMessage, setNewMessage] = useState("");
-  const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isSurveyDialogOpen, setIsSurveyDialogOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [isUserProfileDialogOpen, setIsUserProfileDialogOpen] = useState(false);
   const [isPhotoViewerOpen, setIsPhotoViewerOpen] = useState(false);
   const [selectedPhotoUrl, setSelectedPhotoUrl] = useState("");
   const [selectedPhotoUser, setSelectedPhotoUser] = useState<User | null>(null);
-  const [editForm, setEditForm] = useState({
-    fullName: "",
-    jobTitle: "",
-    company: "",
-    avatar: ""
-  });
   const currentUserId = currentUser?.id || null;
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
-  // Initialize edit form when currentUser changes
-  useEffect(() => {
-    if (currentUser) {
-      setEditForm({
-        fullName: currentUser.fullName || "",
-        jobTitle: currentUser.jobTitle || "",
-        company: currentUser.company || "",
-        avatar: currentUser.avatar || ""
-      });
-    }
-  }, [currentUser]);
+
 
   const { data: groupMessages = [], isLoading: messagesLoading } = useQuery<MessageWithSender[]>({
     queryKey: ["/api/group-chat/messages", currentUserId],
@@ -233,55 +216,9 @@ export default function Network({ currentUser }: NetworkProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [groupMessages]);
 
-  // Initialize edit form when user data changes
-  useEffect(() => {
-    if (displayUser && !isEditingProfile) {
-      setEditForm({
-        fullName: displayUser.fullName || "",
-        jobTitle: displayUser.jobTitle || "",
-        company: displayUser.company || "",
-        avatar: displayUser.avatar || ""
-      });
-    }
-  }, [displayUser, isEditingProfile]);
 
-  const updateProfileMutation = useMutation({
-    mutationFn: async (updatedData: typeof editForm) => {
-      const response = await apiRequest(`/api/users/${currentUserId}`, "PATCH", updatedData);
-      return response;
-    },
-    onSuccess: (updatedUser) => {
-      // Update localStorage with the updated user data
-      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-      
-      // Dispatch custom event to notify other parts of the app
-      window.dispatchEvent(new CustomEvent('userUpdated', { detail: updatedUser }));
-      
-      // Refresh all relevant queries
-      queryClient.invalidateQueries({ queryKey: [`/api/users/${currentUserId}`] });
-      queryClient.invalidateQueries({ queryKey: ["/api/event-attendees"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/group-chat/messages"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
-      
-      setIsEditingProfile(false);
-    },
-  });
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const base64 = e.target?.result as string;
-        setEditForm(prev => ({ ...prev, avatar: base64 }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
-  const handleUpdateProfile = () => {
-    updateProfileMutation.mutate(editForm);
-  };
 
   const formatMessageTime = (date: string | Date) => {
     return new Intl.DateTimeFormat('en-US', {
@@ -521,141 +458,7 @@ export default function Network({ currentUser }: NetworkProps) {
         </div>
       ) : null}
 
-      {/* Edit Profile Dialog */}
-      <Dialog open={isEditingProfile} onOpenChange={setIsEditingProfile}>
-                  <DialogTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle>Edit Profile</DialogTitle>
-                      <DialogDescription>
-                        Update your profile information and photo. Changes will be saved automatically.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      {/* Avatar Upload */}
-                      <div className="grid gap-2">
-                        <Label htmlFor="avatar">Profile Photo</Label>
-                        <div className="flex items-center space-x-4">
-                          <Avatar className="w-16 h-16">
-                            <AvatarImage 
-                              src={editForm.avatar} 
-                              alt={editForm.fullName}
-                            />
-                            <AvatarFallback 
-                              className={`text-white text-lg font-semibold bg-gradient-to-br ${getUserAvatarColor(editForm.fullName)}`}
-                            >
-                              {getUserInitials(editForm.fullName)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={handleFileUpload}
-                              className="hidden"
-                              id="avatar-upload"
-                            />
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => document.getElementById('avatar-upload')?.click()}
-                            >
-                              <Upload className="w-4 h-4 mr-2" />
-                              Upload Photo
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
 
-                      {/* Full Name */}
-                      <div className="grid gap-2">
-                        <Label htmlFor="fullName">Full Name</Label>
-                        <Input
-                          id="fullName"
-                          value={editForm.fullName}
-                          onChange={(e) => setEditForm(prev => ({...prev, fullName: e.target.value}))}
-                          placeholder="Enter your full name"
-                        />
-                      </div>
-
-                      {/* Job Title */}
-                      <div className="grid gap-2">
-                        <Label htmlFor="jobTitle">Job Title</Label>
-                        <Input
-                          id="jobTitle"
-                          value={editForm.jobTitle}
-                          onChange={(e) => setEditForm(prev => ({...prev, jobTitle: e.target.value}))}
-                          placeholder="Enter your job title"
-                        />
-                      </div>
-
-                      {/* Company */}
-                      <div className="grid gap-2">
-                        <Label htmlFor="company">Company</Label>
-                        <Input
-                          id="company"
-                          value={editForm.company}
-                          onChange={(e) => setEditForm(prev => ({...prev, company: e.target.value}))}
-                          placeholder="Enter your company"
-                        />
-                      </div>
-
-                      {/* LinkedIn Profile (read-only for LinkedIn users) */}
-                      {(displayUser.linkedinId || displayUser.linkedinProfileUrl) && (
-                        <div className="grid gap-2">
-                          <Label htmlFor="linkedinProfile">LinkedIn Profile</Label>
-                          <div className="flex space-x-2">
-                            <Input
-                              id="linkedinProfile"
-                              value={displayUser.linkedinProfileUrl || "Connected via LinkedIn"}
-                              disabled
-                              className="bg-gray-100 text-gray-600 flex-1"
-                            />
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-blue-600 border-blue-600 hover:bg-blue-50"
-                              onClick={() => {
-                                if (displayUser.linkedinProfileUrl && displayUser.linkedinProfileUrl.includes('linkedin.com/in/') && !displayUser.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
-                                  window.open(displayUser.linkedinProfileUrl, '_blank');
-                                } else {
-                                  // Search for user on LinkedIn by name
-                                  const searchQuery = encodeURIComponent(displayUser.fullName || "");
-                                  const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`;
-                                  window.open(searchUrl, '_blank');
-                                }
-                              }}
-                            >
-                              Find Profile
-                            </Button>
-                          </div>
-                          <p className="text-xs text-gray-500">
-                            LinkedIn profile is automatically synced from your LinkedIn account
-                          </p>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex justify-end space-x-2">
-                      <Button 
-                        variant="outline" 
-                        onClick={() => setIsEditingProfile(false)}
-                      >
-                        Cancel
-                      </Button>
-                      <Button 
-                        onClick={handleUpdateProfile}
-                        disabled={updateProfileMutation.isPending}
-                      >
-                        {updateProfileMutation.isPending ? "Saving..." : "Save Changes"}
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
 
       <main className="px-4 mt-4 space-y-6">
         {/* Group Chat Section */}
