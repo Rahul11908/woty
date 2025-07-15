@@ -396,92 +396,63 @@ export default function Network({ currentUser }: NetworkProps) {
         </div>
       </header>
 
-      {/* User Profile Display */}
+      {/* Compact User Profile Display */}
       {userLoading ? (
         <div className="bg-white shadow-sm mx-4 mt-4 rounded-lg overflow-hidden">
-          <div className="p-4">
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
-              <div className="flex-1">
-                <div className="h-4 bg-gray-200 rounded mb-2 animate-pulse"></div>
-                <div className="h-3 bg-gray-200 rounded w-2/3 animate-pulse"></div>
+          <div className="p-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>
+                <div className="h-4 bg-gray-200 rounded w-24 animate-pulse"></div>
               </div>
+              <div className="w-16 h-8 bg-gray-200 rounded animate-pulse"></div>
             </div>
           </div>
         </div>
       ) : (displayUser || currentUser) ? (
         <div className="bg-white shadow-sm mx-4 mt-4 rounded-lg overflow-hidden">
-          <div className="p-4">
-            <div className="flex items-center space-x-4">
-              {/* User Avatar */}
-              <div className="relative">
-                <Avatar className="w-16 h-16">
-                  <AvatarImage 
-                    src={(displayUser || currentUser)?.avatar} 
-                    alt={(displayUser || currentUser)?.fullName}
-                  />
-                  <AvatarFallback 
-                    className={`text-white text-lg font-semibold bg-gradient-to-br ${getUserAvatarColor((displayUser || currentUser)?.fullName || "")}`}
-                  >
-                    {getUserInitials((displayUser || currentUser)?.fullName || "")}
-                  </AvatarFallback>
-                </Avatar>
-              </div>
-
-              {/* User Info */}
-              <div className="flex-1">
-                <h2 className="text-lg font-semibold text-gray-900">{(displayUser || currentUser)?.fullName || "User"}</h2>
-                {(displayUser || currentUser)?.jobTitle && (
-                  <p className="text-sm text-gray-600">{(displayUser || currentUser)?.jobTitle}</p>
-                )}
-                {(displayUser || currentUser)?.company && (
-                  <p className="text-sm text-gray-500">{(displayUser || currentUser)?.company}</p>
-                )}
-                {(displayUser || currentUser)?.email && (
-                  <p className="text-xs text-gray-400 mt-1">{(displayUser || currentUser)?.email}</p>
-                )}
-                {((displayUser || currentUser)?.linkedinProfileUrl || (displayUser || currentUser)?.linkedinId) && (
-                  <div className="mt-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-xs h-7 px-3 text-blue-600 border-blue-600 hover:bg-blue-50"
-                      onClick={() => {
-                        const user = displayUser || currentUser;
-                        if (user?.linkedinProfileUrl && user.linkedinProfileUrl.includes('linkedin.com/in/') && !user.linkedinProfileUrl.includes('vKYpQ5vr3z')) {
-                          window.open(user.linkedinProfileUrl, '_blank');
-                        } else {
-                          // Search for user on LinkedIn by name
-                          const searchQuery = encodeURIComponent(user?.fullName || "");
-                          const searchUrl = `https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`;
-                          window.open(searchUrl, '_blank');
-                        }
-                      }}
+          <div className="p-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div 
+                  className="relative cursor-pointer group"
+                  onClick={() => openPhotoViewer(
+                    displayUser?.avatar || getProfilePhoto(displayUser?.fullName || ""), 
+                    displayUser || currentUser!
+                  )}
+                >
+                  <Avatar className="w-10 h-10 ring-2 ring-transparent group-hover:ring-blue-500 transition-all duration-200 avatar-image-flat">
+                    <AvatarImage 
+                      src={displayUser?.avatar || getProfilePhoto(displayUser?.fullName || "")} 
+                      alt={displayUser?.fullName}
+                      loading="lazy"
+                    />
+                    <AvatarFallback 
+                      className={`text-white text-sm font-semibold bg-gradient-to-br ${getUserAvatarColor(displayUser?.fullName || "")}`}
                     >
-                      Find on LinkedIn
-                    </Button>
-                  </div>
-                )}
-                <div className="flex items-center mt-2 space-x-2">
-                  <Badge 
-                    className={`text-xs ${getUserRoleBadge((displayUser || currentUser)?.userRole || "attendee", (displayUser || currentUser)?.email).color}`}
-                  >
-                    {getUserRoleBadge((displayUser || currentUser)?.userRole || "attendee", (displayUser || currentUser)?.email).label}
-                  </Badge>
+                      {getUserInitials(displayUser?.fullName || "")}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-gray-900">
+                    {displayUser?.fullName}
+                  </h3>
                 </div>
               </div>
-
-              {/* Action Buttons */}
-              <div className="flex-shrink-0 flex space-x-2">
-                {/* Survey Button */}
-                {latestSurvey && (
-                  <Dialog open={isSurveyDialogOpen} onOpenChange={setIsSurveyDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" size="sm" className="h-8 px-3">
-                        <FileText className="h-4 w-4 mr-1" />
-                        Survey
-                      </Button>
-                    </DialogTrigger>
+              
+              {/* Survey Button */}
+              {latestSurvey && (
+                <Dialog open={isSurveyDialogOpen} onOpenChange={setIsSurveyDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button 
+                      size="sm"
+                      className="bg-orange-600 hover:bg-orange-700 text-white border-0 flex items-center space-x-1"
+                    >
+                      <FileText className="w-4 h-4" />
+                      <span>Survey</span>
+                    </Button>
+                  </DialogTrigger>
                     <DialogContent className="sm:max-w-[500px]">
                       <DialogHeader>
                         <DialogTitle className="flex items-center space-x-2">
@@ -545,9 +516,13 @@ export default function Network({ currentUser }: NetworkProps) {
                     </DialogContent>
                   </Dialog>
                 )}
+            </div>
+          </div>
+        </div>
+      ) : null}
 
-                {/* Edit Profile Button */}
-                <Dialog open={isEditingProfile} onOpenChange={setIsEditingProfile}>
+      {/* Edit Profile Dialog */}
+      <Dialog open={isEditingProfile} onOpenChange={setIsEditingProfile}>
                   <DialogTrigger asChild>
                     <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                       <Edit className="h-4 w-4" />
@@ -681,19 +656,6 @@ export default function Network({ currentUser }: NetworkProps) {
                     </div>
                   </DialogContent>
                 </Dialog>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="bg-white shadow-sm mx-4 mt-4 rounded-lg overflow-hidden">
-          <div className="p-4">
-            <div className="text-center text-gray-500">
-              <p>Loading your profile...</p>
-            </div>
-          </div>
-        </div>
-      )}
 
       <main className="px-4 mt-4 space-y-6">
         {/* Group Chat Section */}
