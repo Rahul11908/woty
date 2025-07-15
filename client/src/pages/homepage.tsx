@@ -76,7 +76,7 @@ export default function Homepage() {
                 className="w-full bg-orange-500 hover:bg-orange-600 text-white text-lg py-6 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 <span className="flex items-center justify-center">
-                  Enter Event
+                  Register for Event
                   <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>

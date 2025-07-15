@@ -33,7 +33,7 @@ export default function BottomNavigation({ currentUser }: BottomNavigationProps)
             isActive("/profile") ? "text-primary scale-105" : "text-gray-500 hover:text-primary"
           }`}
         >
-          <Calendar className={`w-6 h-6 transition-transform duration-300 ${isActive("/profile") ? "animate-pulse" : ""}`} />
+          <Calendar className={`w-6 h-6 transition-transform duration-300`} />
           <span className="text-xs font-medium">Program</span>
         </Link>
 
@@ -44,7 +44,7 @@ export default function BottomNavigation({ currentUser }: BottomNavigationProps)
             isActive("/network") ? "text-primary scale-105" : "text-gray-500 hover:text-primary"
           }`}
         >
-          <MessageCircle className={`w-6 h-6 transition-transform duration-300 ${isActive("/network") ? "animate-pulse" : ""}`} />
+          <MessageCircle className={`w-6 h-6 transition-transform duration-300`} />
           <span className="text-xs font-medium">Network</span>
         </Link>
 
@@ -55,7 +55,7 @@ export default function BottomNavigation({ currentUser }: BottomNavigationProps)
             isActive("/sponsors") ? "text-primary scale-105" : "text-gray-500 hover:text-primary"
           }`}
         >
-          <Star className={`w-6 h-6 transition-transform duration-300 ${isActive("/sponsors") ? "animate-pulse" : ""}`} />
+          <Star className={`w-6 h-6 transition-transform duration-300`} />
           <span className="text-xs font-medium">Sponsors</span>
         </Link>
 
@@ -66,7 +66,7 @@ export default function BottomNavigation({ currentUser }: BottomNavigationProps)
             isActive("/user-profile") ? "text-primary scale-105" : "text-gray-500 hover:text-primary"
           }`}
         >
-          <UserIcon className={`w-6 h-6 transition-transform duration-300 ${isActive("/user-profile") ? "animate-pulse" : ""}`} />
+          <UserIcon className={`w-6 h-6 transition-transform duration-300`} />
           <span className="text-xs font-medium">Profile</span>
         </Link>
 
@@ -78,7 +78,7 @@ export default function BottomNavigation({ currentUser }: BottomNavigationProps)
               isActive("/admin") ? "text-primary scale-105" : "text-gray-500 hover:text-primary"
             }`}
           >
-            <Settings className={`w-6 h-6 transition-transform duration-300 ${isActive("/admin") ? "animate-pulse" : ""}`} />
+            <Settings className={`w-6 h-6 transition-transform duration-300`} />
             <span className="text-xs font-medium">Admin</span>
           </Link>
         )}

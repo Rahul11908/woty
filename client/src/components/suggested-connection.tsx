@@ -57,6 +57,7 @@ export default function SuggestedConnection({ user }: SuggestedConnectionProps) 
       <img 
         src={user.avatar || `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150`}
         alt={`${user.fullName} profile`}
+        loading="lazy"
         className="w-16 h-16 rounded-full mx-auto mb-3 avatar-image-flat"
       />
       <h4 className="font-medium text-gray-900 text-sm">{user.fullName}</h4>

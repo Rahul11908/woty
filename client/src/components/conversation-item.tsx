@@ -16,6 +16,7 @@ export default function ConversationItem({ conversation }: ConversationItemProps
           <img 
             src={participant.avatar || `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150`}
             alt={`${participant.fullName} profile`}
+            loading="lazy"
             className="w-12 h-12 rounded-full avatar-image-flat"
           />
           <div className={`absolute -bottom-1 -right-1 w-4 h-4 border-2 border-white rounded-full ${

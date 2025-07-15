@@ -154,7 +154,7 @@ export default function CreateProfile() {
       <Button
         onClick={() => setLocation("/")}
         variant="ghost"
-        className="absolute top-4 left-4 text-gray-600 hover:text-gray-800"
+        className="absolute top-4 left-4 text-gray-600 hover:text-gray-800 z-10"
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back to Homepage

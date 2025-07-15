@@ -1186,6 +1186,7 @@ export default function Network({ currentUser }: NetworkProps) {
                 <img
                   src={selectedPhotoUrl}
                   alt={selectedPhotoUser?.fullName || "Profile photo"}
+                  loading="lazy"
                   className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
                   style={{ maxHeight: '70vh' }}
                 />
