@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Send, Users, Circle, MessageSquare, Edit, Upload, Trash2, FileText, CheckCircle, User as UserIcon, Share2, ZoomIn, X, ExternalLink } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,7 @@ interface NetworkProps {
 }
 
 export default function Network({ currentUser }: NetworkProps) {
+  const [, setLocation] = useLocation();
   const [newMessage, setNewMessage] = useState("");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isSurveyDialogOpen, setIsSurveyDialogOpen] = useState(false);
@@ -529,10 +531,10 @@ export default function Network({ currentUser }: NetworkProps) {
                           </Button>
                           <Button 
                             onClick={() => {
-                              // For now, just close the dialog - in a real implementation, 
-                              // this would navigate to the survey or open a survey form
                               setIsSurveyDialogOpen(false);
-                              alert("Survey feature will be fully implemented in the next phase. Thank you for your interest!");
+                              if (latestSurvey) {
+                                setLocation(`/survey/${latestSurvey.id}`);
+                              }
                             }}
                             className="flex-1"
                           >
