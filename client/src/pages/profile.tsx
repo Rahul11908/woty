@@ -204,6 +204,12 @@ const panels: Panel[] = [
         title: "DEI, PWHL",
         bio: "Former professional hockey player who sparks change, pushes limits, breaks barriers, and creates a more equitable future in hockey.",
         photo: speakerPhotos["Saroya Tinker"]
+      },
+      {
+        name: "Diana Matheson",
+        title: "Former Player, Co-founder Project 8",
+        bio: "Two-time Olympic bronze medalist and co-founder of Project 8 Sports, now Founder and Chief Growth Officer at the Northern Super League.",
+        photo: speakerPhotos["Diana Matheson"]
       }
     ],
     moderator: {

@@ -240,6 +240,8 @@ The application uses four main entities:
 ✓ Updated email login form to include password field with proper validation and error handling
 ✓ Corrected authentication endpoint to use /api/login with proper session management
 ✓ Enhanced login error messages to provide clearer feedback for failed authentication attempts
+✓ Fixed admin panel questions display to show actual user names like "Asked by: Lance Chung" instead of user ID numbers
+✓ Added Diana Matheson from Panel 2 to Panel 3 speaker lineup - now appears in both panels for expanded participation
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
