@@ -2,6 +2,7 @@ import {
   users, 
   conversations, 
   messages, 
+  messageReactions,
   connections,
   questions,
   surveys,
@@ -75,6 +76,11 @@ export interface IStorage {
   getGroupChatMessages(limit?: number): Promise<MessageWithSender[]>;
   createGroupChatMessage(message: Omit<InsertMessage, 'conversationId'>): Promise<Message>;
   deleteGroupChatMessage(messageId: number): Promise<void>;
+
+  // Message Reactions
+  addMessageReaction(messageId: number, userId: number, emoji: string): Promise<void>;
+  removeMessageReaction(messageId: number, userId: number, emoji: string): Promise<void>;
+  getMessageReactions(messageId: number): Promise<Array<{emoji: string; count: number; users: User[]; hasUserReacted: boolean}>>;
 
   // Connections
   createConnection(connection: InsertConnection): Promise<Connection>;
@@ -631,9 +637,11 @@ export class MemStorage implements IStorage {
     const messagesWithSender = await Promise.all(
       allMessages.map(async (message) => {
         const sender = await this.getUser(message.senderId);
+        const reactions = await this.getMessageReactions(message.id);
         return {
           ...message,
-          sender: sender!
+          sender: sender!,
+          reactions
         };
       })
     );
@@ -656,6 +664,50 @@ export class MemStorage implements IStorage {
 
   async deleteGroupChatMessage(messageId: number): Promise<void> {
     this.groupChatMessages.delete(messageId);
+  }
+
+  // Message Reactions (In-memory implementation)
+  private messageReactionsMap = new Map<number, Map<string, Set<number>>>();
+
+  async addMessageReaction(messageId: number, userId: number, emoji: string): Promise<void> {
+    if (!this.messageReactionsMap.has(messageId)) {
+      this.messageReactionsMap.set(messageId, new Map());
+    }
+    const messageReactions = this.messageReactionsMap.get(messageId)!;
+    if (!messageReactions.has(emoji)) {
+      messageReactions.set(emoji, new Set());
+    }
+    messageReactions.get(emoji)!.add(userId);
+  }
+
+  async removeMessageReaction(messageId: number, userId: number, emoji: string): Promise<void> {
+    const messageReactions = this.messageReactionsMap.get(messageId);
+    if (messageReactions) {
+      const emojiReactions = messageReactions.get(emoji);
+      if (emojiReactions) {
+        emojiReactions.delete(userId);
+        if (emojiReactions.size === 0) {
+          messageReactions.delete(emoji);
+        }
+      }
+    }
+  }
+
+  async getMessageReactions(messageId: number): Promise<Array<{emoji: string; count: number; users: User[]; hasUserReacted: boolean}>> {
+    const messageReactions = this.messageReactionsMap.get(messageId);
+    if (!messageReactions) return [];
+
+    const result = [];
+    for (const [emoji, userIds] of messageReactions.entries()) {
+      const users = Array.from(userIds).map(userId => this.users.get(userId)).filter(Boolean) as User[];
+      result.push({
+        emoji,
+        count: userIds.size,
+        users,
+        hasUserReacted: false
+      });
+    }
+    return result;
   }
 
   // Survey Methods
@@ -1248,14 +1300,23 @@ export class DatabaseStorage implements IStorage {
       .orderBy(messages.createdAt)
       .limit(limit);
 
-      return result.map(row => ({
-        id: row.id,
-        content: row.content,
-        createdAt: row.createdAt,
-        conversationId: row.conversationId,
-        senderId: row.senderId,
-        sender: row.sender
-      }));
+      // Get reactions for each message
+      const messagesWithReactions = await Promise.all(
+        result.map(async (row) => {
+          const reactions = await this.getMessageReactions(row.id);
+          return {
+            id: row.id,
+            content: row.content,
+            createdAt: row.createdAt,
+            conversationId: row.conversationId,
+            senderId: row.senderId,
+            sender: row.sender,
+            reactions
+          };
+        })
+      );
+
+      return messagesWithReactions;
     } catch (error) {
       console.error("Error fetching group chat messages:", error);
       return [];
@@ -1544,6 +1605,63 @@ export class DatabaseStorage implements IStorage {
         userEngagement: []
       };
     }
+  }
+
+  // Message Reactions
+  async addMessageReaction(messageId: number, userId: number, emoji: string): Promise<void> {
+    await db.insert(messageReactions).values({
+      messageId,
+      userId,
+      emoji
+    }).onConflictDoNothing(); // Ignore if already exists
+  }
+
+  async removeMessageReaction(messageId: number, userId: number, emoji: string): Promise<void> {
+    await db.delete(messageReactions)
+      .where(and(
+        eq(messageReactions.messageId, messageId),
+        eq(messageReactions.userId, userId),
+        eq(messageReactions.emoji, emoji)
+      ));
+  }
+
+  async getMessageReactions(messageId: number): Promise<Array<{emoji: string; count: number; users: User[]; hasUserReacted: boolean}>> {
+    const reactions = await db.select({
+      emoji: messageReactions.emoji,
+      userId: messageReactions.userId,
+      userFullName: users.fullName,
+      userEmail: users.email,
+      userAvatar: users.avatar
+    })
+    .from(messageReactions)
+    .leftJoin(users, eq(messageReactions.userId, users.id))
+    .where(eq(messageReactions.messageId, messageId));
+
+    // Group reactions by emoji
+    const reactionGroups = new Map<string, {count: number; users: User[];}>();
+    
+    reactions.forEach(reaction => {
+      if (!reactionGroups.has(reaction.emoji)) {
+        reactionGroups.set(reaction.emoji, { count: 0, users: [] });
+      }
+      const group = reactionGroups.get(reaction.emoji)!;
+      group.count++;
+      if (reaction.userId) {
+        group.users.push({
+          id: reaction.userId,
+          fullName: reaction.userFullName || '',
+          email: reaction.userEmail || '',
+          avatar: reaction.userAvatar,
+        } as User);
+      }
+    });
+
+    return Array.from(reactionGroups.entries()).map(([emoji, {count, users}]) => ({
+      emoji,
+      count,
+      users,
+      hasUserReacted: false // This will be set by the frontend based on current user
+    }));
   }
 
   // Authentication

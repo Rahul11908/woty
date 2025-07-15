@@ -36,6 +36,14 @@ export const messages = pgTable("messages", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const messageReactions = pgTable("message_reactions", {
+  id: serial("id").primaryKey(),
+  messageId: integer("message_id").notNull().references(() => messages.id, { onDelete: 'cascade' }),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  emoji: varchar("emoji", { length: 10 }).notNull(), // 👍, ❤️, 😊, 😢, 😮, 😡
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const connections = pgTable("connections", {
   id: serial("id").primaryKey(),
   requesterId: integer("requester_id").notNull().references(() => users.id),
@@ -172,6 +180,11 @@ export const insertGroupChatMessageSchema = createInsertSchema(messages).omit({
   conversationId: true,
 });
 
+export const insertMessageReactionSchema = createInsertSchema(messageReactions).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertSurveySchema = createInsertSchema(surveys).omit({
   id: true,
   createdAt: true,
@@ -215,6 +228,8 @@ export type LoginData = z.infer<typeof loginSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertConversation = z.infer<typeof insertConversationSchema>;
 export type Conversation = typeof conversations.$inferSelect;
+export type MessageReaction = typeof messageReactions.$inferSelect;
+export type InsertMessageReaction = z.infer<typeof insertMessageReactionSchema>;
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
 export type Message = typeof messages.$inferSelect;
 export type InsertConnection = z.infer<typeof insertConnectionSchema>;
@@ -246,6 +261,12 @@ export type ConversationWithParticipant = Conversation & {
 
 export type MessageWithSender = Message & {
   sender: User;
+  reactions?: Array<{
+    emoji: string;
+    count: number;
+    users: User[];
+    hasUserReacted: boolean;
+  }>;
 };
 
 export type SurveyWithQuestions = Survey & {

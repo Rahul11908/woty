@@ -318,7 +318,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get group chat messages
   app.get("/api/group-chat/messages", async (req, res) => {
     try {
+      const userId = req.query.userId ? parseInt(req.query.userId as string) : undefined;
       const messages = await storage.getGroupChatMessages();
+      
+      // Set hasUserReacted flag for each reaction if userId is provided
+      if (userId) {
+        messages.forEach(message => {
+          if (message.reactions) {
+            message.reactions.forEach(reaction => {
+              reaction.hasUserReacted = reaction.users.some(user => user.id === userId);
+            });
+          }
+        });
+      }
+      
       res.json(messages);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch group chat messages" });
@@ -362,6 +375,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Delete group chat message error:", error);
       res.status(500).json({ error: "Failed to delete message" });
+    }
+  });
+
+  // Add message reaction
+  app.post("/api/messages/:messageId/reactions", async (req, res) => {
+    try {
+      const messageId = parseInt(req.params.messageId);
+      const { userId, emoji } = req.body;
+
+      if (!userId || !emoji) {
+        return res.status(400).json({ error: "Missing userId or emoji" });
+      }
+
+      await storage.addMessageReaction(messageId, userId, emoji);
+      
+      // Track user activity for reaction
+      await storage.createUserActivity({
+        userId,
+        activityType: 'message_reacted',
+        activityDetails: { messageId, emoji }
+      });
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Add reaction error:", error);
+      res.status(500).json({ error: "Failed to add reaction" });
+    }
+  });
+
+  // Remove message reaction
+  app.delete("/api/messages/:messageId/reactions", async (req, res) => {
+    try {
+      const messageId = parseInt(req.params.messageId);
+      const { userId, emoji } = req.body;
+
+      if (!userId || !emoji) {
+        return res.status(400).json({ error: "Missing userId or emoji" });
+      }
+
+      await storage.removeMessageReaction(messageId, userId, emoji);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Remove reaction error:", error);
+      res.status(500).json({ error: "Failed to remove reaction" });
+    }
+  });
+
+  // Get message reactions
+  app.get("/api/messages/:messageId/reactions", async (req, res) => {
+    try {
+      const messageId = parseInt(req.params.messageId);
+      const userId = req.query.userId ? parseInt(req.query.userId as string) : undefined;
+      
+      const reactions = await storage.getMessageReactions(messageId);
+      
+      // Set hasUserReacted flag if userId is provided
+      if (userId) {
+        reactions.forEach(reaction => {
+          reaction.hasUserReacted = reaction.users.some(user => user.id === userId);
+        });
+      }
+      
+      res.json(reactions);
+    } catch (error) {
+      console.error("Get reactions error:", error);
+      res.status(500).json({ error: "Failed to get reactions" });
     }
   });
 

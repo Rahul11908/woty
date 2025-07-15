@@ -66,7 +66,15 @@ export default function Network({ currentUser }: NetworkProps) {
   }, [currentUser]);
 
   const { data: groupMessages = [], isLoading: messagesLoading } = useQuery<MessageWithSender[]>({
-    queryKey: ["/api/group-chat/messages"],
+    queryKey: ["/api/group-chat/messages", currentUserId],
+    queryFn: async () => {
+      const url = currentUserId 
+        ? `/api/group-chat/messages?userId=${currentUserId}`
+        : "/api/group-chat/messages";
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Failed to fetch messages');
+      return response.json();
+    },
     refetchInterval: 5000, // Poll for new messages every 5 seconds
   });
 
@@ -148,7 +156,7 @@ export default function Network({ currentUser }: NetworkProps) {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/group-chat/messages"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/group-chat/messages", currentUserId] });
       setNewMessage("");
     },
     onError: (error) => {
@@ -167,7 +175,32 @@ export default function Network({ currentUser }: NetworkProps) {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/group-chat/messages"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/group-chat/messages", currentUserId] });
+    },
+  });
+
+  // Message reactions
+  const addReactionMutation = useMutation({
+    mutationFn: async ({ messageId, emoji }: { messageId: number; emoji: string }) => {
+      await apiRequest(`/api/messages/${messageId}/reactions`, "POST", {
+        userId: currentUserId,
+        emoji
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/group-chat/messages", currentUserId] });
+    },
+  });
+
+  const removeReactionMutation = useMutation({
+    mutationFn: async ({ messageId, emoji }: { messageId: number; emoji: string }) => {
+      await apiRequest(`/api/messages/${messageId}/reactions`, "DELETE", {
+        userId: currentUserId,
+        emoji
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/group-chat/messages", currentUserId] });
     },
   });
 
@@ -788,6 +821,76 @@ export default function Network({ currentUser }: NetworkProps) {
                           )}
                         </div>
                         <p className="text-sm text-gray-700 break-words">{message.content}</p>
+                        
+                        {/* Message Reactions */}
+                        <div className="mt-2 flex items-center space-x-1">
+                          {/* Reaction buttons */}
+                          <div className="flex space-x-1">
+                            {['👍', '❤️', '😊', '😮', '👏'].map((emoji) => (
+                              <Button
+                                key={emoji}
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0 hover:bg-gray-100 transition-colors text-sm"
+                                onClick={() => {
+                                  if (!currentUserId) {
+                                    toast({
+                                      title: "Authentication Required",
+                                      description: "Please log in to react to messages",
+                                      variant: "destructive",
+                                    });
+                                    return;
+                                  }
+                                  
+                                  // Check if user already reacted with this emoji
+                                  const userReacted = message.reactions?.find(r => r.emoji === emoji)?.hasUserReacted;
+                                  
+                                  if (userReacted) {
+                                    removeReactionMutation.mutate({ messageId: message.id, emoji });
+                                  } else {
+                                    addReactionMutation.mutate({ messageId: message.id, emoji });
+                                  }
+                                }}
+                              >
+                                {emoji}
+                              </Button>
+                            ))}
+                          </div>
+                          
+                          {/* Display existing reactions */}
+                          {message.reactions && message.reactions.length > 0 && (
+                            <div className="flex space-x-1 ml-2">
+                              {message.reactions.map((reaction) => (
+                                <Button
+                                  key={reaction.emoji}
+                                  variant="outline"
+                                  size="sm"
+                                  className={`h-6 px-2 text-xs ${
+                                    reaction.hasUserReacted ? 'bg-blue-50 border-blue-300' : 'hover:bg-gray-50'
+                                  }`}
+                                  onClick={() => {
+                                    if (!currentUserId) {
+                                      toast({
+                                        title: "Authentication Required",
+                                        description: "Please log in to react to messages",
+                                        variant: "destructive",
+                                      });
+                                      return;
+                                    }
+                                    
+                                    if (reaction.hasUserReacted) {
+                                      removeReactionMutation.mutate({ messageId: message.id, emoji: reaction.emoji });
+                                    } else {
+                                      addReactionMutation.mutate({ messageId: message.id, emoji: reaction.emoji });
+                                    }
+                                  }}
+                                >
+                                  {reaction.emoji} {reaction.count}
+                                </Button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))
