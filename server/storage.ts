@@ -111,6 +111,7 @@ export interface IStorage {
   // Survey Responses
   createSurveyResponse(response: InsertSurveyResponse): Promise<SurveyResponse>;
   getSurveyResponses(surveyId: number): Promise<SurveyResponseWithAnswers[]>;
+  getSurveyResponseByUser(surveyId: number, userId: number): Promise<SurveyResponse | undefined>;
   completeSurveyResponse(responseId: number): Promise<void>;
 
   // Survey Answers
@@ -808,6 +809,11 @@ export class MemStorage implements IStorage {
     });
   }
 
+  async getSurveyResponseByUser(surveyId: number, userId: number): Promise<SurveyResponse | undefined> {
+    return Array.from(this.surveyResponses.values())
+      .find(r => r.surveyId === surveyId && r.userId === userId);
+  }
+
   async completeSurveyResponse(responseId: number): Promise<void> {
     const response = this.surveyResponses.get(responseId);
     if (response) {
@@ -1419,10 +1425,10 @@ export class DatabaseStorage implements IStorage {
     const [survey] = await db.select().from(surveys).where(eq(surveys.id, id));
     if (!survey) return undefined;
     
-    const surveyQuestions = await db.select().from(surveyQuestions)
+    const questions = await db.select().from(surveyQuestions)
       .where(eq(surveyQuestions.surveyId, id));
     
-    return { ...survey, questions: surveyQuestions };
+    return { ...survey, questions };
   }
 
   async updateSurvey(id: number, updates: Partial<Survey>): Promise<Survey> {
@@ -1460,13 +1466,46 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSurveyResponses(surveyId: number): Promise<SurveyResponseWithAnswers[]> {
-    // Simplified implementation
-    return [];
+    const responses = await db.select().from(surveyResponses)
+      .where(eq(surveyResponses.surveyId, surveyId));
+    
+    const responsesWithDetails = [];
+    
+    for (const response of responses) {
+      // Get user details
+      const [user] = await db.select().from(users).where(eq(users.id, response.userId));
+      
+      // Get answers for this response
+      const answers = await db.select().from(surveyAnswers)
+        .where(eq(surveyAnswers.responseId, response.id));
+      
+      responsesWithDetails.push({
+        ...response,
+        user,
+        answers
+      });
+    }
+    
+    return responsesWithDetails;
+  }
+
+  async getSurveyResponseByUser(surveyId: number, userId: number): Promise<SurveyResponse | undefined> {
+    const [response] = await db.select().from(surveyResponses)
+      .where(
+        and(
+          eq(surveyResponses.surveyId, surveyId),
+          eq(surveyResponses.userId, userId)
+        )
+      );
+    return response;
   }
 
   async completeSurveyResponse(responseId: number): Promise<void> {
     await db.update(surveyResponses)
-      .set({ completedAt: new Date() })
+      .set({ 
+        isCompleted: true,
+        completedAt: new Date() 
+      })
       .where(eq(surveyResponses.id, responseId));
   }
 

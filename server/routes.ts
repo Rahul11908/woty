@@ -639,7 +639,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Survey Responses and Analytics
 
-  // Get survey responses
+  // Get survey responses with user details
   app.get("/api/surveys/:surveyId/responses", async (req, res) => {
     try {
       const surveyId = parseInt(req.params.surveyId);
@@ -647,6 +647,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(responses);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch survey responses" });
+    }
+  });
+
+  // Check if user has responded to survey
+  app.get("/api/surveys/:surveyId/user-response/:userId", async (req, res) => {
+    try {
+      const surveyId = parseInt(req.params.surveyId);
+      const userId = parseInt(req.params.userId);
+      const response = await storage.getSurveyResponseByUser(surveyId, userId);
+      res.json({ hasResponded: !!response, response });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to check user response" });
+    }
+  });
+
+  // Download survey responses as CSV
+  app.get("/api/surveys/:surveyId/responses/download", async (req, res) => {
+    try {
+      const surveyId = parseInt(req.params.surveyId);
+      const survey = await storage.getSurvey(surveyId);
+      const responses = await storage.getSurveyResponses(surveyId);
+      
+      if (!survey) {
+        return res.status(404).json({ error: "Survey not found" });
+      }
+      
+      // Create CSV headers
+      let csvContent = "Response ID,User Name,User Email,Completion Date";
+      if (survey.questions) {
+        survey.questions.forEach(q => {
+          csvContent += `,"${q.questionText.replace(/"/g, '""')}"`;
+        });
+      }
+      csvContent += "\n";
+      
+      // Add response data
+      responses.forEach(response => {
+        let row = `${response.id},${response.user?.fullName || 'N/A'},${response.user?.email || 'N/A'},${response.completedAt ? new Date(response.completedAt).toISOString() : 'N/A'}`;
+        
+        if (survey.questions && response.answers) {
+          survey.questions.forEach(q => {
+            const answer = response.answers.find(a => a.questionId === q.id);
+            const answerText = answer ? (answer.answerText || answer.selectedOption || '') : '';
+            row += `,"${answerText.replace(/"/g, '""')}"`;
+          });
+        }
+        
+        csvContent += row + "\n";
+      });
+      
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="survey_${surveyId}_responses.csv"`);
+      res.send(csvContent);
+    } catch (error) {
+      console.error("Error downloading survey responses:", error);
+      res.status(500).json({ error: "Failed to download survey responses" });
     }
   });
 
@@ -727,8 +783,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Submit survey response
   app.post("/api/surveys/:surveyId/responses", async (req, res) => {
     try {
+      console.log("Survey response submission:", req.body);
       const surveyId = parseInt(req.params.surveyId);
       const { userId, answers } = req.body;
+      
+      // Check if user already has a response for this survey
+      const existingResponse = await storage.getSurveyResponseByUser(surveyId, userId);
+      if (existingResponse) {
+        return res.status(400).json({ error: "You have already submitted a response for this survey" });
+      }
       
       // Create response
       const response = await storage.createSurveyResponse({
@@ -750,8 +813,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Mark as completed
       await storage.completeSurveyResponse(response.id);
       
+      console.log("Survey response completed:", response);
       res.json({ success: true, responseId: response.id });
     } catch (error) {
+      console.error("Error submitting survey response:", error);
       res.status(500).json({ error: "Failed to submit survey response" });
     }
   });

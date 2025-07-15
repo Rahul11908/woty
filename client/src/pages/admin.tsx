@@ -473,7 +473,7 @@ export default function Admin() {
 
           <TabsContent value="surveys" className="space-y-6">
             {/* Survey Management Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold">Survey Management</h2>
               <Dialog open={showCreateSurvey} onOpenChange={setShowCreateSurvey}>
                 <DialogTrigger asChild>
@@ -541,20 +541,6 @@ export default function Admin() {
                         )}
                       />
 
-                      <FormField
-                        control={surveyForm.control}
-                        name="emailSubject"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email Subject (Optional)</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Your feedback is important..." {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
                       <div className="flex justify-end space-x-2">
                         <Button type="button" variant="outline" onClick={() => setShowCreateSurvey(false)}>
                           Cancel
@@ -569,224 +555,64 @@ export default function Admin() {
               </Dialog>
             </div>
 
-            {/* Surveys List */}
-            <div className="space-y-4">
-              {surveys.map((survey) => (
-                <Card key={survey.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setSelectedSurvey(survey as SurveyWithQuestions)}>
-                  <CardContent className="pt-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900">{survey.title}</h3>
-                        <p className="text-sm text-gray-600 mt-1">{survey.description}</p>
-                        <div className="flex items-center space-x-2 mt-2">
-                          <Badge variant={survey.type === 'during_event' ? 'default' : 'secondary'}>
-                            {survey.type === 'during_event' ? 'During Event' : 'Post Event'}
-                          </Badge>
-                          <Badge variant={
-                            survey.status === 'active' ? 'default' : 
-                            survey.status === 'completed' ? 'secondary' : 'outline'
-                          }>
-                            {survey.status}
-                          </Badge>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Button variant="ghost" size="sm">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteSurveyMutation.mutate(survey.id);
-                          }}
-                        >
-                          <Trash2 className="w-4 h-4 text-red-500" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-
-              {surveys.length === 0 && (
+            {/* Available Surveys */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Available Surveys</h3>
+              {surveys.length === 0 ? (
                 <Card>
                   <CardContent className="pt-6 text-center">
                     <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No surveys yet</h3>
-                    <p className="text-gray-600 mb-4">Create your first survey to start collecting feedback.</p>
-                    <Button onClick={() => setShowCreateSurvey(true)}>
-                      <Plus className="w-4 h-4 mr-2" />
-                      Create Survey
-                    </Button>
+                    <p className="text-gray-500">No surveys created yet</p>
                   </CardContent>
                 </Card>
+              ) : (
+                <div className="space-y-4">
+                  {surveys.map((survey) => (
+                    <Card key={survey.id}>
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-gray-900">{survey.title}</h3>
+                            <p className="text-sm text-gray-600 mt-1">{survey.description}</p>
+                            <div className="flex items-center space-x-2 mt-2">
+                              <Badge variant={survey.type === 'during_event' ? 'default' : 'secondary'}>
+                                {survey.type === 'during_event' ? 'During Event' : 'Post Event'}
+                              </Badge>
+                              <Badge variant={
+                                survey.status === 'active' ? 'default' : 
+                                survey.status === 'completed' ? 'secondary' : 'outline'
+                              }>
+                                {survey.status}
+                              </Badge>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => window.open(`/survey/${survey.id}`, '_blank')}
+                            >
+                              <Eye className="w-4 h-4 mr-1" />
+                              View
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => {
+                                window.open(`/api/surveys/${survey.id}/responses/download`, '_blank');
+                              }}
+                            >
+                              <FileText className="w-4 h-4 mr-1" />
+                              Download CSV
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               )}
             </div>
-
-            {/* Survey Details Modal */}
-            {selectedSurvey && (
-              <Dialog open={!!selectedSurvey} onOpenChange={() => setSelectedSurvey(null)}>
-                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>{selectedSurvey.title}</DialogTitle>
-                    <DialogDescription>{selectedSurvey.description}</DialogDescription>
-                  </DialogHeader>
-                  
-                  <div className="space-y-6">
-                    {/* Questions Section */}
-                    <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <h4 className="font-semibold">Questions</h4>
-                        <Dialog open={showAddQuestion} onOpenChange={setShowAddQuestion}>
-                          <DialogTrigger asChild>
-                            <Button size="sm">
-                              <Plus className="w-4 h-4 mr-2" />
-                              Add Question
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>Add Question</DialogTitle>
-                            </DialogHeader>
-                            <Form {...questionForm}>
-                              <form onSubmit={questionForm.handleSubmit(onSubmitQuestion)} className="space-y-4">
-                                <FormField
-                                  control={questionForm.control}
-                                  name="questionText"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Question</FormLabel>
-                                      <FormControl>
-                                        <Textarea placeholder="Enter your question..." {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-
-                                <FormField
-                                  control={questionForm.control}
-                                  name="questionType"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Question Type</FormLabel>
-                                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                          <SelectTrigger>
-                                            <SelectValue />
-                                          </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                          <SelectItem value="text">Text Answer</SelectItem>
-                                          <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
-                                          <SelectItem value="rating">Rating (1-5)</SelectItem>
-                                        </SelectContent>
-                                      </Select>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-
-                                {questionForm.watch('questionType') === 'multiple_choice' && (
-                                  <FormField
-                                    control={questionForm.control}
-                                    name="options"
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel>Options (one per line)</FormLabel>
-                                        <FormControl>
-                                          <Textarea 
-                                            placeholder="Option 1&#10;Option 2&#10;Option 3"
-                                            onChange={(e) => field.onChange(e.target.value.split('\n').filter(Boolean))}
-                                            value={field.value?.join('\n') || ''}
-                                          />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                )}
-
-                                <FormField
-                                  control={questionForm.control}
-                                  name="isRequired"
-                                  render={({ field }) => (
-                                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                                      <FormControl>
-                                        <Checkbox
-                                          checked={field.value}
-                                          onCheckedChange={field.onChange}
-                                        />
-                                      </FormControl>
-                                      <div className="space-y-1 leading-none">
-                                        <FormLabel>Required question</FormLabel>
-                                      </div>
-                                    </FormItem>
-                                  )}
-                                />
-
-                                <div className="flex justify-end space-x-2">
-                                  <Button type="button" variant="outline" onClick={() => setShowAddQuestion(false)}>
-                                    Cancel
-                                  </Button>
-                                  <Button type="submit" disabled={addQuestionMutation.isPending}>
-                                    {addQuestionMutation.isPending ? "Adding..." : "Add Question"}
-                                  </Button>
-                                </div>
-                              </form>
-                            </Form>
-                          </DialogContent>
-                        </Dialog>
-                      </div>
-                      
-                      <div className="space-y-3">
-                        {selectedSurvey.questions?.map((question, index) => (
-                          <Card key={question.id}>
-                            <CardContent className="pt-4">
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                  <p className="font-medium">
-                                    {index + 1}. {question.questionText}
-                                    {question.isRequired && <span className="text-red-500 ml-1">*</span>}
-                                  </p>
-                                  <div className="flex items-center space-x-2 mt-2">
-                                    <Badge variant="outline">{question.questionType}</Badge>
-                                    {question.options && (
-                                      <span className="text-xs text-gray-500">
-                                        {question.options.length} options
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        )) || <p className="text-gray-500 text-center py-8">No questions added yet</p>}
-                      </div>
-                    </div>
-
-                    {/* Survey Actions */}
-                    <div className="flex justify-between border-t pt-4">
-                      <Button variant="outline" onClick={() => setSelectedSurvey(null)}>
-                        Close
-                      </Button>
-                      <div className="space-x-2">
-                        <Button variant="outline">
-                          <Mail className="w-4 h-4 mr-2" />
-                          Send to Attendees
-                        </Button>
-                        <Button>
-                          <Eye className="w-4 h-4 mr-2" />
-                          Preview Survey
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            )}
           </TabsContent>
 
           {/* Users Tab */}

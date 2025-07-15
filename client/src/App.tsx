@@ -10,6 +10,7 @@ import Profile from "@/pages/profile";
 import UserProfile from "@/pages/user-profile";
 import Admin from "@/pages/admin";
 import Conversation from "@/pages/conversation";
+import Survey from "@/pages/survey";
 import Login from "@/pages/login";
 import CreateProfile from "@/pages/create-profile";
 import EmailLogin from "@/pages/email-login";
@@ -125,6 +126,7 @@ function Router() {
         <Route path="/user-profile" component={() => <UserProfile currentUser={currentUser} />} />
         <Route path="/admin" component={Admin} />
         <Route path="/conversation/:id" component={Conversation} />
+        <Route path="/survey/:surveyId" component={Survey} />
         <Route component={NotFound} />
       </Switch>
       <BottomNavigation currentUser={currentUser} />
