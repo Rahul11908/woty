@@ -381,7 +381,7 @@ export default function Admin() {
                           </div>
                           <p className="text-gray-900 mb-2">{question.question}</p>
                           <p className="text-sm text-gray-600">
-                            Asked by User ID: {question.userId}
+                            Asked by: {(question as any).userFullName || `User ID: ${question.userId}`}
                           </p>
                         </div>
                         <div className="flex items-center space-x-2 ml-4">

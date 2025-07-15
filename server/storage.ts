@@ -1390,11 +1390,24 @@ export class DatabaseStorage implements IStorage {
     return question;
   }
 
-  async getQuestions(panelName?: string): Promise<Question[]> {
+  async getQuestions(panelName?: string): Promise<(Question & { userFullName: string })[]> {
+    const query = db
+      .select({
+        id: questions.id,
+        userId: questions.userId,
+        panelName: questions.panelName,
+        question: questions.question,
+        isAnswered: questions.isAnswered,
+        createdAt: questions.createdAt,
+        userFullName: users.fullName
+      })
+      .from(questions)
+      .leftJoin(users, eq(questions.userId, users.id));
+
     if (panelName) {
-      return await db.select().from(questions).where(eq(questions.panelName, panelName));
+      return await query.where(eq(questions.panelName, panelName));
     }
-    return await db.select().from(questions);
+    return await query;
   }
 
   async getQuestionsByUser(userId: number): Promise<Question[]> {
