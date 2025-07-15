@@ -75,6 +75,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid email or password" });
       }
       
+      // Set up the session for the authenticated user
+      const session = req.session as any;
+      session.userId = user.id;
+      session.user = user;
+      
       res.json(user);
     } catch (error) {
       console.error("Login error:", error);

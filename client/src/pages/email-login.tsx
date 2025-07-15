@@ -14,6 +14,7 @@ import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (2)_1
 
 const emailLoginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(1, "Please enter your password"),
 });
 
 type EmailLoginData = z.infer<typeof emailLoginSchema>;
@@ -26,13 +27,14 @@ export default function EmailLogin() {
     resolver: zodResolver(emailLoginSchema),
     defaultValues: {
       email: "",
+      password: "",
     },
   });
 
   const loginMutation = useMutation({
     mutationFn: async (data: EmailLoginData) => {
-      // Check if user exists by email
-      const response = await apiRequest("/api/users/by-email", "POST", data);
+      // Use proper login endpoint with password authentication
+      const response = await apiRequest("/api/login", "POST", data);
       return response;
     },
     onSuccess: (user) => {
@@ -82,7 +84,7 @@ export default function EmailLogin() {
             Welcome Back
           </CardTitle>
           <CardDescription className="text-gray-600">
-            Enter your email to access the summit
+            Enter your email and password to access the summit
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -105,6 +107,23 @@ export default function EmailLogin() {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Enter your password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <Button 
                 type="submit" 
@@ -112,7 +131,7 @@ export default function EmailLogin() {
                 size="lg"
                 disabled={loginMutation.isPending}
               >
-                {loginMutation.isPending ? "Verifying..." : "Enter Summit"}
+                {loginMutation.isPending ? "Signing In..." : "Sign In"}
               </Button>
             </form>
           </Form>
