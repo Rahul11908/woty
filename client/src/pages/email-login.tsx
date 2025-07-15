@@ -42,6 +42,7 @@ export default function EmailLogin() {
         title: "Welcome back!",
         description: `Welcome to GLORY Sports Summit, ${user.fullName}!`,
       });
+      
       // Store the user data for the session
       localStorage.setItem("currentUserId", user.id.toString());
       localStorage.setItem("currentUser", JSON.stringify(user));
@@ -49,10 +50,10 @@ export default function EmailLogin() {
       // Dispatch custom event to notify App.tsx of user login
       window.dispatchEvent(new CustomEvent('userLogin', { detail: user }));
       
-      // Small delay to ensure App.tsx receives the event before redirect
+      // Navigate to network with a small delay to ensure session is set
       setTimeout(() => {
         setLocation("/network");
-      }, 100);
+      }, 300);
     },
     onError: (error) => {
       toast({

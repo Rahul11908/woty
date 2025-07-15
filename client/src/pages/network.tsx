@@ -417,13 +417,13 @@ export default function Network({ currentUser }: NetworkProps) {
                 <div 
                   className="relative cursor-pointer group"
                   onClick={() => openPhotoViewer(
-                    displayUser?.avatar || getProfilePhoto(displayUser?.fullName || ""), 
+                    displayUser?.avatar || getUserPhoto(displayUser?.fullName || ""), 
                     displayUser || currentUser!
                   )}
                 >
                   <Avatar className="w-10 h-10 ring-2 ring-transparent group-hover:ring-blue-500 transition-all duration-200 avatar-image-flat">
                     <AvatarImage 
-                      src={displayUser?.avatar || getProfilePhoto(displayUser?.fullName || "")} 
+                      src={displayUser?.avatar || getUserPhoto(displayUser?.fullName || "")} 
                       alt={displayUser?.fullName}
                       loading="lazy"
                     />

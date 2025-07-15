@@ -25,7 +25,10 @@ function Router() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for server-side authentication first (LinkedIn/OAuth users)
+    let authCheckAttempts = 0;
+    const maxAttempts = 3;
+    
+    // Check for server-side authentication with retry logic
     const checkServerAuth = async () => {
       try {
         const response = await fetch("/api/auth/current-user", {
@@ -51,7 +54,14 @@ function Router() {
           return;
         }
       } catch (error) {
-        console.log("No server-side authentication found");
+        console.log("Authentication check failed:", error);
+      }
+      
+      // If authentication failed and we haven't exceeded max attempts, try again
+      authCheckAttempts++;
+      if (authCheckAttempts < maxAttempts) {
+        setTimeout(checkServerAuth, 500); // Wait 500ms before retry
+        return;
       }
       
       setIsLoading(false);

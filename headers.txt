@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 374
+ETag: W/"176-V3+BDKIoBTgx9EKadBgVXvBSk/k"
+Set-Cookie: connect.sid=s%3AdcKIiK_8AP6R_Zgw7xgPvRAkUIidSO1v.JhsIbLyypS8LF9hs8dLV5yZTvs%2BY%2F1QTYyzL0yF1OLQ; Path=/; Expires=Wed, 16 Jul 2025 14:53:42 GMT; HttpOnly
+Date: Tue, 15 Jul 2025 14:53:42 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
