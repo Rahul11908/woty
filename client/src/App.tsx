@@ -25,10 +25,22 @@ function Router() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let authCheckAttempts = 0;
-    const maxAttempts = 3;
+    // First check localStorage for existing user
+    const storedUser = localStorage.getItem("currentUser");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        setCurrentUser(user);
+        setIsLoading(false);
+        return;
+      } catch (error) {
+        console.error("Error parsing stored user:", error);
+        localStorage.removeItem("currentUser");
+        localStorage.removeItem("currentUserId");
+      }
+    }
     
-    // Check for server-side authentication with retry logic
+    // Check for server-side authentication
     const checkServerAuth = async () => {
       try {
         const response = await fetch("/api/auth/current-user", {
@@ -57,13 +69,7 @@ function Router() {
         console.log("Authentication check failed:", error);
       }
       
-      // If authentication failed and we haven't exceeded max attempts, try again
-      authCheckAttempts++;
-      if (authCheckAttempts < maxAttempts) {
-        setTimeout(checkServerAuth, 500); // Wait 500ms before retry
-        return;
-      }
-      
+      // No valid authentication found
       setIsLoading(false);
     };
     
