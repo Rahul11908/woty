@@ -56,8 +56,8 @@ export default function EmailLogin() {
     },
     onError: (error) => {
       toast({
-        title: "Email not found",
-        description: "No account found with this email. Please check your email or create a new profile.",
+        title: "Login failed",
+        description: "Invalid email or password. Please check your credentials and try again.",
         variant: "destructive",
       });
     },

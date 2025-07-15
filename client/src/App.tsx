@@ -25,10 +25,6 @@ function Router() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Clear any existing localStorage data for fresh start
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("currentUserId");
-    
     // Check for server-side authentication first (LinkedIn/OAuth users)
     const checkServerAuth = async () => {
       try {
