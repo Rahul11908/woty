@@ -45,7 +45,6 @@ export default function Network({ currentUser }: NetworkProps) {
   const [selectedPhotoUrl, setSelectedPhotoUrl] = useState("");
   const [selectedPhotoUser, setSelectedPhotoUser] = useState<User | null>(null);
   const currentUserId = currentUser?.id || null;
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
 
@@ -58,7 +57,11 @@ export default function Network({ currentUser }: NetworkProps) {
         : "/api/group-chat/messages";
       const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to fetch messages');
-      return response.json();
+      const messages = await response.json();
+      // Sort messages to show most recent at top
+      return messages.sort((a: MessageWithSender, b: MessageWithSender) => 
+        new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime()
+      );
     },
     refetchInterval: 5000, // Poll for new messages every 5 seconds
   });
@@ -79,7 +82,7 @@ export default function Network({ currentUser }: NetworkProps) {
   });
 
   // Fetch selected user data for profile dialog
-  const { data: selectedUser } = useQuery({
+  const { data: selectedUser } = useQuery<User>({
     queryKey: [`/api/users/${selectedUserId}`],
     enabled: !!selectedUserId && isUserProfileDialogOpen,
   });
@@ -211,9 +214,12 @@ export default function Network({ currentUser }: NetworkProps) {
     }
   };
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll to top when new messages arrive (since newest are at top)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const messagesContainer = document.querySelector('.messages-container');
+    if (messagesContainer) {
+      messagesContainer.scrollTop = 0;
+    }
   }, [groupMessages]);
 
 
@@ -311,6 +317,11 @@ export default function Network({ currentUser }: NetworkProps) {
       setIsSurveyDialogOpen(true);
     }
   };
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -519,7 +530,7 @@ export default function Network({ currentUser }: NetworkProps) {
           </CardHeader>
           <CardContent className="flex-1 flex flex-col">
             {/* Messages Area with Fixed Height and Scrolling */}
-            <div className="h-80 overflow-y-auto mb-4 pr-2">
+            <div className="messages-container h-80 overflow-y-auto mb-4 pr-2">
               <div className="space-y-3">
                 {messagesLoading ? (
                   <div className="flex justify-center py-8">
@@ -662,7 +673,6 @@ export default function Network({ currentUser }: NetworkProps) {
                     </div>
                   ))
                 )}
-                <div ref={messagesEndRef} />
               </div>
             </div>
 
