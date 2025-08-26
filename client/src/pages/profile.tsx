@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, Clock, Users, MessageSquare, Send, ChevronDown, ChevronUp, User } from "lucide-react";
+import { Calendar, Clock, Users, MessageSquare, Send, ChevronDown, ChevronUp, User, LogOut } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -327,6 +327,13 @@ export default function Profile() {
     }
   };
 
+  const handleLogout = () => {
+    // Clear any stored user data
+    localStorage.removeItem('user');
+    // Redirect to logout endpoint
+    window.location.href = '/api/logout';
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
@@ -338,12 +345,23 @@ export default function Profile() {
             </div>
             <h1 className="text-xl font-semibold text-gray-900">Program</h1>
           </div>
-          <div className="w-32 h-14">
-            <img 
-              src={gloryLogo} 
-              alt="GLORY Logo" 
-              className="w-full h-full object-contain"
-            />
+          <div className="flex items-center space-x-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleLogout}
+              className="text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 flex items-center space-x-1"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </Button>
+            <div className="w-32 h-14">
+              <img 
+                src={gloryLogo} 
+                alt="GLORY Logo" 
+                className="w-full h-full object-contain"
+              />
+            </div>
           </div>
         </div>
       </header>
