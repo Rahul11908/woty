@@ -67,12 +67,39 @@ export default function UserProfile({ currentUser }: UserProfileProps) {
     updateProfileMutation.mutate(editForm);
   };
 
-  const handleLogout = () => {
-    // Clear any stored user data
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('currentUserId');
-    // Redirect to logout endpoint
-    window.location.href = '/api/logout';
+  const handleLogout = async () => {
+    try {
+      // Clear any stored user data immediately
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('currentUserId');
+      
+      // Call logout endpoint with POST for better mobile compatibility
+      try {
+        const response = await fetch('/api/logout', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        
+        if (response.ok) {
+          console.log("Successfully logged out");
+        } else {
+          console.warn("Logout endpoint returned error:", response.status);
+        }
+      } catch (fetchError) {
+        console.log("Fetch logout failed, but proceeding:", fetchError);
+      }
+      
+      // Force immediate navigation to login page
+      window.location.replace('/login');
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Fallback: force reload to login page
+      window.location.replace('/login');
+    }
   };
 
   const handleCancelEdit = () => {

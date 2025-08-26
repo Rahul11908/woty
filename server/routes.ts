@@ -962,6 +962,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Logout endpoints (both GET and POST for mobile compatibility)
+  const logoutHandler = (req: any, res: any) => {
+    try {
+      // Clear session data
+      const session = req.session as any;
+      if (session) {
+        session.userId = null;
+        session.user = null;
+        session.pendingPasswordUserId = null;
+      }
+      
+      // Destroy the session completely
+      req.session.destroy((err: any) => {
+        if (err) {
+          console.error("Error destroying session:", err);
+        }
+      });
+      
+      // Logout passport session if it exists
+      if (req.logout) {
+        req.logout((err: any) => {
+          if (err) {
+            console.error("Error logging out passport session:", err);
+          }
+        });
+      }
+      
+      // Clear session cookie
+      res.clearCookie('connect.sid');
+      
+      // For API calls, return JSON; for browser redirects, redirect to login
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        res.json({ success: true, message: "Logged out successfully" });
+      } else {
+        res.redirect('/login');
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+      res.status(500).json({ error: "Failed to logout" });
+    }
+  };
+
+  app.get("/api/logout", logoutHandler);
+  app.post("/api/logout", logoutHandler);
+
   const httpServer = createServer(app);
   return httpServer;
 
