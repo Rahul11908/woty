@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Edit, Save, X, Upload, ExternalLink, Loader2 } from "lucide-react";
+import { Edit, Save, X, Upload, ExternalLink, Loader2, LogOut, User as UserIcon } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { User } from "@shared/schema";
@@ -65,6 +65,14 @@ export default function UserProfile({ currentUser }: UserProfileProps) {
 
   const handleSaveProfile = () => {
     updateProfileMutation.mutate(editForm);
+  };
+
+  const handleLogout = () => {
+    // Clear any stored user data
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('currentUserId');
+    // Redirect to logout endpoint
+    window.location.href = '/api/logout';
   };
 
   const handleCancelEdit = () => {
@@ -149,9 +157,25 @@ export default function UserProfile({ currentUser }: UserProfileProps) {
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-4 py-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">My Profile</h1>
-          <p className="text-gray-600">Manage your personal information and preferences</p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+              <UserIcon className="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">My Profile</h1>
+              <p className="text-sm text-gray-600">Manage your information</p>
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleLogout}
+            className="text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 flex items-center space-x-1"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline">Logout</span>
+          </Button>
         </div>
       </div>
 
