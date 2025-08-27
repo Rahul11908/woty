@@ -5,6 +5,7 @@ This project is a mobile-first social networking application for the GLORY Sport
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
+Tab functionality summaries: User requested comprehensive 1-2 paragraph summaries for each app tab describing functionality and capabilities (documented in TAB_SUMMARIES.md).
 
 ## System Architecture
 

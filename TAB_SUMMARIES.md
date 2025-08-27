@@ -1,0 +1,26 @@
+# GLORY Sports Summit App - Tab Functionality Overview
+
+## Network Tab
+The Network tab is the social hub of the GLORY Sports Summit app, designed to foster connections and conversations among attendees. This comprehensive networking platform features a group chat where all summit participants can engage in real-time discussions, share insights, and build professional relationships. The tab displays a curated directory of event attendees with their professional profiles, photos, company affiliations, and roles, enabling users to discover and connect with like-minded professionals in the sports industry.
+
+Users can browse through attendee profiles, view professional headshots, and access contact information including LinkedIn profiles where available. The interactive group chat functionality allows for dynamic community engagement, with message timestamps and user identification to maintain organized discussions. The Network tab also includes survey integration, allowing administrators to distribute feedback forms and gather insights from the community directly within the networking interface.
+
+## Program Tab (Profile.tsx)
+The Program tab serves as the comprehensive event guide and speaker showcase for the 2025 GLORY Sports Summit. This section presents the complete summit schedule with detailed panel information, including session times, descriptions, and comprehensive speaker profiles. Each panel features distinguished industry leaders, coaches, athletes, and executives with their professional backgrounds, career achievements, and expertise areas clearly displayed.
+
+The interactive program interface allows attendees to explore speaker biographies, view professional headshots, and understand the depth of knowledge each panelist brings to their sessions. Users can browse through different panels, access detailed speaker information, and prepare questions for upcoming sessions. The Program tab also integrates with the question submission system, enabling attendees to submit inquiries for specific panels directly through the interface, ensuring meaningful engagement during live sessions.
+
+## Survey Tab
+The Survey tab provides a comprehensive feedback and data collection system for the GLORY Sports Summit experience. This interactive platform enables attendees to participate in various surveys including post-event feedback, session evaluations, and general experience assessments. The system supports multiple question types including multiple choice, rating scales, and open-ended text responses to gather comprehensive insights from participants.
+
+Survey functionality includes progress tracking, response validation, and submission confirmations to ensure quality data collection. Attendees can access active surveys, review their submission status, and participate in ongoing feedback initiatives. The platform prevents duplicate submissions while maintaining user privacy and data security. Completed surveys contribute to the overall event analytics and help organizers improve future summit experiences based on authentic attendee feedback.
+
+## Admin Tab
+The Admin tab provides comprehensive administrative controls and analytics for GLORY Sports Summit organizers and staff. This powerful dashboard offers complete user management capabilities including attendee registration oversight, profile administration, and access control management. Administrators can monitor real-time user activity, track engagement metrics, and manage group chat conversations with moderation tools.
+
+The analytics suite includes detailed reporting on user participation, survey response rates, networking activity, and overall platform engagement. Administrative functions encompass survey creation and management, question moderation for panel submissions, and comprehensive data export capabilities for post-event analysis. The dashboard provides essential insights through interactive charts, user activity timelines, and engagement statistics, enabling data-driven decisions for current and future summit planning. Admin users can also manage content, moderate discussions, and ensure platform security through role-based access controls.
+
+## Profile Tab (User-Profile.tsx)
+The Profile tab serves as the personal dashboard and account management center for individual users of the GLORY Sports Summit app. This comprehensive profile management system allows attendees to view and edit their professional information, including full name, email, company affiliation, job title, and professional bio. Users can upload and manage their profile pictures, update LinkedIn integration details, and maintain their professional presence within the summit community.
+
+The interface provides secure account management features including password updates, authentication method management, and session control with secure logout functionality. Profile customization options ensure users can present their professional brand effectively while networking with other summit attendees. The tab also displays user activity history, connection status, and participation metrics, giving attendees insights into their summit engagement and networking progress throughout the event.
