@@ -9,8 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { analytics } from "@/lib/analytics";
 import gloryLogo from "@assets/GLORY WOTY_1762527738446.png";
-import teresaReschMagazinePhoto from "@assets/Screenshot 2025-11-07 at 10.22.07 AM_1762528932026.png";
-import cinderellaStoriesPodcastPhoto from "@assets/Screenshot 2025-11-07 at 10.21.40 AM_1762528940516.png";
+import teresaReschMagazinePhoto from "@assets/teresa-resch-magazine.png";
+import cinderellaStoriesPodcastPhoto from "@assets/cinderella-stories-podcast.png";
 
 interface Panel {
   id: string;
