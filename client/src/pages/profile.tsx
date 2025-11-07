@@ -99,14 +99,14 @@ const panels: Panel[] = [
       {
         name: "Teresa Resch",
         title: "Toronto Tempo President",
-        bio: "Inaugural President of the Toronto Tempo, the first WNBA franchise outside of the USA, beginning play in 2026 season.",
+        bio: "Teresa Resch is the inaugural President of the WNBA Toronto franchise, which will begin play in 2026 season. Resch has been a leader in basketball development at the global scale for nearly 20 years. For 11 seasons she was a senior leader at the Toronto Raptors, bringing basketball to the forefront of Canadian sport.",
         photo: speakerPhotos["Teresa Resch"]
       }
     ],
     moderator: {
       name: "Cinderella Stories",
       title: "GLORY Media Podcast",
-      bio: "Cinderella Stories is GLORY Media's hit podcast featuring inspiring stories from women in sports, hosted by Ashley & Savannah.",
+      bio: "Cinderella Stories is your front-row seat to the drama, drive, and dynamism of women's sports. Hosted by seasoned sports journalists Ashley Docking and Savannah Hamilton, this podcast dives into buzzer-beaters, breakout stars, bracket-shaking upsets, and the culture powering women's hoops.",
       photo: speakerPhotos["Cinderella Stories"]
     }
   }
@@ -240,19 +240,19 @@ export default function Profile() {
               <h3 className="font-semibold text-gray-900 mb-4">Today's Schedule</h3>
 
               <div className="space-y-3 text-sm">
-                <div className="flex items-center space-x-3">
-                  <Clock className="w-4 h-4 text-gray-400" />
-                  <span className="font-medium">6:00 pm - 6:30 pm</span>
+                <div className="flex items-start space-x-3">
+                  <Clock className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
+                  <span className="font-medium w-44 flex-shrink-0">6:00 pm - 6:30 pm</span>
                   <span className="text-gray-600">VIP Arrival and Welcome Cocktail</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <Clock className="w-4 h-4 text-gray-400" />
-                  <span className="font-medium">6:30 pm - 7:00 pm</span>
+                <div className="flex items-start space-x-3">
+                  <Clock className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
+                  <span className="font-medium w-44 flex-shrink-0">6:30 pm - 7:00 pm</span>
                   <span className="text-gray-600">Live Podcast - Cinderella Stories with Special Guest Teresa Resch</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <Clock className="w-4 h-4 text-gray-400" />
-                  <span className="font-medium">7:00 pm - 9:00 pm</span>
+                <div className="flex items-start space-x-3">
+                  <Clock className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
+                  <span className="font-medium w-44 flex-shrink-0">7:00 pm - 9:00 pm</span>
                   <span className="text-gray-600">Networking and Cocktail Reception</span>
                 </div>
               </div>
