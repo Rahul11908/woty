@@ -19,9 +19,6 @@ export default function Homepage() {
 
           {/* Main Title */}
           <div className="space-y-4">
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900">
-              2025 GLORY Sports Summit
-            </h1>
             <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
               Celebrate Canada's most innovative and influential women with GLORY Media.
             </p>
