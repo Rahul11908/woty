@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { User, MessageWithSender, Survey } from "@shared/schema";
-import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
+import gloryLogo from "@assets/GLORY WOTY_1762527738446.png";
 import bobParkPhoto from "@assets/Bob Park_1752262505617.png";
 import andiPetrilloPhoto from "@assets/Andi Petrillo_1752262505617.png";
 import saroyaTinkerPhoto from "@assets/Saroya Tinker_1752262505617.png";

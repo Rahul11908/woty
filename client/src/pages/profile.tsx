@@ -8,7 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { analytics } from "@/lib/analytics";
-import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
+import gloryLogo from "@assets/GLORY WOTY_1762527738446.png";
 import bobParkPhoto from "@assets/Bob Park_1752262505617.png";
 import sharonBollenbachPhoto from "@assets/Sharon Bollenbach_1752262505617.png";
 import lanceChungPhoto from "@assets/Lance Chung_1752262505617.png";

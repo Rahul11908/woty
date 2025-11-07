@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (2)_1751991903966.png";
+import gloryLogo from "@assets/GLORY WOTY_1762527738446.png";
 
 const emailLoginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),

@@ -16,7 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertUserSchema } from "@shared/schema";
-import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (2)_1751991903966.png";
+import gloryLogo from "@assets/GLORY WOTY_1762527738446.png";
 
 const createProfileSchema = insertUserSchema.extend({
   confirmPassword: z.string().min(1, "Please confirm your password"),

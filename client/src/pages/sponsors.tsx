@@ -1,6 +1,6 @@
 import { Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
+import gloryLogo from "@assets/GLORY WOTY_1762527738446.png";
 import bossLogo from "@assets/BOSS_LOGO_white_RGB_1752004469108.png";
 import rabanneLogo from "@assets/image - Edited_1752168892219.png";
 import suttonPlaceHotelLogo from "@assets/SPH-Toronto_logo_Toronto_white_stacked_1752004469108.png";

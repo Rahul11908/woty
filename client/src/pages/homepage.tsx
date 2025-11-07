@@ -2,7 +2,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarDays, Users, Trophy } from "lucide-react";
-import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (2)_1751991903966.png";
+import gloryLogo from "@assets/GLORY WOTY_1762527738446.png";
 
 export default function Homepage() {
   const [, setLocation] = useLocation();
@@ -14,9 +14,7 @@ export default function Homepage() {
         <div className="text-center space-y-8">
           {/* Logo */}
           <div className="flex justify-center">
-            <a href="https://www.glory.media" target="_blank" rel="noopener noreferrer">
-              <img src={gloryLogo} alt="2025 GLORY Sports Summit" className="h-32 w-auto hover:opacity-80 transition-opacity cursor-pointer" />
-            </a>
+            <img src={gloryLogo} alt="2025 GLORY Sports Summit" className="h-48 w-auto" />
           </div>
 
           {/* Main Title */}
@@ -25,7 +23,7 @@ export default function Homepage() {
               2025 GLORY Sports Summit
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
-              Connect with sports industry leaders, share insights, and shape the future of sports
+              Celebrate Canada's most innovative and influential women with GLORY Media.
             </p>
           </div>
 

@@ -18,7 +18,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertSurveySchema, insertSurveyQuestionSchema, type Survey, type SurveyWithQuestions, type Question } from "@shared/schema";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import gloryLogo from "@assets/Orange Modern Fun Photography Business Card (1)_1751985925815.png";
+import gloryLogo from "@assets/GLORY WOTY_1762527738446.png";
 
 const surveyFormSchema = insertSurveySchema.extend({
   emailSubject: z.string().optional(),

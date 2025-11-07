@@ -11,7 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { loginSchema, type LoginData } from "@shared/schema";
-import gloryWoty from "@assets/GLORY WOTY_1762527483793.png";
+import gloryWoty from "@assets/GLORY WOTY_1762527738446.png";
 
 export default function Login() {
   const [, setLocation] = useLocation();
