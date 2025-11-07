@@ -46,11 +46,11 @@ export default function Homepage() {
             <Card className="border-orange-200 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group">
               <CardHeader className="text-center">
                 <CalendarDays className="w-12 h-12 text-orange-500 mx-auto mb-2 group-hover:scale-110 transition-transform duration-300" />
-                <CardTitle className="text-lg group-hover:text-orange-600 transition-colors">Panel Discussions</CardTitle>
+                <CardTitle className="text-lg group-hover:text-orange-600 transition-colors">Live Podcast</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription className="group-hover:text-gray-700 transition-colors">
-                  Engage with expert panels and submit your questions for live discussions
+                  Enjoy a live recording of Cinderella Stories, Canada's source for all things Women's Sports.
                 </CardDescription>
               </CardContent>
             </Card>
