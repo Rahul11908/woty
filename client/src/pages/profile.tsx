@@ -9,21 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { analytics } from "@/lib/analytics";
 import gloryLogo from "@assets/GLORY WOTY_1762527738446.png";
-import bobParkPhoto from "@assets/Bob Park_1752262505617.png";
-import sharonBollenbachPhoto from "@assets/Sharon Bollenbach_1752262505617.png";
-import lanceChungPhoto from "@assets/Lance Chung_1752262505617.png";
-import marcusHansonPhoto from "@assets/Marcus Hanson_1752262505617.png";
-import ellenHyslopPhoto from "@assets/Ellen Hyslop_1752262505617.png";
-import anastasiaBucsisPhoto from "@assets/Anastasia Bucsis_1752262505617.png";
-import dianaMatheson1Photo from "@assets/Diana Matheson (2)_1752262505617.png";
-import dianaMatheson2Photo from "@assets/Diana Matheson_1752262505617.png";
-import alysonWalkerPhoto from "@assets/Alyson Walker_1752262505617.png";
-import jesseMartschPhoto from "@assets/Jesse Marsch_1752262505617.png";
-import dwayneDeRosarioPhoto from "@assets/Dwayne De Rosario_1752262505617.png";
-import kyleMcMannPhoto from "@assets/Kyle McMann_1752262505617.png";
-import andiPetrilloPhoto from "@assets/Andi Petrillo_1752262505617.png";
-import saroyaTinkerPhoto from "@assets/Saroya Tinker_1752262505617.png";
-import teresaReschPhoto from "@assets/Teresa Resch_1752262505617.png";
+import teresaReschMagazinePhoto from "@assets/Screenshot 2025-11-07 at 10.22.07 AM_1762528932026.png";
+import cinderellaStoriesPodcastPhoto from "@assets/Screenshot 2025-11-07 at 10.21.40 AM_1762528940516.png";
 
 interface Panel {
   id: string;
@@ -98,151 +85,29 @@ const SpeakerPhoto = ({ name, photo, size = "normal" }: { name: string; photo?: 
 
 // Speaker photo URLs - Using actual photos when available
 const speakerPhotos: Record<string, string> = {
-  // Panel 1
-  "Dwayne De Rosario": dwayneDeRosarioPhoto,
-  "Sharon Bollenbach": sharonBollenbachPhoto, 
-  "Marcus Hanson": marcusHansonPhoto,
-  "Ellen Hyslop": ellenHyslopPhoto,
-  
-  // Panel 2
-  "Diana Matheson": dianaMatheson2Photo, // Using the action shot photo
-  "Anastasia Bucsis": anastasiaBucsisPhoto,
-  "Lance Chung": lanceChungPhoto,
-  
-  // Panel 3
-  "Teresa Resch": teresaReschPhoto, // Updated with new photo
-  "Kyle McMann": kyleMcMannPhoto,
-  "Saroya Tinker": saroyaTinkerPhoto, // Updated with new photo
-  "Alyson Walker": alysonWalkerPhoto,
-  
-  // Panel 4
-  "Jesse Marsch": jesseMartschPhoto,
-  "Bob Park": bobParkPhoto,
-  "Kevin Blue": "/photos/kevin-blue.jpg", // No new photo provided
-  "Andi Petrillo": andiPetrilloPhoto
+  "Teresa Resch": teresaReschMagazinePhoto,
+  "Cinderella Stories": cinderellaStoriesPodcastPhoto,
 };
 
 const panels: Panel[] = [
   {
     id: "panel1",
-    title: "Breaking Through: The Canadian Soccer Identity",
-    time: "2:10 PM – 2:50 PM",
-    description: "From grassroots leagues to the global pitch, Canadian soccer has come a long way—but the journey is far from over. As Toronto prepares to become a host city for the 2026 FIFA World Cup, this panel explores the evolution of soccer in Canada.",
-    panelists: [
-      {
-        name: "Dwayne De Rosario",
-        title: "Former Player",
-        bio: "Dwayne 'DeRo' De Rosario is a proud Scarborough native and one of Canada's most decorated and influential soccer figures, with a career spanning nearly two decades at the highest levels.",
-        photo: speakerPhotos["Dwayne De Rosario"]
-      },
-      {
-        name: "Sharon Bollenbach",
-        title: "Executive Director, FIFA World Cup at the City of Toronto",
-        bio: "With over 30 years of leadership experience in sport administration and event management, Sharon leads Toronto's preparations for hosting the FIFA World Cup 2026™.",
-        photo: speakerPhotos["Sharon Bollenbach"]
-      },
-      {
-        name: "Marcus Hanson",
-        title: "CEO, First Touch Football",
-        bio: "Marcus is the founder and CEO of First Touch Football Canada, helping Canadian soccer players earn scholarships and opportunities with top clubs.",
-        photo: speakerPhotos["Marcus Hanson"]
-      }
-    ],
-    moderator: {
-      name: "Ellen Hyslop",
-      title: "Co-Founder, The Gist",
-      bio: "Ellen is a co-founder and head of content at The GIST, a fan-first sports media brand that has reinvented the dialogue around sports.",
-      photo: speakerPhotos["Ellen Hyslop"]
-    }
-  },
-  {
-    id: "panel2",
-    title: "More Than a Game: Partnership, Purpose, and Canadian Sports",
-    time: "2:55 PM – 3:30 PM",
-    description: "Diana Matheson and Anastasia Bucsis discuss the power of soccer to drive cultural change, the urgency of professionalizing the women's game in Canada, and leadership in sports.",
-    panelists: [
-      {
-        name: "Diana Matheson",
-        title: "Former Player, Co-founder Project 8",
-        bio: "Two-time Olympic bronze medalist and co-founder of Project 8 Sports, now Founder and Chief Growth Officer at the Northern Super League.",
-        photo: speakerPhotos["Diana Matheson"]
-      },
-      {
-        name: "Anastasia Bucsis",
-        title: "Former Olympian, CBC Sports journalist",
-        bio: "Two-time Olympic Speedskater and CBC Sports journalist who launched and hosted the podcast 'Player's Own Voice.'",
-        photo: speakerPhotos["Anastasia Bucsis"]
-      }
-    ],
-    moderator: {
-      name: "Lance Chung",
-      title: "Editor-in-Chief, GLORY Media",
-      bio: "Lance is the Editor-in-Chief of GLORY Media and master of ceremonies for the Summit with years of experience interviewing today's top minds.",
-      photo: speakerPhotos["Lance Chung"]
-    }
-  },
-  {
-    id: "panel3",
-    title: "From The Ground Up: How To Build a Global Sports Nation",
-    time: "4:00 PM - 4:40 PM",
-    description: "Leaders building Toronto's sports future explore what it means to turn a city into a global sports hub through major league expansion, global partnerships, and grassroots development.",
+    title: "Cinderella Stories with Special Guest Teresa Resch",
+    time: "6:30 pm - 7:00 pm",
+    description: "Join GLORY Media for a live Episode of our hit podcast Cinderella Stories, featuring Special Guest, Toronto Tempo President Teresa Resch as she gears up to launch the leagues first Canadian franchise.",
     panelists: [
       {
         name: "Teresa Resch",
-        title: "President, Toronto Tempo",
+        title: "Toronto Tempo President",
         bio: "Inaugural President of the Toronto Tempo, the first WNBA franchise outside of the USA, beginning play in 2026 season.",
         photo: speakerPhotos["Teresa Resch"]
-      },
-      {
-        name: "Kyle McMann",
-        title: "SVP, Global Business Development, NHL",
-        bio: "Responsible for generating revenue through strategic partnerships and helping the NHL on its path to upwards of $6 billion in annual revenues.",
-        photo: speakerPhotos["Kyle McMann"]
-      },
-      {
-        name: "Saroya Tinker",
-        title: "DEI, PWHL",
-        bio: "Former professional hockey player who sparks change, pushes limits, breaks barriers, and creates a more equitable future in hockey.",
-        photo: speakerPhotos["Saroya Tinker"]
-      },
-      {
-        name: "Diana Matheson",
-        title: "Former Player, Co-founder Project 8",
-        bio: "Two-time Olympic bronze medalist and co-founder of Project 8 Sports, now Founder and Chief Growth Officer at the Northern Super League.",
-        photo: speakerPhotos["Diana Matheson"]
       }
     ],
     moderator: {
-      name: "Alyson Walker",
-      title: "SVP, Wasserman",
-      bio: "Sports, media, and entertainment executive with extensive experience across amateur & professional sports, driving revenue and audience growth.",
-      photo: speakerPhotos["Alyson Walker"]
-    }
-  },
-  {
-    id: "panel4",
-    title: "Canada Soccer Preparation for FIFA World Cup",
-    time: "4:45 PM - 5:30 PM",
-    description: "Head Coach Jesse Marsch shares what it's like to lead a national team with the hopes of a country behind it, joined by key supporters discussing investment in sport.",
-    panelists: [
-      {
-        name: "Jesse Marsch",
-        title: "Head Coach, Men's National Team",
-        bio: "Current head coach of the Canadian men's national soccer team, known for his high-tempo, high-press coaching style.",
-        photo: speakerPhotos["Jesse Marsch"]
-      },
-      {
-        name: "Bob Park",
-        title: "Chief Brand Officer, GE Appliances Canada",
-        bio: "Leads corporate communications, branding, and digital strategy across a billion-dollar portfolio of appliance brands.",
-        photo: speakerPhotos["Bob Park"]
-      }
-    ],
-    moderator: {
-      name: "Andi Petrillo",
-      title: "CBC Sports Journalist",
-      bio: "Host of CBC Sports each weekend, known for her work as part of the studio team for CBC's Hockey Night in Canada.",
-      photo: speakerPhotos["Andi Petrillo"]
+      name: "Cinderella Stories",
+      title: "GLORY Media Podcast",
+      bio: "Cinderella Stories is GLORY Media's hit podcast featuring inspiring stories from women in sports, hosted by Ashley & Savannah.",
+      photo: speakerPhotos["Cinderella Stories"]
     }
   }
 ];
@@ -357,13 +222,13 @@ export default function Profile() {
             <CardContent className="pt-6">
               <div className="text-center mb-4">
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                  2025 GLORY Sports Summit
+                  2025 Women of the Year
                 </h2>
                 <p className="text-gray-600 mb-4">
-                  July 15th • Sutton Place Hotel, Toronto
+                  November 18th - Canopy by Hilton Toronto Yorkville
                 </p>
                 <p className="text-sm text-gray-700 font-bold italic">
-                  Exploring the intersection of sports and culture through a distinctly Canadian lens
+                  Celebrating excellence with 2025's most influential and innovative Women in Canada.
                 </p>
               </div>
             </CardContent>
@@ -373,70 +238,47 @@ export default function Profile() {
           <Card>
             <CardContent className="pt-6">
               <h3 className="font-semibold text-gray-900 mb-4">Today's Schedule</h3>
-              
-              {/* MC Section */}
-              <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <h4 className="font-medium text-blue-900 mb-2">Master of Ceremonies</h4>
-                <div className="flex items-center space-x-3">
-                  <SpeakerPhoto name="Lance Chung" photo={speakerPhotos["Lance Chung"]} />
-                  <div>
-                    <p className="font-medium text-sm text-blue-900">Lance Chung</p>
-                    <p className="text-xs text-blue-700">Editor-in-Chief, GLORY Media</p>
-                  </div>
-                </div>
-              </div>
 
               <div className="space-y-3 text-sm">
                 <div className="flex items-center space-x-3">
                   <Clock className="w-4 h-4 text-gray-400" />
-                  <span className="font-medium">1:00 PM - 2:00 PM</span>
-                  <span className="text-gray-600">Arrivals + Networking</span>
+                  <span className="font-medium">6:00 pm - 6:30 pm</span>
+                  <span className="text-gray-600">VIP Arrival and Welcome Cocktail</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Clock className="w-4 h-4 text-gray-400" />
-                  <span className="font-medium">2:10 PM - 3:30 PM</span>
-                  <span className="text-gray-600">Panel 1 and Panel 2</span>
+                  <span className="font-medium">6:30 pm - 7:00 pm</span>
+                  <span className="text-gray-600">Live Podcast - Cinderella Stories with Special Guest Teresa Resch</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Clock className="w-4 h-4 text-gray-400" />
-                  <span className="font-medium">3:30 PM - 3:55 PM</span>
-                  <span className="text-gray-600">Networking Break</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Clock className="w-4 h-4 text-gray-400" />
-                  <span className="font-medium">4:00 PM - 5:30 PM</span>
-                  <span className="text-gray-600">Panel 3 and Panel 4</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Clock className="w-4 h-4 text-gray-400" />
-                  <span className="font-medium">6:00 PM - 8:00 PM</span>
-                  <span className="text-gray-600">Cocktail Reception</span>
+                  <span className="font-medium">7:00 pm - 9:00 pm</span>
+                  <span className="text-gray-600">Networking and Cocktail Reception</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Panel Discussions */}
+          {/* Live Podcast */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900 text-center">Panel Discussions - Submit Your Questions</h3>
+            <h3 className="font-semibold text-gray-900 text-center">Live Podcast - Submit Your Questions</h3>
             {panels.map((panel, index) => (
               <Card key={panel.id}>
                 <CardContent className="pt-6">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
-                        <Badge variant="outline">Panel #{index + 1}</Badge>
+                        <Badge variant="outline">Live Podcast</Badge>
                         <span className="text-sm text-gray-500">{panel.time}</span>
                       </div>
                       <h4 className="font-semibold text-gray-900 mb-2">{panel.title}</h4>
                       <p className="text-sm text-gray-600 mb-3">{panel.description}</p>
                       
-                      {/* Speaker Preview - Horizontal Layout */}
+                      {/* Special Guest Preview - Horizontal Layout */}
                       {expandedPanel !== panel.id && (
                         <div className="flex items-center space-x-3 mt-3">
-                          <span className="text-sm text-gray-500 font-medium">Speakers:</span>
+                          <span className="text-sm text-gray-500 font-medium">Special Guest:</span>
                           <div className="flex space-x-2">
-                            <SpeakerPhoto name={panel.moderator.name} photo={panel.moderator.photo} size="preview" />
                             {panel.panelists.slice(0, 3).map((panelist) => (
                               <SpeakerPhoto key={panelist.name} name={panelist.name} photo={panelist.photo} size="preview" />
                             ))}
@@ -470,9 +312,9 @@ export default function Profile() {
 
                   {expandedPanel === panel.id && (
                     <div className="space-y-4 border-t pt-4">
-                      {/* Moderator */}
+                      {/* Podcast/Show */}
                       <div>
-                        <h5 className="font-medium text-gray-900 mb-2">Moderator</h5>
+                        <h5 className="font-medium text-gray-900 mb-2">Podcast</h5>
                         <div className="bg-gray-50 p-3 rounded-lg">
                           <div className="flex items-start space-x-3">
                             <SpeakerPhoto name={panel.moderator.name} photo={panel.moderator.photo} />
@@ -485,9 +327,9 @@ export default function Profile() {
                         </div>
                       </div>
 
-                      {/* Panelists */}
+                      {/* Special Guest */}
                       <div>
-                        <h5 className="font-medium text-gray-900 mb-2">Panelists</h5>
+                        <h5 className="font-medium text-gray-900 mb-2">Special Guest</h5>
                         <div className="space-y-2">
                           {panel.panelists.map((panelist, idx) => (
                             <div key={idx} className="bg-gray-50 p-3 rounded-lg">
