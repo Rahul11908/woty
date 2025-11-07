@@ -234,6 +234,20 @@ export default function Profile() {
             </CardContent>
           </Card>
 
+          {/* Master of Ceremonies */}
+          <Card>
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <h3 className="font-semibold text-gray-900 mb-3">Master of Ceremonies</h3>
+                <div className="flex flex-col items-center">
+                  <SpeakerPhoto name="Lance Chung" size="normal" />
+                  <p className="font-medium text-gray-900 mt-3">Lance Chung</p>
+                  <p className="text-sm text-gray-600">Host & Emcee</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Schedule Overview */}
           <Card>
             <CardContent className="pt-6">
