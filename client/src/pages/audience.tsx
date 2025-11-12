@@ -173,15 +173,23 @@ export default function Audience() {
             {womenOfTheYear.map((woman) => (
               <Card key={woman.id} data-testid={`card-woty-${woman.id}`}>
                 <CardContent className="pt-6">
-                  {/* Collapsed View - Name and Title */}
+                  {/* Collapsed View - Image, Name and Title */}
                   <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900" data-testid={`text-name-${woman.id}`}>
-                        {woman.name}
-                      </h3>
-                      <p className="text-sm text-gray-600" data-testid={`text-title-${woman.id}`}>
-                        {woman.title}
-                      </p>
+                    <div className="flex items-center space-x-4 flex-1">
+                      <img 
+                        src={woman.image} 
+                        alt={woman.name}
+                        className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                        data-testid={`img-woty-${woman.id}`}
+                      />
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900" data-testid={`text-name-${woman.id}`}>
+                          {woman.name}
+                        </h3>
+                        <p className="text-sm text-gray-600" data-testid={`text-title-${woman.id}`}>
+                          {woman.title}
+                        </p>
+                      </div>
                     </div>
                     <Button
                       variant="ghost"
@@ -197,21 +205,13 @@ export default function Audience() {
                     </Button>
                   </div>
 
-                  {/* Expanded View - Photo, Bio, and Question */}
+                  {/* Expanded View - Bio and Question */}
                   {expandedWoman === woman.id && (
                     <div className="mt-4 space-y-4 border-t pt-4">
-                      <div className="flex items-start space-x-4">
-                        <img 
-                          src={woman.image} 
-                          alt={woman.name}
-                          className="w-24 h-24 rounded-lg object-cover flex-shrink-0"
-                          data-testid={`img-woty-${woman.id}`}
-                        />
-                        <div className="flex-1">
-                          <p className="text-sm text-gray-700" data-testid={`text-bio-${woman.id}`}>
-                            {woman.bio}
-                          </p>
-                        </div>
+                      <div>
+                        <p className="text-sm text-gray-700" data-testid={`text-bio-${woman.id}`}>
+                          {woman.bio}
+                        </p>
                       </div>
 
                       {/* Ask Question Section */}

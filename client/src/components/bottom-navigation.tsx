@@ -52,9 +52,7 @@ export default function BottomNavigation({ currentUser }: BottomNavigationProps)
         <Link 
           href="/audience" 
           onClick={() => handleTabClick('WOTY')}
-          className={`flex flex-col items-center space-y-1 p-2 transition-all duration-300 transform hover:scale-110 ${
-            isActive("/audience") ? "text-primary scale-105" : "text-gray-500 hover:text-primary"
-          }`}
+          className="flex flex-col items-center space-y-1 p-2 transition-all duration-300 transform hover:scale-110"
         >
           <div className="w-6 h-6 flex items-center justify-center">
             <img 
@@ -64,7 +62,9 @@ export default function BottomNavigation({ currentUser }: BottomNavigationProps)
               style={{ filter: 'invert(1)' }}
             />
           </div>
-          <span className="text-xs font-medium">WOTY</span>
+          <span className={`text-xs font-medium ${isActive("/audience") ? "text-primary" : "text-black"}`}>
+            WOTY
+          </span>
         </Link>
 
         <Link 
