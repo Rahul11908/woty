@@ -7,6 +7,7 @@ import NotFound from "@/pages/not-found";
 import Network from "@/pages/network";
 import Sponsors from "@/pages/sponsors";
 import Profile from "@/pages/profile";
+import Audience from "@/pages/audience";
 import UserProfile from "@/pages/user-profile";
 import Admin from "@/pages/admin";
 import Conversation from "@/pages/conversation";
@@ -149,6 +150,7 @@ function Router() {
         <Route path="/network" component={() => <Network currentUser={currentUser} />} />
         <Route path="/sponsors" component={Sponsors} />
         <Route path="/profile" component={Profile} />
+        <Route path="/audience" component={Audience} />
         <Route path="/user-profile" component={() => <UserProfile currentUser={currentUser} />} />
         <Route path="/admin" component={Admin} />
         <Route path="/conversation/:id" component={Conversation} />

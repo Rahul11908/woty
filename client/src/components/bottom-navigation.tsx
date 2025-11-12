@@ -2,6 +2,7 @@ import { Link, useLocation } from "wouter";
 import { MessageCircle, Star, Calendar, Settings, User as UserIcon } from "lucide-react";
 import { User } from "@shared/schema";
 import analytics from "@/lib/analytics";
+import wotyIcon from "@assets/woty-header.png";
 
 interface BottomNavigationProps {
   currentUser: User;
@@ -35,6 +36,23 @@ export default function BottomNavigation({ currentUser }: BottomNavigationProps)
         >
           <Calendar className={`w-6 h-6 transition-transform duration-300`} />
           <span className="text-xs font-medium">Program</span>
+        </Link>
+
+        <Link 
+          href="/audience" 
+          onClick={() => handleTabClick('Audience')}
+          className={`flex flex-col items-center space-y-1 p-2 transition-all duration-300 transform hover:scale-110 ${
+            isActive("/audience") ? "text-primary scale-105" : "text-gray-500 hover:text-primary"
+          }`}
+        >
+          <img 
+            src={wotyIcon} 
+            alt="WOTY" 
+            className={`w-6 h-6 object-contain transition-transform duration-300 ${
+              isActive("/audience") ? "brightness-0" : "grayscale"
+            }`}
+          />
+          <span className="text-xs font-medium">Audience</span>
         </Link>
 
         <Link 
