@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Send } from "lucide-react";
+import { ChevronDown, ChevronUp, Send, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,13 +28,6 @@ interface WomanOfTheYear {
 }
 
 const womenOfTheYear: WomanOfTheYear[] = [
-  {
-    id: "teresa-resch",
-    name: "Teresa Resch",
-    title: "President, Toronto Tempo",
-    bio: "She's leading a movement by building Canada's first WNBA franchise into a symbol of ambition, equity, and national pride. With vision, strategy, and fearlessness, she's redefining what's possible for women's sports and laying the foundation for a legacy that transcends the court.",
-    image: teresaReschImage
-  },
   {
     id: "maggie-kang",
     name: "Maggie Kang",
@@ -148,7 +141,12 @@ export default function Audience() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-50">
         <div className="flex items-center justify-between">
-          <h1 className="text-lg font-semibold text-gray-900">Meet the Women of the Year</h1>
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+              <Users className="w-4 h-4 text-white" />
+            </div>
+            <h1 className="text-xl font-semibold text-gray-900">Meet the WOTY</h1>
+          </div>
           <div className="w-32 h-14">
             <img 
               src={gloryLogo} 
@@ -175,46 +173,51 @@ export default function Audience() {
             {womenOfTheYear.map((woman) => (
               <Card key={woman.id} data-testid={`card-woty-${woman.id}`}>
                 <CardContent className="pt-6">
-                  <div className="space-y-4">
-                    {/* Woman Profile */}
-                    <div className="flex items-start space-x-4">
-                      <img 
-                        src={woman.image} 
-                        alt={woman.name}
-                        className="w-24 h-24 rounded-lg object-cover flex-shrink-0"
-                        data-testid={`img-woty-${woman.id}`}
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 mb-1" data-testid={`text-name-${woman.id}`}>
-                          {woman.name}
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-2" data-testid={`text-title-${woman.id}`}>
-                          {woman.title}
-                        </p>
-                        <p className="text-sm text-gray-700" data-testid={`text-bio-${woman.id}`}>
-                          {woman.bio}
-                        </p>
-                      </div>
+                  {/* Collapsed View - Name and Title */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900" data-testid={`text-name-${woman.id}`}>
+                        {woman.name}
+                      </h3>
+                      <p className="text-sm text-gray-600" data-testid={`text-title-${woman.id}`}>
+                        {woman.title}
+                      </p>
                     </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setExpandedWoman(expandedWoman === woman.id ? null : woman.id)}
+                      data-testid={`button-toggle-${woman.id}`}
+                    >
+                      {expandedWoman === woman.id ? (
+                        <ChevronUp className="w-5 h-5" />
+                      ) : (
+                        <ChevronDown className="w-5 h-5" />
+                      )}
+                    </Button>
+                  </div>
 
-                    {/* Ask Question Dropdown */}
-                    <div className="border-t pt-4">
-                      <Button
-                        variant="outline"
-                        onClick={() => setExpandedWoman(expandedWoman === woman.id ? null : woman.id)}
-                        className="w-full flex items-center justify-between"
-                        data-testid={`button-toggle-question-${woman.id}`}
-                      >
-                        <span className="text-sm font-medium">Ask our WOTY a question</span>
-                        {expandedWoman === woman.id ? (
-                          <ChevronUp className="w-4 h-4" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4" />
-                        )}
-                      </Button>
+                  {/* Expanded View - Photo, Bio, and Question */}
+                  {expandedWoman === woman.id && (
+                    <div className="mt-4 space-y-4 border-t pt-4">
+                      <div className="flex items-start space-x-4">
+                        <img 
+                          src={woman.image} 
+                          alt={woman.name}
+                          className="w-24 h-24 rounded-lg object-cover flex-shrink-0"
+                          data-testid={`img-woty-${woman.id}`}
+                        />
+                        <div className="flex-1">
+                          <p className="text-sm text-gray-700" data-testid={`text-bio-${woman.id}`}>
+                            {woman.bio}
+                          </p>
+                        </div>
+                      </div>
 
-                      {expandedWoman === woman.id && (
-                        <div className="mt-4 space-y-3">
+                      {/* Ask Question Section */}
+                      <div className="border-t pt-4">
+                        <h4 className="text-sm font-medium text-gray-900 mb-3">Ask our WOTY a question</h4>
+                        <div className="space-y-3">
                           <Textarea
                             placeholder={`Ask ${woman.name} a question...`}
                             value={questions[woman.id] || ""}
@@ -246,9 +249,9 @@ export default function Audience() {
                             )}
                           </Button>
                         </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </CardContent>
               </Card>
             ))}

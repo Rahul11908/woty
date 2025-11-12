@@ -39,23 +39,6 @@ export default function BottomNavigation({ currentUser }: BottomNavigationProps)
         </Link>
 
         <Link 
-          href="/audience" 
-          onClick={() => handleTabClick('Audience')}
-          className={`flex flex-col items-center space-y-1 p-2 transition-all duration-300 transform hover:scale-110 ${
-            isActive("/audience") ? "text-primary scale-105" : "text-gray-500 hover:text-primary"
-          }`}
-        >
-          <img 
-            src={wotyIcon} 
-            alt="WOTY" 
-            className={`w-6 h-6 object-contain transition-transform duration-300 ${
-              isActive("/audience") ? "brightness-0" : "grayscale"
-            }`}
-          />
-          <span className="text-xs font-medium">Audience</span>
-        </Link>
-
-        <Link 
           href="/network" 
           onClick={() => handleTabClick('Network')}
           className={`flex flex-col items-center space-y-1 p-2 transition-all duration-300 transform hover:scale-110 ${
@@ -64,6 +47,24 @@ export default function BottomNavigation({ currentUser }: BottomNavigationProps)
         >
           <MessageCircle className={`w-6 h-6 transition-transform duration-300`} />
           <span className="text-xs font-medium">Network</span>
+        </Link>
+
+        <Link 
+          href="/audience" 
+          onClick={() => handleTabClick('WOTY')}
+          className={`flex flex-col items-center space-y-1 p-2 transition-all duration-300 transform hover:scale-110 ${
+            isActive("/audience") ? "text-primary scale-105" : "text-gray-500 hover:text-primary"
+          }`}
+        >
+          <div className="w-6 h-6 flex items-center justify-center">
+            <img 
+              src={wotyIcon} 
+              alt="WOTY" 
+              className="w-full h-full object-contain"
+              style={{ filter: 'invert(1)' }}
+            />
+          </div>
+          <span className="text-xs font-medium">WOTY</span>
         </Link>
 
         <Link 
