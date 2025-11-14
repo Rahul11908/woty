@@ -7,6 +7,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import gloryLogo from "@assets/GLORY WOTY_1762527738446.png";
+import teresaReschImage from "@assets/teresa-resch-woty.png";
+import maggieKangImage from "@assets/maggie-kang-woty.png";
+import madisonTevlinImage from "@assets/madison-tevlin-woty.png";
+import dianaMatheson from "@assets/diana-matheson-woty.png";
+import sharonBollenbach from "@assets/sharon-bollenbach-woty.png";
+import reetuGupta from "@assets/reetu-gupta-woty.png";
+import stephanieLitt from "@assets/stephanie-litt-woty.png";
+import treasaLeighBrown from "@assets/treasa-leigh-brown-woty.png";
+import lindsayHousman from "@assets/lindsay-housman-woty.png";
+import allyZeifman from "@assets/ally-zeifman-woty.png";
 
 interface WomanOfTheYear {
   id: string;
@@ -16,7 +26,78 @@ interface WomanOfTheYear {
   image: string;
 }
 
-const womenOfTheYear: WomanOfTheYear[] = [];
+const womenOfTheYear: WomanOfTheYear[] = [
+  {
+    id: "teresa-resch",
+    name: "Teresa Resch",
+    title: "President, Toronto Tempo",
+    bio: "Teresa Resch is the inaugural President of the WNBA Toronto franchise, which will begin play in 2026 season. Resch has been a leader in basketball development at the global scale for nearly 20 years. For 11 seasons she was a senior leader at the Toronto Raptors, bringing basketball to the forefront of Canadian sport.",
+    image: teresaReschImage
+  },
+  {
+    id: "maggie-kang",
+    name: "Maggie Kang",
+    title: "Filmmaker; KPop Demon Hunters",
+    bio: "She shattered expectations with Kpop Demon Hunters, transforming a bold cultural vision into a global phenomenon that redefined animated storytelling. Blending Korean identity, girl power, and fearless creativity, her work proves that authenticity and representation are the future of global cinema.",
+    image: maggieKangImage
+  },
+  {
+    id: "madison-tevlin",
+    name: "Madison Tevlin",
+    title: "Media personality; advocate",
+    bio: "With humour, confidence, and unapologetic authenticity, she's redefining what representation looks like—turning visibility into influence and advocacy into action. From viral sensation to cultural leader, her work across film, fashion, and media is opening doors for a more inclusive and empowered future.",
+    image: madisonTevlinImage
+  },
+  {
+    id: "diana-matheson",
+    name: "Diana Matheson",
+    title: "Co-founder; Northern Super League",
+    bio: "She turned a single Olympic goal into a movement, transforming Canadian soccer from inspiration into infrastructure. As co-founder of the Northern Super League, she's redefining the future of women's sports and proving that vision, persistence, and inclusivity can build a legacy that changes the game for generations.",
+    image: dianaMatheson
+  },
+  {
+    id: "sharon-bollenbach",
+    name: "Sharon Bollenbach",
+    title: "Executive Director; FIFA World Cup 2026 at City of Toronto",
+    bio: "Leading Toronto's preparations for the FIFA World Cup 2026, she's orchestrating one of the largest events in the city's history with precision, vision, and purpose. Her leadership is turning a global spotlight into a lasting legacy by showcasing Toronto's excellence on the world stage and redefining what it means to host greatness.",
+    image: sharonBollenbach
+  },
+  {
+    id: "reetu-gupta",
+    name: "Reetu Gupta",
+    title: "Ambassadress, The Gupta Group and The Easton's Group of Hotels",
+    bio: "A trailblazer in business and beyond, she's redefining leadership through purpose, inclusion, and impact, building empires that empower others along the way. From transforming Canada's hospitality landscape to breaking barriers in professional sports ownership, her vision proves that equity and excellence can thrive side by side.",
+    image: reetuGupta
+  },
+  {
+    id: "stephanie-litt",
+    name: "Stephanie Litt",
+    title: "Co-founder and CEO; MycoFutures",
+    bio: "She's transforming the materials industry with science, creativity, and purpose, proving that sustainability and innovation can thrive together. As co-founder and CEO of MycoFutures, she's turning fungi into the future of leather and redefining what responsible luxury looks like on a global scale.",
+    image: stephanieLitt
+  },
+  {
+    id: "treasa-leigh-brown",
+    name: "Treasa Leigh Brown",
+    title: "Founder, Professionelle House",
+    bio: "She's redefining power, access, and community by building spaces where women (especially women of colour) can truly thrive. Through Professionelle House, she's transforming entrepreneurship into a movement rooted in equity, collaboration, and collective success.",
+    image: treasaLeighBrown
+  },
+  {
+    id: "lindsay-housman",
+    name: "Lindsay Housman",
+    title: "Founder, Hettas",
+    bio: "She's rewriting the playbook for performance footwear by designing from the ground up for women. Through Hettas, she's merging science, sport, and equity to empower female athletes and set a new standard for innovation in women-centered design.",
+    image: lindsayHousman
+  },
+  {
+    id: "ally-zeifman-mamalider",
+    name: "Ally Zeifman Mamalider",
+    title: "President, Organic Traditions",
+    bio: "She's redefining what it means to lead a legacy brand by merging heritage, innovation, and purpose to create a new era of wellness. Through her leadership at Organic Traditions, she's transforming a family-founded company into a global superfood powerhouse driven by integrity, inclusion, and impact.",
+    image: allyZeifman
+  }
+];
 
 export default function Audience() {
   const [expandedWoman, setExpandedWoman] = useState<string | null>(null);
