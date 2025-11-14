@@ -1,8 +1,7 @@
 import { Link, useLocation } from "wouter";
-import { MessageCircle, Star, Calendar, Settings, User as UserIcon } from "lucide-react";
+import { MessageCircle, Star, Calendar, Settings, User as UserIcon, Award } from "lucide-react";
 import { User } from "@shared/schema";
 import analytics from "@/lib/analytics";
-import wotyIcon from "@assets/woty-header.png";
 
 interface BottomNavigationProps {
   currentUser: User;
@@ -72,14 +71,9 @@ export default function BottomNavigation({ currentUser }: BottomNavigationProps)
           <div className={`p-2 rounded-xl transition-all duration-300 ${
             isActive("/audience") ? "gradient-orange shadow-lg" : ""
           }`}>
-            <div className="w-5 h-5 flex items-center justify-center">
-              <img 
-                src={wotyIcon} 
-                alt="WOTY" 
-                className="w-full h-full object-contain"
-                style={{ filter: isActive("/audience") ? 'brightness(0) invert(1)' : 'invert(0.4)' }}
-              />
-            </div>
+            <Award className={`w-5 h-5 transition-transform duration-300 ${
+              isActive("/audience") ? "text-white" : "text-gray-600"
+            }`} />
           </div>
           <span className={`text-xs font-medium ${
             isActive("/audience") ? "text-gray-800" : "text-gray-600"

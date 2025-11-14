@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Send, Users } from "lucide-react";
+import { ChevronDown, ChevronUp, Send, Award, Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import gloryLogo from "@assets/GLORY WOTY_1762527738446.png";
 import teresaReschImage from "@assets/teresa-resch-woty.png";
 import maggieKangImage from "@assets/maggie-kang-woty.png";
 import madisonTevlinImage from "@assets/madison-tevlin-woty.png";
@@ -126,7 +126,7 @@ export default function Audience() {
         description: "Your question has been submitted to our Woman of the Year.",
       });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       toast({
         title: "Failed to submit question",
         description: error.message || "Please try again later.",
@@ -142,79 +142,121 @@ export default function Audience() {
     }
   };
 
+  const getCategoryColor = (title: string) => {
+    if (title.includes('President') || title.includes('Tempo')) return 'from-pink-500 to-pink-600';
+    if (title.includes('Filmmaker')) return 'from-purple-500 to-purple-600';
+    if (title.includes('Media personality')) return 'from-orange-500 to-orange-600';
+    if (title.includes('Northern Super League')) return 'from-blue-500 to-blue-600';
+    if (title.includes('FIFA World Cup')) return 'from-teal-500 to-teal-600';
+    if (title.includes('Ambassadress')) return 'from-indigo-500 to-indigo-600';
+    if (title.includes('CEO') && title.includes('Myco')) return 'from-green-500 to-green-600';
+    if (title.includes('Professionelle')) return 'from-red-500 to-red-600';
+    if (title.includes('Hettas')) return 'from-yellow-500 to-yellow-600';
+    if (title.includes('Organic')) return 'from-purple-500 to-purple-600';
+    return 'from-purple-500 to-purple-600';
+  };
+
+  const getCategoryLabel = (title: string) => {
+    if (title.includes('President') || title.includes('Tempo')) return 'Sports Leadership';
+    if (title.includes('Filmmaker')) return 'Film & Entertainment';
+    if (title.includes('Media personality')) return 'Media & Advocacy';
+    if (title.includes('Northern Super League')) return 'Professional Sports';
+    if (title.includes('FIFA World Cup')) return 'International Sports';
+    if (title.includes('Ambassadress')) return 'Hospitality & Business';
+    if (title.includes('CEO') && title.includes('Myco')) return 'Innovation & Sustainability';
+    if (title.includes('Professionelle')) return 'Entrepreneurship';
+    if (title.includes('Hettas')) return 'Product Innovation';
+    if (title.includes('Organic')) return 'Wellness & Health';
+    return 'Leadership';
+  };
+
   return (
-    <div className="min-h-screen pb-20 relative z-10">
+    <div className="min-h-screen pb-20 relative z-10 bg-gradient-to-br from-purple-500 to-orange-400">
       {/* Header */}
-      <header className="glass-card border-b border-white/20 px-4 py-3 sticky top-0 z-50">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 gradient-orange rounded-full flex items-center justify-center shadow-lg">
-              <Users className="w-4 h-4 text-white" />
-            </div>
-            <h1 className="text-xl font-semibold text-gray-800">Meet the WOTY</h1>
+      <header className="bg-white/10 backdrop-blur-md border-b border-white/20 px-4 py-3 sticky top-0 z-50">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg">
+            <Award className="w-6 h-6 text-orange-600" />
           </div>
-          <div className="w-32 h-14">
-            <img 
-              src={gloryLogo} 
-              alt="GLORY Women of the Year Logo" 
-              className="w-full h-full object-contain drop-shadow-lg"
-            />
+          <div>
+            <h1 className="text-xl font-bold text-white">Women of the Year</h1>
+            <p className="text-sm text-white/90">2025 Nominees & Winners</p>
           </div>
         </div>
       </header>
 
       <main className="pt-4 px-4">
-        <div className="space-y-6">
-          {/* Women of the Year Cards */}
-          <div className="space-y-4">
-            {womenOfTheYear.length === 0 ? (
-              <Card>
-                <CardContent className="pt-6 pb-6 text-center">
-                  <p className="text-gray-600">
-                    Women of the Year information will be updated soon.
-                  </p>
-                </CardContent>
-              </Card>
-            ) : (
-              womenOfTheYear.map((woman) => (
-              <Card key={woman.id} data-testid={`card-woty-${woman.id}`}>
-                <CardContent className="pt-6">
-                  {/* Collapsed View - Image, Name and Title */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4 flex-1">
+        <div className="space-y-4">
+          {/* GLORY WOTY Banner */}
+          <Card className="bg-white shadow-lg">
+            <CardContent className="pt-6 pb-6 text-center">
+              <div className="w-20 h-20 bg-gradient-to-br from-orange-400 via-pink-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+                <Award className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">GLORY Women of the Year 2025</h2>
+              <p className="text-sm text-gray-600">
+                Celebrating extraordinary women making a difference in their communities and industries
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Nominees Section */}
+          <div className="space-y-3">
+            <div className="flex items-center space-x-2 px-1">
+              <Sparkles className="w-5 h-5 text-white" />
+              <h3 className="font-semibold text-white">Nominees</h3>
+            </div>
+
+            {womenOfTheYear.map((woman) => (
+              <Card key={woman.id} className="bg-white shadow-lg" data-testid={`card-woty-${woman.id}`}>
+                <CardContent className="pt-4 pb-4">
+                  <div className="flex items-start space-x-3 mb-3">
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
                       <img 
                         src={woman.image} 
                         alt={woman.name}
-                        className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                        className="w-full h-full object-cover"
                         data-testid={`img-woty-${woman.id}`}
                       />
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900" data-testid={`text-name-${woman.id}`}>
-                          {woman.name}
-                        </h3>
-                        <p className="text-sm text-gray-600" data-testid={`text-title-${woman.id}`}>
-                          {woman.title}
-                        </p>
-                      </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setExpandedWoman(expandedWoman === woman.id ? null : woman.id)}
-                      data-testid={`button-toggle-${woman.id}`}
-                    >
-                      {expandedWoman === woman.id ? (
-                        <ChevronUp className="w-5 h-5" />
-                      ) : (
-                        <ChevronDown className="w-5 h-5" />
-                      )}
-                    </Button>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="font-semibold text-gray-900" data-testid={`text-name-${woman.id}`}>{woman.name}</p>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setExpandedWoman(expandedWoman === woman.id ? null : woman.id)}
+                          data-testid={`button-toggle-${woman.id}`}
+                        >
+                          {expandedWoman === woman.id ? (
+                            <ChevronUp className="w-4 h-4" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4" />
+                          )}
+                        </Button>
+                      </div>
+                      <Badge className={`bg-gradient-to-r ${getCategoryColor(woman.title)} text-white border-0 mb-2`} data-testid={`badge-category-${woman.id}`}>
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        {getCategoryLabel(woman.title)}
+                      </Badge>
+                    </div>
                   </div>
 
-                  {/* Expanded View - Bio and Question */}
+                  {!expandedWoman || expandedWoman !== woman.id ? (
+                    <p className="text-sm text-gray-700 line-clamp-2" data-testid={`text-preview-${woman.id}`}>
+                      {woman.bio}
+                    </p>
+                  ) : null}
+
+                  {/* Expanded View */}
                   {expandedWoman === woman.id && (
-                    <div className="mt-4 space-y-4 border-t pt-4">
+                    <div className="space-y-4 border-t pt-4 mt-3">
                       <div>
+                        <p className="text-sm text-gray-600 font-medium mb-1">Title</p>
+                        <p className="text-sm text-gray-900" data-testid={`text-title-${woman.id}`}>{woman.title}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-600 font-medium mb-1">About</p>
                         <p className="text-sm text-gray-700" data-testid={`text-bio-${woman.id}`}>
                           {woman.bio}
                         </p>
@@ -222,7 +264,10 @@ export default function Audience() {
 
                       {/* Ask Question Section */}
                       <div className="border-t pt-4">
-                        <h4 className="text-sm font-medium text-gray-900 mb-3">Ask our WOTY a question</h4>
+                        <h4 className="text-sm font-medium text-gray-900 mb-3 flex items-center">
+                          <Send className="w-4 h-4 mr-2" />
+                          Ask a Question
+                        </h4>
                         <div className="space-y-3">
                           <Textarea
                             placeholder={`Ask ${woman.name} a question...`}
@@ -236,8 +281,8 @@ export default function Audience() {
                             onClick={() => handleQuestionSubmit(woman.id, woman.name)}
                             disabled={!questions[woman.id]?.trim() || submitQuestionMutation.isPending}
                             size="sm"
-                            className="w-full"
-                            data-testid={`button-submit-question-${woman.id}`}
+                            className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
+                            data-testid={`button-submit-${woman.id}`}
                           >
                             {submitQuestionMutation.isPending ? (
                               <span className="flex items-center justify-center">
@@ -260,8 +305,7 @@ export default function Audience() {
                   )}
                 </CardContent>
               </Card>
-              ))
-            )}
+            ))}
           </div>
         </div>
       </main>
