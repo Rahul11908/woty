@@ -422,53 +422,6 @@ export default function Admin() {
               )}
             </div>
 
-            {/* Questions by Panel */}
-            <div className="mt-8">
-              <h3 className="text-lg font-semibold mb-4">Questions by Panel</h3>
-              <div className="grid grid-cols-1 gap-4">
-                {["Panel 1: Game Planning & Partnerships", "Panel 2: Trailblazing Female Athletes", "Panel 3: Content Creation", "Panel 4: Sports Analytics"].map((panelName) => {
-                  const questionsForPanel = panelQuestions.filter(q => q.panelName === panelName);
-                  return (
-                    <Card key={panelName}>
-                      <CardContent className="pt-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <h4 className="font-semibold">{panelName}</h4>
-                          <Badge variant="outline">
-                            {questionsForPanel.length} questions
-                          </Badge>
-                        </div>
-                        {questionsForPanel.length === 0 ? (
-                          <p className="text-gray-500 text-sm">No questions for this panel yet</p>
-                        ) : (
-                          <div className="space-y-2">
-                            {questionsForPanel.slice(0, 3).map((question) => (
-                              <div key={question.id} className="flex items-start space-x-2 p-2 bg-gray-50 rounded">
-                                <div className="flex-1">
-                                  <p className="text-sm text-gray-900">{question.question}</p>
-                                  <p className="text-xs text-gray-500 mt-1">
-                                    {new Date(question.createdAt).toLocaleDateString()}
-                                  </p>
-                                </div>
-                                {question.isAnswered ? (
-                                  <CheckCircle className="w-4 h-4 text-green-500 mt-1 flex-shrink-0" />
-                                ) : (
-                                  <div className="w-4 h-4 bg-yellow-400 rounded-full mt-1 flex-shrink-0"></div>
-                                )}
-                              </div>
-                            ))}
-                            {panelQuestions.length > 3 && (
-                              <p className="text-xs text-gray-500">
-                                ... and {panelQuestions.length - 3} more questions
-                              </p>
-                            )}
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            </div>
           </TabsContent>
 
           <TabsContent value="surveys" className="space-y-6">

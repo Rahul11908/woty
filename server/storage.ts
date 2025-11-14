@@ -557,29 +557,7 @@ export class MemStorage implements IStorage {
   }
 
   private async initializeGroupChat() {
-    // Add welcome messages to group chat
-    const welcomeMessages = [
-      {
-        content: "Welcome to the GLORY Sports Summit 2025! Looking forward to connecting with everyone today. 🏆",
-        senderId: 2 // Dwayne De Rosario
-      },
-      {
-        content: "Excited to be here! Can't wait for the panel discussions, especially the one on Canadian soccer identity.",
-        senderId: 3 // Diana Matheson
-      },
-      {
-        content: "Great to see so many industry leaders gathered in one place. This should be an amazing day of insights!",
-        senderId: 5 // Teresa Resch
-      },
-      {
-        content: "The networking opportunities here are incredible. Let's make some great connections! 🤝",
-        senderId: 7 // Kyle McMann
-      }
-    ];
-
-    for (const messageData of welcomeMessages) {
-      await this.createGroupChatMessage(messageData);
-    }
+    // Group chat initialized without default messages
   }
 
   async getEventAttendees(limit = 50): Promise<User[]> {

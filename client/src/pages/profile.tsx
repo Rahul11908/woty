@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, Clock, Users, MessageSquare, Send, ChevronDown, ChevronUp, User } from "lucide-react";
+import { Calendar, Send, ChevronDown, ChevronUp, MessageSquare, Clock, Users, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,8 +9,6 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { analytics } from "@/lib/analytics";
 import gloryLogo from "@assets/GLORY WOTY_1762527738446.png";
-import teresaReschMagazinePhoto from "@assets/teresa-resch-magazine.png";
-import cinderellaStoriesPodcastPhoto from "@assets/cinderella-stories-podcast.png";
 
 interface Panel {
   id: string;
@@ -34,23 +32,6 @@ interface Panel {
 // Speaker Photo Component
 const SpeakerPhoto = ({ name, photo, size = "normal" }: { name: string; photo?: string; size?: "small" | "normal" | "preview" }) => {
   const sizeClasses = size === "small" ? "w-6 h-6" : size === "preview" ? "w-12 h-12" : "w-16 h-16";
-  
-  if (photo) {
-    return (
-      <img 
-        src={photo} 
-        alt={name}
-        loading="lazy"
-        className={`${sizeClasses} rounded-full avatar-image-flat border-2 border-gray-200`}
-        onError={(e) => {
-          // Fallback to initials if image fails to load
-          const target = e.target as HTMLImageElement;
-          target.style.display = 'none';
-          target.nextElementSibling?.classList.remove('hidden');
-        }}
-      />
-    );
-  }
   
   // Generate initials from name
   const initials = name
@@ -83,34 +64,7 @@ const SpeakerPhoto = ({ name, photo, size = "normal" }: { name: string; photo?: 
   );
 };
 
-// Speaker photo URLs - Using actual photos when available
-const speakerPhotos: Record<string, string> = {
-  "Teresa Resch": teresaReschMagazinePhoto,
-  "Cinderella Stories": cinderellaStoriesPodcastPhoto,
-};
-
-const panels: Panel[] = [
-  {
-    id: "panel1",
-    title: "Cinderella Stories with Special Guest Teresa Resch",
-    time: "6:30 pm - 7:00 pm",
-    description: "Join GLORY Media for a live Episode of our hit podcast Cinderella Stories, featuring Special Guest, Toronto Tempo President Teresa Resch as she gears up to launch the leagues first Canadian franchise.",
-    panelists: [
-      {
-        name: "Teresa Resch",
-        title: "Toronto Tempo President",
-        bio: "Teresa Resch is the inaugural President of the WNBA Toronto franchise, which will begin play in 2026 season. Resch has been a leader in basketball development at the global scale for nearly 20 years. For 11 seasons she was a senior leader at the Toronto Raptors, bringing basketball to the forefront of Canadian sport.",
-        photo: speakerPhotos["Teresa Resch"]
-      }
-    ],
-    moderator: {
-      name: "Cinderella Stories",
-      title: "GLORY Media Podcast",
-      bio: "Cinderella Stories is your front-row seat to the drama, drive, and dynamism of women's sports. Hosted by seasoned sports journalists Ashley Docking and Savannah Hamilton, this podcast dives into buzzer-beaters, breakout stars, bracket-shaking upsets, and the culture powering women's hoops.",
-      photo: speakerPhotos["Cinderella Stories"]
-    }
-  }
-];
+const panels: Panel[] = [];
 
 export default function Profile() {
   const [expandedPanel, setExpandedPanel] = useState<string | null>(null);
@@ -219,62 +173,18 @@ export default function Profile() {
         <div className="space-y-6">
           {/* Event Overview */}
           <Card>
-            <CardContent className="pt-6">
-              <div className="text-center mb-4">
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                  2025 Women of the Year
-                </h2>
-                <p className="text-gray-600 mb-4">
-                  November 18th - Canopy by Hilton Toronto Yorkville
-                </p>
-                <p className="text-sm text-gray-700 font-bold italic">
-                  Celebrating excellence with 2025's most influential and innovative Women in Canada.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Schedule Overview */}
-          <Card>
-            <CardContent className="pt-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Today's Schedule</h3>
-
-              {/* Master of Ceremonies */}
-              <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-4">
-                <h4 className="text-lg font-semibold text-blue-900 mb-3">Master of Ceremonies</h4>
-                <div className="flex items-center space-x-4">
-                  <SpeakerPhoto name="Lance Chung" size="normal" />
-                  <div>
-                    <p className="font-semibold text-blue-900 text-lg">Lance Chung</p>
-                    <p className="text-blue-700">Editor-in-Chief, GLORY Media</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-3 text-sm">
-                <div className="flex items-start space-x-3">
-                  <Clock className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium w-44 flex-shrink-0">6:00 pm - 6:30 pm</span>
-                  <span className="text-gray-600">VIP Arrival and Welcome Cocktail</span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <Clock className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium w-44 flex-shrink-0">6:30 pm - 7:00 pm</span>
-                  <span className="text-gray-600">Live Podcast - Cinderella Stories with Special Guest Teresa Resch</span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <Clock className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium w-44 flex-shrink-0">7:00 pm - 9:00 pm</span>
-                  <span className="text-gray-600">Networking and Cocktail Reception</span>
-                </div>
-              </div>
+            <CardContent className="pt-6 pb-6 text-center">
+              <p className="text-gray-600">
+                Program information will be updated soon.
+              </p>
             </CardContent>
           </Card>
 
           {/* Live Podcast */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900 text-center">Live Podcast - Submit Your Questions</h3>
-            {panels.map((panel, index) => (
+          {panels.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="font-semibold text-gray-900 text-center">Live Podcast - Submit Your Questions</h3>
+              {panels.map((panel, index) => (
               <Card key={panel.id}>
                 <CardContent className="pt-6">
                   <div className="flex items-start justify-between mb-3">
@@ -403,7 +313,8 @@ export default function Profile() {
                 </CardContent>
               </Card>
             ))}
-          </div>
+            </div>
+          )}
         </div>
       </main>
     </div>

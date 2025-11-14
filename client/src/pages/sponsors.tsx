@@ -21,73 +21,7 @@ interface Sponsor {
   isMainSponsor?: boolean;
 }
 
-const sponsors: Sponsor[] = [
-  {
-    id: "ge",
-    name: "GE Appliances",
-    website: "https://geappliances.ca",
-    brandColor: "bg-black",
-    textColor: "text-white",
-    logoSvg: `<img src="${geAppliancesLogo}" alt="GE Appliances" className="w-full h-full object-contain" />`,
-    isMainSponsor: true
-  },
-  {
-    id: "asahi",
-    name: "Asahi",
-    website: "https://www.asahibeer.com",
-    brandColor: "bg-gray-600",
-    textColor: "text-white",
-    logoSvg: `<img src="${asahiLogo}" alt="Asahi" className="w-full h-full object-contain" />`
-  },
-  {
-    id: "boss",
-    name: "BOSS",
-    website: "https://www.hugoboss.com/ca/en/home",
-    brandColor: "bg-black",
-    textColor: "text-white",
-    logoSvg: `<img src="${bossLogo}" alt="BOSS" className="w-full h-full object-contain" />`
-  },
-  {
-    id: "roots",
-    name: "Roots",
-    website: "https://www.roots.com",
-    brandColor: "bg-gray-600",
-    textColor: "text-white",
-    logoSvg: `<img src="${rootsLogo}" alt="Roots" className="w-full h-full object-contain" />`
-  },
-  {
-    id: "mas",
-    name: "Mas+",
-    website: "https://www.masbymessi.com/en-ca/",
-    brandColor: "bg-black",
-    textColor: "text-white",
-    logoSvg: `<img src="${masByMessiLogo}" alt="Mas+ by Messi" className="w-full h-full object-contain" />`
-  },
-  {
-    id: "rabanne",
-    name: "Rabanne",
-    website: "https://www.rabanne.com/ww/en/",
-    brandColor: "bg-gray-600",
-    textColor: "text-white",
-    logoSvg: `<img src="${rabanneLogo}" alt="Rabanne" className="w-full h-full object-contain" />`
-  },
-  {
-    id: "hennessy",
-    name: "Hennessy",
-    website: "https://www.hennessy.com",
-    brandColor: "bg-black",
-    textColor: "text-white",
-    logoSvg: `<img src="${hennessyLogo}" alt="Hennessy" className="w-full h-full object-contain" />`
-  },
-  {
-    id: "rado",
-    name: "Rado",
-    website: "https://www.rado.com",
-    brandColor: "bg-gray-600",
-    textColor: "text-white",
-    logoSvg: `<img src="${radoLogo}" alt="Rado Switzerland" className="w-full h-full object-contain" />`
-  }
-];
+const sponsors: Sponsor[] = [];
 
 export default function Sponsors() {
   const handleSponsorClick = (website: string) => {
@@ -117,59 +51,55 @@ export default function Sponsors() {
 
       <main className="pt-6 px-4">
         <div className="space-y-6">
-
-          {/* Main Sponsor - GE (1.5x larger) */}
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Powered By</h3>
-            <Card 
-              className="cursor-pointer hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] w-full h-36"
-              onClick={() => handleSponsorClick(sponsors[0].website)}
-            >
-              <CardContent className={`${sponsors[0].brandColor} ${sponsors[0].textColor} h-full flex items-center justify-center rounded-lg px-8 py-6`}>
-                <div className="w-80 h-24 flex items-center justify-center" dangerouslySetInnerHTML={{ __html: sponsors[0].logoSvg }} />
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Other Sponsors */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Event Partners</h3>
-            <div className="space-y-3">
-              {sponsors.slice(1).map((sponsor) => (
-                <Card 
-                  key={sponsor.id}
-                  className="cursor-pointer hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] w-full h-20"
-                  onClick={() => handleSponsorClick(sponsor.website)}
-                >
-                  <CardContent className={`${sponsor.brandColor} ${sponsor.textColor} h-full flex items-center justify-center rounded-lg px-6 py-4`}>
-                    <div className={`flex items-center justify-center ${
-                      sponsor.id === 'rabanne' ? 'w-40 h-14' : 
-                      sponsor.id === 'asahi' ? 'w-48 h-18' : 
-                      sponsor.id === 'roots' ? 'w-32 h-12' : 
-                      sponsor.id === 'hennessy' ? 'w-36 h-12' : 
-                      sponsor.id === 'rado' ? 'w-32 h-12' : 
-                      'w-32 h-12'
-                    }`} dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          {/* Thank You Message */}
-          <div className="mt-8 text-center">
+          {sponsors.length === 0 ? (
             <Card>
-              <CardContent className="pt-6 pb-6">
-                <h3 className="text-lg font-bold italic text-gray-900 mb-2">
-                  Thank You to Our Sponsors
-                </h3>
-                <p className="text-gray-600 font-bold italic">
-                  The 2025 GLORY Sports Summit is made possible by the generous support of our sponsors. 
-                  Their commitment to advancing sports innovation and community building makes this event extraordinary.
+              <CardContent className="pt-6 pb-6 text-center">
+                <p className="text-gray-600">
+                  Sponsor information will be updated soon.
                 </p>
               </CardContent>
             </Card>
-          </div>
+          ) : (
+            <>
+              {/* Main Sponsor */}
+              {sponsors.filter(s => s.isMainSponsor).length > 0 && (
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Powered By</h3>
+                  {sponsors.filter(s => s.isMainSponsor).map((sponsor) => (
+                    <Card 
+                      key={sponsor.id}
+                      className="cursor-pointer hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] w-full h-36"
+                      onClick={() => handleSponsorClick(sponsor.website)}
+                    >
+                      <CardContent className={`${sponsor.brandColor} ${sponsor.textColor} h-full flex items-center justify-center rounded-lg px-8 py-6`}>
+                        <div className="w-80 h-24 flex items-center justify-center" dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+
+              {/* Other Sponsors */}
+              {sponsors.filter(s => !s.isMainSponsor).length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Event Partners</h3>
+                  <div className="space-y-3">
+                    {sponsors.filter(s => !s.isMainSponsor).map((sponsor) => (
+                      <Card 
+                        key={sponsor.id}
+                        className="cursor-pointer hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] w-full h-20"
+                        onClick={() => handleSponsorClick(sponsor.website)}
+                      >
+                        <CardContent className={`${sponsor.brandColor} ${sponsor.textColor} h-full flex items-center justify-center rounded-lg px-6 py-4`}>
+                          <div className="w-32 h-12 flex items-center justify-center" dangerouslySetInnerHTML={{ __html: sponsor.logoSvg }} />
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </main>
     </div>
