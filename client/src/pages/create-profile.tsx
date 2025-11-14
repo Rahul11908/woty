@@ -149,17 +149,18 @@ export default function CreateProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8 relative z-10">
       {/* Back Button */}
       <Button
+        data-testid="button-back"
         onClick={() => setLocation("/")}
         variant="ghost"
-        className="fixed top-4 left-4 text-gray-800 hover:text-gray-900 z-50 font-bold p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
+        className="fixed top-4 left-4 text-gray-800 hover:text-gray-900 z-50 font-bold p-2 glass-card rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
       >
         <ArrowLeft className="w-6 h-6" />
       </Button>
       
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md glass-card shadow-2xl">
         <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
             <div className="w-64 h-32">

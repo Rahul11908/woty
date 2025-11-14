@@ -61,22 +61,23 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 relative z-10">
       {/* Back Button */}
       <Button
+        data-testid="button-back"
         onClick={() => setLocation("/")}
         variant="ghost"
-        className="fixed top-4 left-4 text-gray-800 hover:text-gray-900 z-50 font-bold p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
+        className="fixed top-4 left-4 text-gray-800 hover:text-gray-900 z-50 font-bold p-2 glass-card rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
       >
         <ArrowLeft className="w-6 h-6" />
       </Button>
       
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md glass-card shadow-2xl">
         <CardHeader className="text-center space-y-4">
           <div className="flex justify-center">
-            <img src={gloryWoty} alt="GLORY Women of the Year" className="h-32 w-auto" />
+            <img src={gloryWoty} alt="GLORY Women of the Year" className="h-32 w-auto drop-shadow-2xl" />
           </div>
-          <CardTitle className="text-2xl font-bold text-gray-900">
+          <CardTitle className="text-2xl font-bold text-gray-800">
             Sign In
           </CardTitle>
         </CardHeader>

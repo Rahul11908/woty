@@ -324,21 +324,21 @@ export default function Network({ currentUser }: NetworkProps) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen pb-20 relative z-10">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-50">
+      <header className="glass-card border-b border-white/20 px-4 py-3 sticky top-0 z-50">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 gradient-purple rounded-full flex items-center justify-center shadow-lg">
               <MessageSquare className="w-4 h-4 text-white" />
             </div>
-            <h1 className="text-xl font-semibold text-gray-900">Event Chat</h1>
+            <h1 className="text-xl font-semibold text-gray-800">Event Chat</h1>
           </div>
           <div className="w-32 h-14">
             <img 
               src={gloryLogo} 
               alt="GLORY Logo" 
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain drop-shadow-lg"
             />
           </div>
         </div>
