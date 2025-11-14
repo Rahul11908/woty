@@ -1,320 +1,173 @@
-import { useState, useEffect } from "react";
-import { Calendar, Send, ChevronDown, ChevronUp, MessageSquare, Clock, Users, User } from "lucide-react";
+import { Calendar, Mic, Clock, Users, Wine, Radio } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
-import { analytics } from "@/lib/analytics";
-import gloryLogo from "@assets/GLORY WOTY_1762527738446.png";
+import teresaReschImage from "@assets/teresa-resch-woty.png";
 
-interface Panel {
+interface ScheduleItem {
   id: string;
-  title: string;
   time: string;
-  description: string;
-  panelists: Array<{
-    name: string;
-    title: string;
-    bio: string;
-    photo?: string;
-  }>;
-  moderator: {
-    name: string;
-    title: string;
-    bio: string;
-    photo?: string;
-  };
+  duration: string;
+  title: string;
+  icon: string;
+  color: string;
 }
 
-// Speaker Photo Component
-const SpeakerPhoto = ({ name, photo, size = "normal" }: { name: string; photo?: string; size?: "small" | "normal" | "preview" }) => {
-  const sizeClasses = size === "small" ? "w-6 h-6" : size === "preview" ? "w-12 h-12" : "w-16 h-16";
-  
-  // Generate initials from name
-  const initials = name
-    .split(' ')
-    .map(part => part.charAt(0))
-    .join('')
-    .substring(0, 2)
-    .toUpperCase();
-    
-  // Generate consistent color based on name
-  const colors = [
-    'from-blue-500 to-blue-600',
-    'from-purple-500 to-purple-600', 
-    'from-green-500 to-green-600',
-    'from-orange-500 to-orange-600',
-    'from-red-500 to-red-600',
-    'from-teal-500 to-teal-600',
-    'from-indigo-500 to-indigo-600',
-    'from-pink-500 to-pink-600'
-  ];
-  
-  const colorIndex = name.length % colors.length;
-  
-  const textSize = size === "small" ? "text-xs" : size === "preview" ? "text-sm" : "text-sm";
-  
-  return (
-    <div className={`${sizeClasses} rounded-full bg-gradient-to-br ${colors[colorIndex]} flex items-center justify-center border-2 border-gray-200 text-white font-semibold ${textSize}`}>
-      {initials}
-    </div>
-  );
+const scheduleItems: ScheduleItem[] = [
+  {
+    id: "arrival",
+    time: "6:00 pm",
+    duration: "30 min",
+    title: "VIP Arrival and Welcome Cocktail",
+    icon: "wine",
+    color: "from-purple-400 to-purple-500"
+  },
+  {
+    id: "podcast",
+    time: "6:30 pm",
+    duration: "30 min",
+    title: "Live Podcast - Cinderella Stories with Special Guest Teresa Resch",
+    icon: "mic",
+    color: "from-pink-400 to-pink-500"
+  },
+  {
+    id: "networking",
+    time: "7:00 pm",
+    duration: "2 hrs",
+    title: "Networking and Cocktail Reception",
+    icon: "users",
+    color: "from-teal-400 to-teal-500"
+  }
+];
+
+const IconComponent = ({ iconName, className }: { iconName: string; className?: string }) => {
+  switch (iconName) {
+    case "wine":
+      return <Wine className={className} />;
+    case "mic":
+      return <Mic className={className} />;
+    case "users":
+      return <Users className={className} />;
+    default:
+      return <Calendar className={className} />;
+  }
 };
 
-const panels: Panel[] = [];
-
 export default function Profile() {
-  const [expandedPanel, setExpandedPanel] = useState<string | null>(null);
-  const [questions, setQuestions] = useState<{ [key: string]: string }>({});
-  const [currentUserId, setCurrentUserId] = useState<number>(1);
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
-
-  // Get current user ID from localStorage
-  useEffect(() => {
-    const storedUser = localStorage.getItem("currentUser");
-    const storedUserId = localStorage.getItem("currentUserId");
-    
-    if (storedUser && storedUserId) {
-      try {
-        const user = JSON.parse(storedUser);
-        const userId = parseInt(storedUserId);
-        
-        // Use the stored user ID if it's valid
-        if (userId && userId > 0) {
-          setCurrentUserId(userId);
-        } else {
-          console.error("Invalid user ID in localStorage");
-          setCurrentUserId(1);
-        }
-      } catch (error) {
-        console.error("Error parsing stored user:", error);
-        setCurrentUserId(1);
-      }
-    } else {
-      console.log("No stored user found, using default user ID 1");
-      setCurrentUserId(1);
-    }
-  }, []);
-
-  const submitQuestionMutation = useMutation({
-    mutationFn: async ({ panelId, panelName, question }: { panelId: string; panelName: string; question: string }) => {
-      console.log("Submitting question with data:", { userId: currentUserId, panelName, question });
-      
-      const response = await apiRequest("/api/questions", "POST", {
-        userId: currentUserId,
-        panelName,
-        question
-      });
-      
-      console.log("Question submission response:", response);
-      return response;
-    },
-    onSuccess: (_, variables) => {
-      setQuestions(prev => ({ ...prev, [variables.panelId]: "" }));
-      queryClient.invalidateQueries({ queryKey: ["/api/questions"] });
-      toast({
-        title: "Question submitted successfully!",
-        description: "Your question has been submitted and will be considered for the panel discussion.",
-      });
-    },
-    onError: (error) => {
-      console.error("Question submission error:", error);
-      toast({
-        title: "Failed to submit question",
-        description: error.message || "Please try again later.",
-        variant: "destructive",
-      });
-    }
-  });
-
-  const handleQuestionSubmit = (panelId: string, panelTitle: string) => {
-    const question = questions[panelId];
-    if (question?.trim() && currentUserId) {
-      console.log("Attempting to submit question:", { panelId, panelTitle, question: question.trim(), currentUserId });
-      submitQuestionMutation.mutate({ panelId, panelName: panelTitle, question: question.trim() });
-    } else {
-      console.error("Cannot submit question - missing data:", { question: question?.trim(), currentUserId });
-      toast({
-        title: "Cannot submit question",
-        description: "Please make sure you're logged in and have entered a question.",
-        variant: "destructive",
-      });
-    }
-  };
-
-
-
   return (
-    <div className="min-h-screen pb-20 relative z-10">
+    <div className="min-h-screen pb-20 relative z-10 bg-gradient-to-br from-purple-500 to-orange-400">
       {/* Header */}
-      <header className="glass-card border-b border-white/20 px-4 py-3 sticky top-0 z-50">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 gradient-pink rounded-full flex items-center justify-center shadow-lg">
-              <Calendar className="w-4 h-4 text-white" />
-            </div>
-            <h1 className="text-xl font-semibold text-gray-800">Program</h1>
+      <header className="bg-white/10 backdrop-blur-md border-b border-white/20 px-4 py-3 sticky top-0 z-50">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg">
+            <Calendar className="w-6 h-6 text-purple-600" />
           </div>
-          <div className="w-32 h-14">
-            <img 
-              src={gloryLogo} 
-              alt="GLORY Logo" 
-              className="w-full h-full object-contain drop-shadow-lg"
-            />
+          <div>
+            <h1 className="text-xl font-bold text-white">Event Program</h1>
+            <p className="text-sm text-white/90">GLORY Women of the Year 2025</p>
           </div>
         </div>
       </header>
 
       <main className="pt-4 px-4">
-        <div className="space-y-6">
-          {/* Event Overview */}
-          <Card>
-            <CardContent className="pt-6 pb-6 text-center">
-              <p className="text-gray-600">
-                Program information will be updated soon.
-              </p>
+        <div className="space-y-4">
+          {/* Master of Ceremonies */}
+          <Card className="bg-white shadow-lg">
+            <CardContent className="pt-4 pb-4">
+              <div className="flex items-center space-x-2 mb-3">
+                <Mic className="w-5 h-5 text-purple-600" />
+                <h3 className="font-semibold text-gray-900">Master of Ceremonies</h3>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-pink-500 rounded-2xl flex items-center justify-center shadow-md">
+                  <span className="text-white font-bold text-xl">LC</span>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900">Lance Chung</p>
+                  <p className="text-sm text-gray-600">Editor-in-Chief, GLORY Media</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
-          {/* Live Podcast */}
-          {panels.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="font-semibold text-gray-900 text-center">Live Podcast - Submit Your Questions</h3>
-              {panels.map((panel, index) => (
-              <Card key={panel.id}>
-                <CardContent className="pt-6">
-                  <div className="flex items-start justify-between mb-3">
+          {/* Schedule */}
+          <div className="space-y-3">
+            <div className="flex items-center space-x-2 px-1">
+              <Clock className="w-5 h-5 text-white" />
+              <h3 className="font-semibold text-white">Schedule</h3>
+            </div>
+            
+            {scheduleItems.map((item) => (
+              <Card key={item.id} className="bg-white shadow-lg">
+                <CardContent className="pt-4 pb-4">
+                  <div className="flex items-start space-x-3">
+                    <div className={`w-14 h-14 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center shadow-md flex-shrink-0`}>
+                      <IconComponent iconName={item.icon} className="w-6 h-6 text-white" />
+                    </div>
                     <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <Badge variant="outline">Live Podcast</Badge>
-                        <span className="text-sm text-gray-500">{panel.time}</span>
+                      <div className="flex items-center space-x-2 mb-1">
+                        <span className="font-semibold text-gray-900">{item.time}</span>
+                        <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-xs">
+                          {item.duration}
+                        </Badge>
                       </div>
-                      <h4 className="font-semibold text-gray-900 mb-2">{panel.title}</h4>
-                      <p className="text-sm text-gray-600 mb-3">{panel.description}</p>
-                      
-                      {/* Special Guest Preview - Horizontal Layout */}
-                      {expandedPanel !== panel.id && (
-                        <div className="flex items-center space-x-3 mt-3">
-                          <span className="text-sm text-gray-500 font-medium">Special Guest:</span>
-                          <div className="flex space-x-2">
-                            {panel.panelists.slice(0, 3).map((panelist) => (
-                              <SpeakerPhoto key={panelist.name} name={panelist.name} photo={panelist.photo} size="preview" />
-                            ))}
-                            {panel.panelists.length > 3 && (
-                              <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                                <span className="text-sm text-gray-600 font-medium">+{panel.panelists.length - 3}</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
+                      <p className="text-sm text-gray-700">{item.title}</p>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        const isExpanding = expandedPanel !== panel.id;
-                        setExpandedPanel(expandedPanel === panel.id ? null : panel.id);
-                        if (isExpanding) {
-                          analytics.trackPanelExpanded(panel.id, panel.title);
-                        }
-                      }}
-                    >
-                      {expandedPanel === panel.id ? (
-                        <ChevronUp className="w-4 h-4" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4" />
-                      )}
-                    </Button>
                   </div>
-
-                  {expandedPanel === panel.id && (
-                    <div className="space-y-4 border-t pt-4">
-                      {/* Podcast/Show */}
-                      <div>
-                        <h5 className="font-medium text-gray-900 mb-2">Podcast</h5>
-                        <div className="bg-gray-50 p-3 rounded-lg">
-                          <div className="flex items-start space-x-3">
-                            <SpeakerPhoto name={panel.moderator.name} photo={panel.moderator.photo} />
-                            <div className="flex-1">
-                              <p className="font-medium text-sm">{panel.moderator.name}</p>
-                              <p className="text-xs text-gray-600 mb-1">{panel.moderator.title}</p>
-                              <p className="text-xs text-gray-600">{panel.moderator.bio}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Special Guest */}
-                      <div>
-                        <h5 className="font-medium text-gray-900 mb-2">Special Guest</h5>
-                        <div className="space-y-2">
-                          {panel.panelists.map((panelist, idx) => (
-                            <div key={idx} className="bg-gray-50 p-3 rounded-lg">
-                              <div className="flex items-start space-x-3">
-                                <SpeakerPhoto name={panelist.name} photo={panelist.photo} />
-                                <div className="flex-1">
-                                  <p className="font-medium text-sm">{panelist.name}</p>
-                                  <p className="text-xs text-gray-600 mb-1">{panelist.title}</p>
-                                  <p className="text-xs text-gray-600">{panelist.bio}</p>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Question Submission */}
-                      <div className="border-t pt-4">
-                        <h5 className="font-medium text-gray-900 mb-2 flex items-center">
-                          <MessageSquare className="w-4 h-4 mr-2" />
-                          Submit a Question
-                        </h5>
-                        <div className="space-y-3">
-                          <Textarea
-                            placeholder={`Ask a question for "${panel.title}"...`}
-                            value={questions[panel.id] || ""}
-                            onChange={(e) => setQuestions(prev => ({ ...prev, [panel.id]: e.target.value }))}
-                            className="resize-none"
-                            rows={3}
-                          />
-                          <Button
-                            onClick={() => {
-                              analytics.trackButtonClick('submit_question', 'program_panel', { panelId: panel.id, panelTitle: panel.title });
-                              handleQuestionSubmit(panel.id, panel.title);
-                            }}
-                            disabled={!questions[panel.id]?.trim() || submitQuestionMutation.isPending}
-                            size="sm"
-                            className="w-full transform hover:scale-105 active:scale-95 transition-all duration-300 shadow-md hover:shadow-lg"
-                          >
-                            {submitQuestionMutation.isPending ? (
-                              <span className="flex items-center justify-center">
-                                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                Submitting...
-                              </span>
-                            ) : (
-                              <>
-                                <Send className="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform duration-300" />
-                                Submit Question
-                              </>
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             ))}
+          </div>
+
+          {/* Live Podcast Session */}
+          <div className="space-y-3 mt-6">
+            <div className="flex items-center space-x-2 px-1">
+              <Radio className="w-5 h-5 text-white" />
+              <h3 className="font-semibold text-white">Live Podcast Session</h3>
             </div>
-          )}
+
+            <Card className="bg-white shadow-lg">
+              <CardContent className="pt-4 pb-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2 bg-purple-100 px-3 py-1.5 rounded-full">
+                    <Clock className="w-4 h-4 text-purple-700" />
+                    <span className="text-sm font-medium text-purple-900">6:30 pm - 7:00 pm</span>
+                  </div>
+                  <Badge className="bg-red-500 text-white hover:bg-red-600">
+                    <span className="flex items-center space-x-1">
+                      <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                      <span>LIVE</span>
+                    </span>
+                  </Badge>
+                </div>
+
+                <h4 className="font-bold text-lg text-gray-900 mb-2">
+                  Cinderella Stories with Teresa Resch
+                </h4>
+
+                <p className="text-sm text-gray-700 mb-4">
+                  Join GLORY Media for a live Episode of our hit podcast Cinderella Stories, featuring Teresa Resch, Toronto Tempo President.
+                </p>
+
+                {/* Special Guest */}
+                <div className="bg-purple-50 rounded-lg p-3">
+                  <p className="text-sm font-semibold text-purple-900 mb-2">Special Guest</p>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                      <img 
+                        src={teresaReschImage} 
+                        alt="Teresa Resch" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Teresa Resch</p>
+                      <p className="text-sm text-gray-600">Toronto Tempo President</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
     </div>
