@@ -54,7 +54,7 @@ const IconComponent = ({ iconName, className }: { iconName: string; className?: 
 
 export default function Profile() {
   return (
-    <div className="min-h-screen pb-20 relative z-10 bg-gradient-to-br from-purple-500 to-orange-400">
+    <div className="min-h-screen pb-40 relative z-10 bg-gradient-to-br from-purple-500 to-orange-400">
       {/* Header */}
       <header className="bg-white/10 backdrop-blur-md border-b border-white/20 px-4 py-3 sticky top-0 z-50">
         <div className="flex items-center space-x-3">
