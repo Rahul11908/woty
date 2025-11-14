@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import teresaReschImage from "@assets/teresa-resch-woty.png";
+import cinderellaStoriesLogo from "@assets/cinderella-stories-podcast.png";
 
 interface ScheduleItem {
   id: string;
@@ -248,9 +249,20 @@ export default function Profile() {
                     <div>
                       <h5 className="font-medium text-gray-900 mb-2">Podcast</h5>
                       <div className="bg-gray-50 p-3 rounded-lg">
-                        <h6 className="font-bold text-base text-gray-900 mb-1">Cinderella Stories</h6>
-                        <p className="text-sm text-purple-600 font-medium mb-2">GLORY Media Podcast</p>
-                        <p className="text-xs text-gray-600">Cinderella Stories is your front-row seat to the drama, drive, and dynamism of women's sports. Hosted by seasoned sports journalists Ashley Docking and Savannah Hamilton, this podcast dives into buzzer-beaters, breakout stars, bracket-shaking upsets, and the culture powering women's hoops.</p>
+                        <div className="flex items-start space-x-3">
+                          <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                            <img 
+                              src={cinderellaStoriesLogo} 
+                              alt="Cinderella Stories Podcast" 
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <h6 className="font-bold text-base text-gray-900 mb-1">Cinderella Stories</h6>
+                            <p className="text-sm text-gray-600 font-medium mb-2">GLORY Media Podcast</p>
+                            <p className="text-xs text-gray-600">Cinderella Stories is your front-row seat to the drama, drive, and dynamism of women's sports. Hosted by seasoned sports journalists Ashley Docking and Savannah Hamilton, this podcast dives into buzzer-beaters, breakout stars, bracket-shaking upsets, and the culture powering women's hoops.</p>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
