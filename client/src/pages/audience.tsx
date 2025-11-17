@@ -174,9 +174,9 @@ export default function Audience() {
   return (
     <div className="min-h-screen pb-20 relative z-10 bg-gradient-to-br from-purple-500 to-orange-400">
       {/* Header */}
-      <header className="bg-white/10 backdrop-blur-md border-b border-white/20 px-4 py-4 sticky top-0 z-50">
+      <header className="bg-white/10 backdrop-blur-md border-b border-white/20 px-4 py-4">
         <div className="flex justify-center">
-          <img src={wotyLogoImage} alt="GLORY Women of the Year" className="w-full max-w-sm rounded-xl shadow-lg" />
+          <img src={wotyLogoImage} alt="GLORY Women of the Year" className="w-full max-w-[12rem] rounded-xl shadow-lg" />
         </div>
       </header>
 
