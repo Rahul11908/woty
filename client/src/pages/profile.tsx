@@ -25,7 +25,7 @@ const scheduleItems: ScheduleItem[] = [
     id: "arrival",
     time: "6:00 pm",
     duration: "30 min",
-    title: "VIP Arrival and Welcome Cocktail",
+    title: "Doors open and Welcome Cocktail",
     icon: "wine",
     color: "from-purple-400 to-purple-500"
   },
@@ -39,7 +39,7 @@ const scheduleItems: ScheduleItem[] = [
   },
   {
     id: "networking",
-    time: "7:00 pm",
+    time: "7:15 pm",
     duration: "2 hrs",
     title: "Networking and Cocktail Reception",
     icon: "users",
@@ -136,7 +136,7 @@ export default function Profile() {
             <CardContent className="pt-4 pb-4">
               <div className="flex items-center space-x-2 mb-3">
                 <Mic className="w-5 h-5 text-purple-600" />
-                <h3 className="font-semibold text-gray-900">Master of Ceremonies</h3>
+                <h3 className="font-semibold text-gray-900">Host</h3>
               </div>
               <div className="flex items-start space-x-3">
                 <div className="w-48 h-48 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
