@@ -158,12 +158,12 @@ export default function Network({ currentUser }: NetworkProps) {
                         <img 
                           src={attendee.avatar} 
                           alt={attendee.fullName}
-                          className="w-16 h-16 rounded-2xl object-cover shadow-md flex-shrink-0"
+                          className="w-32 h-32 rounded-2xl object-cover shadow-md flex-shrink-0"
                           data-testid={`avatar-${attendee.id}`}
                         />
                       ) : (
-                        <div className={`w-16 h-16 bg-gradient-to-br ${getAvatarColor(attendee.fullName)} rounded-2xl flex items-center justify-center shadow-md flex-shrink-0`} data-testid={`avatar-${attendee.id}`}>
-                          <span className="text-white font-bold text-lg">{getInitials(attendee.fullName)}</span>
+                        <div className={`w-32 h-32 bg-gradient-to-br ${getAvatarColor(attendee.fullName)} rounded-2xl flex items-center justify-center shadow-md flex-shrink-0`} data-testid={`avatar-${attendee.id}`}>
+                          <span className="text-white font-bold text-2xl">{getInitials(attendee.fullName)}</span>
                         </div>
                       )}
                       <div className="flex-1">
@@ -233,12 +233,12 @@ export default function Network({ currentUser }: NetworkProps) {
                           <img 
                             src={message.sender.avatar} 
                             alt={message.sender.fullName}
-                            className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                            className="w-20 h-20 rounded-full object-cover flex-shrink-0"
                             data-testid={`avatar-sender-${message.id}`}
                           />
                         ) : (
-                          <div className={`w-10 h-10 bg-gradient-to-br ${getAvatarColor(message.sender.fullName)} rounded-full flex items-center justify-center flex-shrink-0`} data-testid={`avatar-sender-${message.id}`}>
-                            <span className="text-white font-bold text-sm">{getInitials(message.sender.fullName)}</span>
+                          <div className={`w-20 h-20 bg-gradient-to-br ${getAvatarColor(message.sender.fullName)} rounded-full flex items-center justify-center flex-shrink-0`} data-testid={`avatar-sender-${message.id}`}>
+                            <span className="text-white font-bold text-base">{getInitials(message.sender.fullName)}</span>
                           </div>
                         )}
                         <div className="flex-1">

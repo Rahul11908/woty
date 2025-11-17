@@ -139,7 +139,7 @@ export default function Profile() {
                 <h3 className="font-semibold text-gray-900">Master of Ceremonies</h3>
               </div>
               <div className="flex items-start space-x-3">
-                <div className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
+                <div className="w-48 h-48 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
                   <img 
                     src={lanceChungImage} 
                     alt="Lance Chung" 
@@ -219,7 +219,7 @@ export default function Profile() {
                     <h5 className="font-medium text-gray-900 mb-2">Podcast</h5>
                     <div className="bg-gray-50 p-3 rounded-lg">
                       <div className="flex items-start space-x-3">
-                        <div className="w-32 h-32 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
+                        <div className="w-64 h-64 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
                           <img 
                             src={cinderellaStoriesLogo} 
                             alt="Cinderella Stories Podcast" 
@@ -240,7 +240,7 @@ export default function Profile() {
                     <h5 className="font-medium text-gray-900 mb-2">Special Guest</h5>
                     <div className="bg-purple-50 p-3 rounded-lg">
                       <div className="flex items-start space-x-3">
-                        <div className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
+                        <div className="w-48 h-48 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
                           <img 
                             src={teresaReschImage} 
                             alt="Teresa Resch" 

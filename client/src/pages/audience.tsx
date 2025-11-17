@@ -207,7 +207,7 @@ export default function Audience() {
               <Card key={woman.id} className="bg-white shadow-lg" data-testid={`card-woty-${woman.id}`}>
                 <CardContent className="pt-4 pb-4">
                   <div className="flex items-start space-x-3 mb-3">
-                    <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
+                    <div className="w-32 h-32 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
                       <img 
                         src={woman.image} 
                         alt={woman.name}
