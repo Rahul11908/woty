@@ -43,7 +43,7 @@ export default function CreatePasswordPage() {
     onSuccess: (user) => {
       toast({
         title: "Password Created",
-        description: "Your password has been set successfully. Welcome to the Summit!",
+        description: "Your password has been set successfully. Welcome to Women of the Year 2025!",
       });
       
       // Store user session and trigger app refresh

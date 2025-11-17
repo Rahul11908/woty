@@ -59,7 +59,7 @@ export default function CreateProfile() {
     onSuccess: (user) => {
       toast({
         title: "Profile created successfully!",
-        description: `Welcome to 2025 GLORY Sports Summit, ${user.fullName}!`,
+        description: `Welcome to GLORY Women of the Year 2025, ${user.fullName}!`,
       });
       // Store user session and redirect to main app
       localStorage.setItem("currentUserId", user.id.toString());
@@ -175,7 +175,7 @@ export default function CreateProfile() {
             Create Your Profile
           </CardTitle>
           <CardDescription className="text-gray-600">
-            Join the sports industry's premier networking event
+            Join GLORY Women of the Year 2025 event
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -367,7 +367,7 @@ export default function CreateProfile() {
                                 
                                 <p>
                                   <strong>1. Acceptance of Terms</strong><br />
-                                  By accessing or using the 2025 GLORY Sports Summit web app ("App"), you agree to comply with and be bound by these Usage Terms and all applicable laws and regulations. If you do not agree with any part of these terms, you must not use the App.
+                                  By accessing or using the GLORY Women of the Year 2025 web app ("App"), you agree to comply with and be bound by these Usage Terms and all applicable laws and regulations. If you do not agree with any part of these terms, you must not use the App.
                                 </p>
                                 
                                 <p>

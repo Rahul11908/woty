@@ -40,7 +40,7 @@ export default function EmailLogin() {
     onSuccess: (user) => {
       toast({
         title: "Welcome back!",
-        description: `Welcome to GLORY Sports Summit, ${user.fullName}!`,
+        description: `Welcome to GLORY Women of the Year 2025, ${user.fullName}!`,
       });
       
       // Store the user data for the session
@@ -83,7 +83,7 @@ export default function EmailLogin() {
             Welcome Back
           </CardTitle>
           <CardDescription className="text-gray-600">
-            Enter your email and password to access the summit
+            Enter your email and password to access the event
           </CardDescription>
         </CardHeader>
         <CardContent>
