@@ -167,7 +167,7 @@ export default function Audience() {
     if (title.includes('CEO') && title.includes('Myco')) return 'Innovation & Sustainability';
     if (title.includes('Professionelle')) return 'Entrepreneurship';
     if (title.includes('Hettas')) return 'Product Innovation';
-    if (title.includes('Organic')) return 'Wellness & Health';
+    if (title.includes('Organic')) return 'Entrepreneurship';
     return 'Leadership';
   };
 
