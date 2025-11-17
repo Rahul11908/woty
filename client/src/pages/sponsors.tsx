@@ -4,12 +4,6 @@ import torontoTempoLogo from "@assets/3_1763401906247.jpg";
 import cinderellaStoriesLogo from "@assets/4_1763401906248.jpg";
 import bulovaLogo from "@assets/5_1763401906249.jpg";
 import ollyLogo from "@assets/6_1763401906249.jpg";
-import pasquaLogo from "@assets/7_1763401906250.jpg";
-import johnSleemanLogo from "@assets/8_1763401906251.jpg";
-import tequilaTrombaLogo from "@assets/9_1763401906252.jpg";
-import goodSundayLogo from "@assets/10_1763401906252.jpg";
-import sobriiLogo from "@assets/11_1763401906253.jpg";
-import willoeLogo from "@assets/12_1763401906253.jpg";
 import diaLogo from "@assets/13_1763401906254.jpg";
 import canopyLogo from "@assets/14_1763401906255.jpg";
 
@@ -20,19 +14,16 @@ interface Sponsor {
   website?: string;
 }
 
+const hostedBySponsors: Sponsor[] = [
+  { id: '11', name: 'Día Restaurant & Lounge', logo: diaLogo, website: 'https://www.diarestaurant.ca/' },
+  { id: '12', name: 'Canopy Toronto | Yorkville', logo: canopyLogo, website: 'https://www.hilton.com/en/hotels/ytzpypy-canopy-toronto-yorkville/' },
+];
+
 const sponsors: Sponsor[] = [
   { id: '1', name: 'Toronto Tempo', logo: torontoTempoLogo, website: 'https://tempo.wnba.com/' },
   { id: '2', name: 'Cinderella Stories', logo: cinderellaStoriesLogo, website: 'https://podcasts.apple.com/ca/podcast/the-glory-sports-podcast-network/id1833074258' },
   { id: '3', name: 'Bulova', logo: bulovaLogo, website: 'https://www.bulova.com/ca/en/home' },
   { id: '4', name: 'Olly', logo: ollyLogo, website: 'https://www.ollynutrition.ca/' },
-  { id: '5', name: 'Pasqua', logo: pasquaLogo, website: 'https://pasqua.it/wines/' },
-  { id: '6', name: 'John Sleeman & Sons', logo: johnSleemanLogo, website: 'https://johnsleemanandsons.com/' },
-  { id: '7', name: 'Tequila Tromba', logo: tequilaTrombaLogo, website: 'https://tequilatromba.com/' },
-  { id: '8', name: 'Good Sunday', logo: goodSundayLogo, website: 'https://drinkgoodsunday.com/' },
-  { id: '9', name: 'Søbrii Non-Alcoholic', logo: sobriiLogo, website: 'https://sobrii.ca/' },
-  { id: '10', name: 'Willöe', logo: willoeLogo, website: 'https://www.willoegin.com/en/' },
-  { id: '11', name: 'Día Restaurant & Lounge', logo: diaLogo, website: 'https://www.diarestaurant.ca/' },
-  { id: '12', name: 'Canopy Toronto | Yorkville', logo: canopyLogo, website: 'https://www.hilton.com/en/hotels/ytzpypy-canopy-toronto-yorkville/' },
 ];
 
 export default function Sponsors() {
@@ -58,7 +49,32 @@ export default function Sponsors() {
       </header>
 
       <main className="pt-4 px-4">
-        <div className="grid grid-cols-2 gap-3">
+        {/* Hosted By Section */}
+        <div className="mb-6">
+          <h2 className="text-lg font-bold text-white mb-3">Hosted by</h2>
+          <div className="flex flex-col gap-3">
+            {hostedBySponsors.map((sponsor) => (
+              <Card 
+                key={sponsor.id} 
+                className="bg-black shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 transform hover:scale-105 overflow-hidden"
+                onClick={() => handleSponsorClick(sponsor)}
+                data-testid={`card-sponsor-${sponsor.id}`}
+              >
+                <CardContent className="p-0 aspect-video flex items-center justify-center">
+                  <img 
+                    src={sponsor.logo} 
+                    alt={sponsor.name}
+                    className="w-full h-full object-contain p-4"
+                    data-testid={`img-sponsor-${sponsor.id}`}
+                  />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Sponsors Section */}
+        <div className="flex flex-col gap-3">
           {sponsors.map((sponsor) => (
             <Card 
               key={sponsor.id} 
