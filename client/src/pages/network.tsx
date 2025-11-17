@@ -102,10 +102,6 @@ export default function Network({ currentUser }: NetworkProps) {
     return "Business";
   };
 
-  // Get count of online/live attendees
-  const liveCount = eventAttendees.filter(user => user.isOnline).length;
-  const totalAttendees = eventAttendees.length;
-
   const handleConnectLinkedIn = (attendeeName: string) => {
     const searchQuery = encodeURIComponent(attendeeName);
     window.open(`https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`, '_blank', 'noopener,noreferrer');
@@ -126,35 +122,20 @@ export default function Network({ currentUser }: NetworkProps) {
         </div>
       </header>
 
-      <Tabs defaultValue="network" className="w-full">
+      <Tabs defaultValue="discussion" className="w-full">
         <TabsList className="w-full bg-white/10 backdrop-blur-md border-b border-white/20 rounded-none h-12">
-          <TabsTrigger value="network" className="flex-1 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70" data-testid="tab-network">
-            <Users className="w-4 h-4 mr-2" />
-            Network
-          </TabsTrigger>
           <TabsTrigger value="discussion" className="flex-1 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70" data-testid="tab-discussion">
             <MessageSquare className="w-4 h-4 mr-2" />
             Discussion
+          </TabsTrigger>
+          <TabsTrigger value="network" className="flex-1 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70" data-testid="tab-network">
+            <Users className="w-4 h-4 mr-2" />
+            Network
           </TabsTrigger>
         </TabsList>
 
         {/* Network Tab */}
         <TabsContent value="network" className="mt-0 px-4 pt-4">
-          {/* Stats Card */}
-          <div className="mb-4">
-            <Card className="bg-purple-50 shadow-lg border-0" data-testid="card-total-attendees">
-              <CardContent className="pt-4 pb-4">
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-500 rounded-full flex items-center justify-center mb-2">
-                    <Users className="w-6 h-6 text-white" />
-                  </div>
-                  <p className="text-3xl font-bold text-gray-900" data-testid="text-attendee-count">{totalAttendees}</p>
-                  <p className="text-sm text-gray-600">Attendees</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
           {/* All Attendees */}
           <div className="space-y-3">
             <div className="flex items-center space-x-2 px-1">
