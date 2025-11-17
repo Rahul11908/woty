@@ -187,6 +187,7 @@ export default function Audience() {
             <Button 
               className="bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 text-white font-bold text-lg py-6 px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all"
               size="lg"
+              onClick={() => window.open('https://www.glory.media/women-of-the-year-2025', '_blank', 'noopener,noreferrer')}
             >
               <Award className="w-6 h-6 mr-2" />
               Meet the 2025 Women of the Year
