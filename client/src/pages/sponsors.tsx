@@ -21,18 +21,18 @@ interface Sponsor {
 }
 
 const sponsors: Sponsor[] = [
-  { id: '1', name: 'Toronto Tempo', logo: torontoTempoLogo },
-  { id: '2', name: 'Cinderella Stories', logo: cinderellaStoriesLogo },
-  { id: '3', name: 'Bulova', logo: bulovaLogo },
-  { id: '4', name: 'Olly', logo: ollyLogo },
-  { id: '5', name: 'Pasqua', logo: pasquaLogo },
-  { id: '6', name: 'John Sleeman & Sons', logo: johnSleemanLogo },
-  { id: '7', name: 'Tequila Tromba', logo: tequilaTrombaLogo },
-  { id: '8', name: 'Good Sunday', logo: goodSundayLogo },
-  { id: '9', name: 'Søbrii Non-Alcoholic', logo: sobriiLogo },
-  { id: '10', name: 'Willöe', logo: willoeLogo },
-  { id: '11', name: 'Día Restaurant & Lounge', logo: diaLogo },
-  { id: '12', name: 'Canopy Toronto | Yorkville', logo: canopyLogo },
+  { id: '1', name: 'Toronto Tempo', logo: torontoTempoLogo, website: 'https://tempo.wnba.com/' },
+  { id: '2', name: 'Cinderella Stories', logo: cinderellaStoriesLogo, website: 'https://podcasts.apple.com/ca/podcast/the-glory-sports-podcast-network/id1833074258' },
+  { id: '3', name: 'Bulova', logo: bulovaLogo, website: 'https://www.bulova.com/ca/en/home' },
+  { id: '4', name: 'Olly', logo: ollyLogo, website: 'https://www.ollynutrition.ca/' },
+  { id: '5', name: 'Pasqua', logo: pasquaLogo, website: 'https://pasqua.it/wines/' },
+  { id: '6', name: 'John Sleeman & Sons', logo: johnSleemanLogo, website: 'https://johnsleemanandsons.com/' },
+  { id: '7', name: 'Tequila Tromba', logo: tequilaTrombaLogo, website: 'https://tequilatromba.com/' },
+  { id: '8', name: 'Good Sunday', logo: goodSundayLogo, website: 'https://drinkgoodsunday.com/' },
+  { id: '9', name: 'Søbrii Non-Alcoholic', logo: sobriiLogo, website: 'https://sobrii.ca/' },
+  { id: '10', name: 'Willöe', logo: willoeLogo, website: 'https://www.willoegin.com/en/' },
+  { id: '11', name: 'Día Restaurant & Lounge', logo: diaLogo, website: 'https://www.diarestaurant.ca/' },
+  { id: '12', name: 'Canopy Toronto | Yorkville', logo: canopyLogo, website: 'https://www.hilton.com/en/hotels/ytzpypy-canopy-toronto-yorkville/' },
 ];
 
 export default function Sponsors() {
