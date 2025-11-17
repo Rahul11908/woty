@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, Mic, Clock, Users, Wine, Radio, Send, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
+import { Calendar, Mic, Clock, Users, Wine, Radio, Send, MessageSquare } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import teresaReschImage from "@assets/teresa-resch-woty.png";
 import cinderellaStoriesLogo from "@assets/cinderella-stories-podcast.png";
+import lanceChungImage from "@assets/lancechung_1763403855426.jpg";
 
 interface ScheduleItem {
   id: string;
@@ -60,7 +61,6 @@ const IconComponent = ({ iconName, className }: { iconName: string; className?: 
 };
 
 export default function Profile() {
-  const [expanded, setExpanded] = useState(false);
   const [question, setQuestion] = useState("");
   const [currentUserId, setCurrentUserId] = useState<number>(1);
   const queryClient = useQueryClient();
@@ -138,9 +138,13 @@ export default function Profile() {
                 <Mic className="w-5 h-5 text-purple-600" />
                 <h3 className="font-semibold text-gray-900">Master of Ceremonies</h3>
               </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-pink-500 rounded-2xl flex items-center justify-center shadow-md">
-                  <span className="text-white font-bold text-xl">LC</span>
+              <div className="flex items-start space-x-3">
+                <div className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
+                  <img 
+                    src={lanceChungImage} 
+                    alt="Lance Chung" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900">Lance Chung</p>
@@ -193,25 +197,12 @@ export default function Profile() {
                     <Clock className="w-4 h-4 text-purple-700" />
                     <span className="text-sm font-medium text-purple-900">6:30 pm - 7:00 pm</span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Badge className="bg-red-500 text-white hover:bg-red-600">
-                      <span className="flex items-center space-x-1">
-                        <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                        <span>LIVE</span>
-                      </span>
-                    </Badge>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setExpanded(!expanded)}
-                    >
-                      {expanded ? (
-                        <ChevronUp className="w-4 h-4" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4" />
-                      )}
-                    </Button>
-                  </div>
+                  <Badge className="bg-red-500 text-white hover:bg-red-600">
+                    <span className="flex items-center space-x-1">
+                      <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                      <span>LIVE</span>
+                    </span>
+                  </Badge>
                 </div>
 
                 <h4 className="font-bold text-lg text-gray-900 mb-2">
@@ -222,112 +213,89 @@ export default function Profile() {
                   Join GLORY Media for a live Episode of our hit podcast Cinderella Stories, featuring Teresa Resch, Toronto Tempo President.
                 </p>
 
-                {/* Special Guest Preview */}
-                {!expanded && (
-                  <div className="bg-purple-50 rounded-lg p-3">
-                    <p className="text-sm font-semibold text-purple-900 mb-2">Special Guest</p>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
-                        <img 
-                          src={teresaReschImage} 
-                          alt="Teresa Resch" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-gray-900">Teresa Resch</p>
-                        <p className="text-sm text-gray-600">Toronto Tempo President</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Expanded Details */}
-                {expanded && (
-                  <div className="space-y-4 border-t pt-4">
-                    {/* Podcast Information */}
-                    <div>
-                      <h5 className="font-medium text-gray-900 mb-2">Podcast</h5>
-                      <div className="bg-gray-50 p-3 rounded-lg">
-                        <div className="flex items-start space-x-3">
-                          <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
-                            <img 
-                              src={cinderellaStoriesLogo} 
-                              alt="Cinderella Stories Podcast" 
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="flex-1">
-                            <h6 className="font-bold text-base text-gray-900 mb-1">Cinderella Stories</h6>
-                            <p className="text-sm text-gray-600 font-medium mb-2">GLORY Media Podcast</p>
-                            <p className="text-xs text-gray-600">Cinderella Stories is your front-row seat to the drama, drive, and dynamism of women's sports. Hosted by seasoned sports journalists Ashley Docking and Savannah Hamilton, this podcast dives into buzzer-beaters, breakout stars, bracket-shaking upsets, and the culture powering women's hoops.</p>
-                          </div>
+                <div className="space-y-4">
+                  {/* Podcast Information */}
+                  <div>
+                    <h5 className="font-medium text-gray-900 mb-2">Podcast</h5>
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-32 h-32 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
+                          <img 
+                            src={cinderellaStoriesLogo} 
+                            alt="Cinderella Stories Podcast" 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <h6 className="font-bold text-base text-gray-900 mb-1">Cinderella Stories</h6>
+                          <p className="text-sm text-gray-600 font-medium mb-2">GLORY Media Podcast</p>
+                          <p className="text-xs text-gray-600">Cinderella Stories is your front-row seat to the drama, drive, and dynamism of women's sports. Hosted by seasoned sports journalists Ashley Docking and Savannah Hamilton, this podcast dives into buzzer-beaters, breakout stars, bracket-shaking upsets, and the culture powering women's hoops.</p>
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Special Guest */}
-                    <div>
-                      <h5 className="font-medium text-gray-900 mb-2">Special Guest</h5>
-                      <div className="bg-purple-50 p-3 rounded-lg">
-                        <div className="flex items-start space-x-3">
-                          <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
-                            <img 
-                              src={teresaReschImage} 
-                              alt="Teresa Resch" 
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="flex-1">
-                            <p className="font-medium text-sm">Teresa Resch</p>
-                            <p className="text-xs text-gray-600 mb-1">Toronto Tempo President</p>
-                            <p className="text-xs text-gray-600">Teresa Resch is the inaugural President of the WNBA Toronto franchise, which will begin play in 2026 season. Resch has been a leader in basketball development at the global scale for nearly 20 years. For 11 seasons she was a senior leader at the Toronto Raptors, bringing basketball to the forefront of Canadian sport.</p>
-                          </div>
+                  {/* Special Guest */}
+                  <div>
+                    <h5 className="font-medium text-gray-900 mb-2">Special Guest</h5>
+                    <div className="bg-purple-50 p-3 rounded-lg">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
+                          <img 
+                            src={teresaReschImage} 
+                            alt="Teresa Resch" 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium text-sm">Teresa Resch</p>
+                          <p className="text-xs text-gray-600 mb-1">Toronto Tempo President</p>
+                          <p className="text-xs text-gray-600">Teresa Resch is the inaugural President of the WNBA Toronto franchise, which will begin play in 2026 season. Resch has been a leader in basketball development at the global scale for nearly 20 years. For 11 seasons she was a senior leader at the Toronto Raptors, bringing basketball to the forefront of Canadian sport.</p>
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Question Submission */}
-                    <div className="border-t pt-4">
-                      <h5 className="font-medium text-gray-900 mb-2 flex items-center">
-                        <MessageSquare className="w-4 h-4 mr-2" />
-                        Submit a Question
-                      </h5>
-                      <div className="space-y-3">
-                        <Textarea
-                          placeholder="Ask a question for the live podcast session..."
-                          value={question}
-                          onChange={(e) => setQuestion(e.target.value)}
-                          className="resize-none"
-                          rows={3}
-                          data-testid="input-podcast-question"
-                        />
-                        <Button
-                          onClick={handleQuestionSubmit}
-                          disabled={!question?.trim() || submitQuestionMutation.isPending}
-                          size="sm"
-                          className="w-full"
-                          data-testid="button-submit-question"
-                        >
-                          {submitQuestionMutation.isPending ? (
-                            <span className="flex items-center justify-center">
-                              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                              </svg>
-                              Submitting...
-                            </span>
-                          ) : (
-                            <>
-                              <Send className="w-4 h-4 mr-2" />
-                              Submit Question
-                            </>
-                          )}
-                        </Button>
-                      </div>
+                  {/* Question Submission */}
+                  <div className="border-t pt-4">
+                    <h5 className="font-medium text-gray-900 mb-2 flex items-center">
+                      <MessageSquare className="w-4 h-4 mr-2" />
+                      Submit a Question
+                    </h5>
+                    <div className="space-y-3">
+                      <Textarea
+                        placeholder="Ask a question for the live podcast session..."
+                        value={question}
+                        onChange={(e) => setQuestion(e.target.value)}
+                        className="resize-none"
+                        rows={3}
+                        data-testid="input-podcast-question"
+                      />
+                      <Button
+                        onClick={handleQuestionSubmit}
+                        disabled={!question?.trim() || submitQuestionMutation.isPending}
+                        size="sm"
+                        className="w-full"
+                        data-testid="button-submit-question"
+                      >
+                        {submitQuestionMutation.isPending ? (
+                          <span className="flex items-center justify-center">
+                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Submitting...
+                          </span>
+                        ) : (
+                          <>
+                            <Send className="w-4 h-4 mr-2" />
+                            Submit Question
+                          </>
+                        )}
+                      </Button>
                     </div>
                   </div>
-                )}
+                </div>
               </CardContent>
             </Card>
           </div>
