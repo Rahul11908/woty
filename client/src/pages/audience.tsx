@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import gloryWoty from "@assets/GLORY WOTY_1762527738446.png";
+import wotyLogoImage from "@assets/Untitled design-5_1763407874091.png";
 import teresaReschImage from "@assets/teresa-resch-woty.png";
 import maggieKangImage from "@assets/maggie-kang-woty.png";
 import madisonTevlinImage from "@assets/madison-tevlin-woty.png";
@@ -175,9 +175,8 @@ export default function Audience() {
     <div className="min-h-screen pb-20 relative z-10 bg-gradient-to-br from-purple-500 to-orange-400">
       {/* Header */}
       <header className="bg-white/10 backdrop-blur-md border-b border-white/20 px-4 py-4 sticky top-0 z-50">
-        <div className="flex flex-col items-center text-center space-y-2">
-          <img src={gloryWoty} alt="GLORY Women of the Year" className="h-20 w-auto drop-shadow-2xl" />
-          <p className="text-sm text-white/90">2025 Nominees & Winners</p>
+        <div className="flex justify-center">
+          <img src={wotyLogoImage} alt="GLORY Women of the Year" className="w-full max-w-sm rounded-xl shadow-lg" />
         </div>
       </header>
 
