@@ -218,15 +218,15 @@ export default function Profile() {
                   <div>
                     <h5 className="font-medium text-gray-900 mb-2">Podcast</h5>
                     <div className="bg-gray-50 p-3 rounded-lg">
-                      <div className="flex items-start space-x-3">
-                        <div className="w-64 h-64 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
+                      <div className="flex flex-col items-center space-y-3">
+                        <div className="w-64 h-64 rounded-2xl overflow-hidden bg-gray-200">
                           <img 
                             src={cinderellaStoriesLogo} 
                             alt="Cinderella Stories Podcast" 
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <div className="flex-1">
+                        <div className="w-full">
                           <h6 className="font-bold text-base text-gray-900 mb-1">Cinderella Stories</h6>
                           <p className="text-sm text-gray-600 font-medium mb-2">GLORY Media Podcast</p>
                           <p className="text-xs text-gray-600">Cinderella Stories is your front-row seat to the drama, drive, and dynamism of women's sports. Hosted by seasoned sports journalists Ashley Docking and Savannah Hamilton, this podcast dives into buzzer-beaters, breakout stars, bracket-shaking upsets, and the culture powering women's hoops.</p>
@@ -239,15 +239,15 @@ export default function Profile() {
                   <div>
                     <h5 className="font-medium text-gray-900 mb-2">Special Guest</h5>
                     <div className="bg-purple-50 p-3 rounded-lg">
-                      <div className="flex items-start space-x-3">
-                        <div className="w-48 h-48 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
+                      <div className="flex flex-col items-center space-y-3">
+                        <div className="w-48 h-48 rounded-2xl overflow-hidden bg-gray-200">
                           <img 
                             src={teresaReschImage} 
                             alt="Teresa Resch" 
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <div className="flex-1">
+                        <div className="w-full">
                           <p className="font-medium text-sm">Teresa Resch</p>
                           <p className="text-xs text-gray-600 mb-1">Toronto Tempo President</p>
                           <p className="text-xs text-gray-600">Teresa Resch is the inaugural President of the WNBA Toronto franchise, which will begin play in 2026 season. Resch has been a leader in basketball development at the global scale for nearly 20 years. For 11 seasons she was a senior leader at the Toronto Raptors, bringing basketball to the forefront of Canadian sport.</p>
