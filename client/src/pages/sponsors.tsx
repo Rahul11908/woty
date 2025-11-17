@@ -74,6 +74,10 @@ export default function Sponsors() {
         </div>
 
         {/* Sponsors Section */}
+        <div className="mb-6">
+          <h2 className="text-lg font-bold text-white mb-3">Sponsored by</h2>
+        </div>
+
         <div className="flex flex-col gap-3">
           {sponsors.map((sponsor) => (
             <Card 
