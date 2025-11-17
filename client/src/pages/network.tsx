@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import { Send, Users, MapPin, UserPlus, MessageSquare, Briefcase } from "lucide-react";
+import { Send, Users, UserPlus, MessageSquare, Briefcase } from "lucide-react";
 import { SiLinkedin } from "react-icons/si";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiRequest } from "@/lib/queryClient";
@@ -41,6 +40,7 @@ export default function Network({ currentUser }: NetworkProps) {
 
   const { data: eventAttendees = [], isLoading: attendeesLoading } = useQuery<User[]>({
     queryKey: ["/api/event-attendees"],
+    refetchInterval: 10000,
   });
 
   const sendMessageMutation = useMutation({
@@ -140,8 +140,8 @@ export default function Network({ currentUser }: NetworkProps) {
 
         {/* Network Tab */}
         <TabsContent value="network" className="mt-0 px-4 pt-4">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 gap-3 mb-4">
+          {/* Stats Card */}
+          <div className="mb-4">
             <Card className="bg-purple-50 shadow-lg border-0" data-testid="card-total-attendees">
               <CardContent className="pt-4 pb-4">
                 <div className="flex flex-col items-center text-center">
@@ -150,18 +150,6 @@ export default function Network({ currentUser }: NetworkProps) {
                   </div>
                   <p className="text-3xl font-bold text-gray-900" data-testid="text-attendee-count">{totalAttendees}</p>
                   <p className="text-sm text-gray-600">Attendees</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-teal-50 shadow-lg border-0" data-testid="card-live-status">
-              <CardContent className="pt-4 pb-4">
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-teal-400 to-teal-500 rounded-full flex items-center justify-center mb-2">
-                    <MapPin className="w-6 h-6 text-white" />
-                  </div>
-                  <p className="text-3xl font-bold text-gray-900" data-testid="text-live-status">Live</p>
-                  <p className="text-sm text-gray-600">In Person</p>
                 </div>
               </CardContent>
             </Card>
@@ -185,9 +173,18 @@ export default function Network({ currentUser }: NetworkProps) {
                 <Card key={attendee.id} className="bg-white shadow-lg" data-testid={`card-attendee-${attendee.id}`}>
                   <CardContent className="pt-4 pb-4">
                     <div className="flex items-start space-x-3 mb-3">
-                      <div className={`w-16 h-16 bg-gradient-to-br ${getAvatarColor(attendee.fullName)} rounded-2xl flex items-center justify-center shadow-md flex-shrink-0`} data-testid={`avatar-${attendee.id}`}>
-                        <span className="text-white font-bold text-lg">{getInitials(attendee.fullName)}</span>
-                      </div>
+                      {attendee.avatar ? (
+                        <img 
+                          src={attendee.avatar} 
+                          alt={attendee.fullName}
+                          className="w-16 h-16 rounded-2xl object-cover shadow-md flex-shrink-0"
+                          data-testid={`avatar-${attendee.id}`}
+                        />
+                      ) : (
+                        <div className={`w-16 h-16 bg-gradient-to-br ${getAvatarColor(attendee.fullName)} rounded-2xl flex items-center justify-center shadow-md flex-shrink-0`} data-testid={`avatar-${attendee.id}`}>
+                          <span className="text-white font-bold text-lg">{getInitials(attendee.fullName)}</span>
+                        </div>
+                      )}
                       <div className="flex-1">
                         <p className="font-semibold text-gray-900" data-testid={`text-name-${attendee.id}`}>{attendee.fullName}</p>
                         <p className="text-sm text-gray-600" data-testid={`text-title-${attendee.id}`}>
@@ -251,9 +248,18 @@ export default function Network({ currentUser }: NetworkProps) {
                   <Card key={message.id} className="bg-white shadow-lg" data-testid={`card-message-${message.id}`}>
                     <CardContent className="pt-3 pb-3">
                       <div className="flex items-start space-x-3">
-                        <div className={`w-10 h-10 bg-gradient-to-br ${getAvatarColor(message.sender.fullName)} rounded-full flex items-center justify-center flex-shrink-0`} data-testid={`avatar-sender-${message.id}`}>
-                          <span className="text-white font-bold text-sm">{getInitials(message.sender.fullName)}</span>
-                        </div>
+                        {message.sender.avatar ? (
+                          <img 
+                            src={message.sender.avatar} 
+                            alt={message.sender.fullName}
+                            className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                            data-testid={`avatar-sender-${message.id}`}
+                          />
+                        ) : (
+                          <div className={`w-10 h-10 bg-gradient-to-br ${getAvatarColor(message.sender.fullName)} rounded-full flex items-center justify-center flex-shrink-0`} data-testid={`avatar-sender-${message.id}`}>
+                            <span className="text-white font-bold text-sm">{getInitials(message.sender.fullName)}</span>
+                          </div>
+                        )}
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-1">
                             <p className="font-semibold text-sm text-gray-900" data-testid={`text-sender-${message.id}`}>{message.sender.fullName}</p>
