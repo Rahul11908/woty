@@ -210,7 +210,7 @@ export default function Profile() {
                 </h4>
 
                 <p className="text-sm text-gray-700 mb-4">
-                  Join GLORY Media for a live Episode of our hit podcast Cinderella Stories, featuring Teresa Resch, Toronto Tempo President.
+                  Join GLORY Media for a special live episode of our hit podcast Cinderella Stories, featuring Women of the Year honoree and Toronto Tempo President, Teresa Resch.
                 </p>
 
                 <div className="space-y-4">
