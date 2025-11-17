@@ -10,6 +10,7 @@ import { apiRequest } from "@/lib/queryClient";
 import teresaReschImage from "@assets/teresa-resch-woty.png";
 import cinderellaStoriesLogo from "@assets/cinderella-stories-podcast.png";
 import lanceChungImage from "@assets/lancechung_1763403855426.jpg";
+import wotyLogoImage from "@assets/Untitled design-5_1763407874091.png";
 
 interface ScheduleItem {
   id: string;
@@ -131,7 +132,16 @@ export default function Profile() {
 
       <main className="pt-4 px-4">
         <div className="space-y-4">
-          {/* Master of Ceremonies */}
+          {/* GLORY WOTY Logo */}
+          <div className="flex justify-center mb-4">
+            <img 
+              src={wotyLogoImage} 
+              alt="GLORY Women of the Year" 
+              className="w-full max-w-md rounded-2xl shadow-lg"
+            />
+          </div>
+
+          {/* Host */}
           <Card className="bg-white shadow-lg">
             <CardContent className="pt-4 pb-4">
               <div className="flex items-center space-x-2 mb-3">
