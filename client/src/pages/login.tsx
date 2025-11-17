@@ -11,7 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { loginSchema, type LoginData } from "@shared/schema";
-import gloryWoty from "@assets/GLORY WOTY_1762527738446.png";
+import wotyLogoImage from "@assets/Untitled design-5_1763408655994.png";
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -75,7 +75,7 @@ export default function Login() {
       <Card className="w-full max-w-md glass-card shadow-2xl">
         <CardHeader className="text-center space-y-4">
           <div className="flex justify-center">
-            <img src={gloryWoty} alt="GLORY Women of the Year" className="h-32 w-auto drop-shadow-2xl" />
+            <img src={wotyLogoImage} alt="GLORY Women of the Year" className="w-48 rounded-xl shadow-lg" />
           </div>
           <CardTitle className="text-2xl font-bold text-gray-800">
             Sign In

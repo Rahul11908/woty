@@ -16,7 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertUserSchema } from "@shared/schema";
-import gloryLogo from "@assets/GLORY WOTY_1762527738446.png";
+import wotyLogoImage from "@assets/Untitled design-5_1763408655994.png";
 
 const createProfileSchema = insertUserSchema.extend({
   confirmPassword: z.string().min(1, "Please confirm your password"),
@@ -163,15 +163,13 @@ export default function CreateProfile() {
       <Card className="w-full max-w-md glass-card shadow-2xl">
         <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
-            <div className="w-64 h-32">
-              <a href="https://www.glory.media" target="_blank" rel="noopener noreferrer">
-                <img 
-                  src={gloryLogo} 
-                  alt="GLORY Logo" 
-                  className="w-full h-full object-contain hover:opacity-80 transition-opacity cursor-pointer"
-                />
-              </a>
-            </div>
+            <a href="https://www.glory.media" target="_blank" rel="noopener noreferrer">
+              <img 
+                src={wotyLogoImage} 
+                alt="GLORY Women of the Year" 
+                className="w-48 rounded-xl shadow-lg hover:opacity-80 transition-opacity cursor-pointer"
+              />
+            </a>
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
             Create Your Profile

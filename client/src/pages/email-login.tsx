@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import gloryLogo from "@assets/GLORY WOTY_1762527738446.png";
+import wotyLogoImage from "@assets/Untitled design-5_1763408655994.png";
 
 const emailLoginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -73,13 +73,11 @@ export default function EmailLogin() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
-            <div className="w-64 h-32">
-              <img 
-                src={gloryLogo} 
-                alt="GLORY Logo" 
-                className="w-full h-full object-contain"
-              />
-            </div>
+            <img 
+              src={wotyLogoImage} 
+              alt="GLORY Women of the Year" 
+              className="w-48 rounded-xl shadow-lg"
+            />
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
             Welcome Back
