@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Send, Users, MapPin, UserPlus, MessageSquare, Briefcase } from "lucide-react";
+import { SiLinkedin } from "react-icons/si";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -68,34 +69,6 @@ export default function Network({ currentUser }: NetworkProps) {
     }
   };
 
-  const connectRequestMutation = useMutation({
-    mutationFn: async (addresseeId: number) => {
-      return await apiRequest("/api/connections", "POST", {
-        requesterId: currentUserId,
-        addresseeId,
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
-      toast({
-        title: "Connection request sent!",
-        description: "You'll be notified when they accept.",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Failed to send connection request",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleConnectRequest = (userId: number) => {
-    if (currentUserId) {
-      connectRequestMutation.mutate(userId);
-    }
-  };
 
   const getInitials = (name: string) => {
     return name
@@ -133,8 +106,10 @@ export default function Network({ currentUser }: NetworkProps) {
   const liveCount = eventAttendees.filter(user => user.isOnline).length;
   const totalAttendees = eventAttendees.length;
 
-  // Featured attendees (first 10)
-  const featuredAttendees = eventAttendees.slice(0, 10);
+  const handleConnectLinkedIn = (attendeeName: string) => {
+    const searchQuery = encodeURIComponent(attendeeName);
+    window.open(`https://www.linkedin.com/search/results/people/?keywords=${searchQuery}`, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <div className="min-h-screen pb-20 relative z-10 bg-gradient-to-br from-purple-500 to-orange-400">
@@ -192,11 +167,11 @@ export default function Network({ currentUser }: NetworkProps) {
             </Card>
           </div>
 
-          {/* Featured Attendees */}
+          {/* All Attendees */}
           <div className="space-y-3">
             <div className="flex items-center space-x-2 px-1">
               <UserPlus className="w-5 h-5 text-white" />
-              <h3 className="font-semibold text-white">Featured Attendees</h3>
+              <h3 className="font-semibold text-white">All Attendees</h3>
             </div>
 
             {attendeesLoading ? (
@@ -206,7 +181,7 @@ export default function Network({ currentUser }: NetworkProps) {
                 </CardContent>
               </Card>
             ) : (
-              featuredAttendees.map((attendee) => (
+              eventAttendees.map((attendee) => (
                 <Card key={attendee.id} className="bg-white shadow-lg" data-testid={`card-attendee-${attendee.id}`}>
                   <CardContent className="pt-4 pb-4">
                     <div className="flex items-start space-x-3 mb-3">
@@ -225,12 +200,12 @@ export default function Network({ currentUser }: NetworkProps) {
                       </div>
                     </div>
                     <Button
-                      onClick={() => handleConnectRequest(attendee.id)}
-                      className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
+                      onClick={() => handleConnectLinkedIn(attendee.fullName)}
+                      className="w-full bg-[#0A66C2] hover:bg-[#004182] text-white"
                       data-testid={`button-connect-${attendee.id}`}
                     >
-                      <UserPlus className="w-4 h-4 mr-2" />
-                      Connect
+                      <SiLinkedin className="w-4 h-4 mr-2" />
+                      Connect on LinkedIn
                     </Button>
                   </CardContent>
                 </Card>
