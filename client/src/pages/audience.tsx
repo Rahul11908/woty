@@ -182,18 +182,16 @@ export default function Audience() {
 
       <main className="pt-4 px-4">
         <div className="space-y-4">
-          {/* GLORY WOTY Banner */}
-          <Card className="bg-white shadow-lg">
-            <CardContent className="pt-6 pb-6 text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-orange-400 via-pink-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-3 shadow-lg">
-                <Award className="w-10 h-10 text-white" />
-              </div>
-              <h2 className="text-xl font-bold text-gray-900 mb-2">GLORY Women of the Year 2025</h2>
-              <p className="text-sm text-gray-600">
-                Celebrating extraordinary women making a difference in their communities and industries
-              </p>
-            </CardContent>
-          </Card>
+          {/* Meet the Women Button */}
+          <div className="flex justify-center">
+            <Button 
+              className="bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 text-white font-bold text-lg py-6 px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all"
+              size="lg"
+            >
+              <Award className="w-6 h-6 mr-2" />
+              Meet the 2025 Women of the Year
+            </Button>
+          </div>
 
           {/* Nominees Section */}
           <div className="space-y-3">
