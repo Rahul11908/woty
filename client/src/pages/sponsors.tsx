@@ -20,10 +20,10 @@ const hostedBySponsors: Sponsor[] = [
 ];
 
 const sponsors: Sponsor[] = [
-  { id: '1', name: 'Toronto Tempo', logo: torontoTempoLogo, website: 'https://tempo.wnba.com/' },
   { id: '4', name: 'Olly', logo: ollyLogo, website: 'https://www.ollynutrition.ca/' },
   { id: '2', name: 'Cinderella Stories', logo: cinderellaStoriesLogo, website: 'https://podcasts.apple.com/ca/podcast/the-glory-sports-podcast-network/id1833074258' },
   { id: '3', name: 'Bulova', logo: bulovaLogo, website: 'https://www.bulova.com/ca/en/home' },
+  { id: '1', name: 'Toronto Tempo', logo: torontoTempoLogo, website: 'https://tempo.wnba.com/' },
 ];
 
 export default function Sponsors() {
