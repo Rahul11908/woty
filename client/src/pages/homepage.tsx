@@ -88,14 +88,6 @@ export default function Homepage() {
               Already Have an Account? Sign In
             </Button>
           </div>
-
-          {/* Event Details */}
-          <div className="mt-12 text-center space-y-4 glass-card-light rounded-2xl p-6 animate-fadeInUp" style={{ animationDelay: '0.6s' }}>
-            <h2 className="text-xl font-semibold text-gray-800">Join the Conversation</h2>
-            <p className="text-gray-600 text-sm">
-              Experience real-time networking, participate in panel discussions, and connect with fellow sports industry professionals in our interactive summit platform.
-            </p>
-          </div>
         </div>
       </div>
     </div>
