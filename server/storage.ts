@@ -1154,19 +1154,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getEventAttendees(limit?: number): Promise<User[]> {
-    // Exclude system user (id=1) and only fetch necessary fields for performance
+    // Exclude system user (id=1) and optimize query
     const query = db
-      .select({
-        id: users.id,
-        fullName: users.fullName,
-        email: users.email,
-        company: users.company,
-        jobTitle: users.jobTitle,
-        avatar: users.avatar,
-        userRole: users.userRole,
-        isOnline: users.isOnline,
-        linkedinProfileUrl: users.linkedinProfileUrl,
-      })
+      .select()
       .from(users)
       .where(ne(users.id, 1)) // Exclude system user
       .orderBy(users.fullName); // Order alphabetically for consistent display
