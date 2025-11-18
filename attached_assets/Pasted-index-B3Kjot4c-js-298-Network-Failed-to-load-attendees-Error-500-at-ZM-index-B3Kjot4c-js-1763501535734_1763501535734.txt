@@ -1,0 +1,92 @@
+index-B3Kjot4c.js:298  [Network] Failed to load attendees: Error: 500: 
+    at ZM (index-B3Kjot4c.js:48:42800)
+    at async index-B3Kjot4c.js:48:43168
+qP @ index-B3Kjot4c.js:298
+Sw @ index-B3Kjot4c.js:38
+v0 @ index-B3Kjot4c.js:40
+wM @ index-B3Kjot4c.js:40
+gM @ index-B3Kjot4c.js:40
+yV @ index-B3Kjot4c.js:40
+np @ index-B3Kjot4c.js:40
+nP @ index-B3Kjot4c.js:40
+mo @ index-B3Kjot4c.js:38
+(anonymous) @ index-B3Kjot4c.js:40
+setTimeout
+i @ index-B3Kjot4c.js:48
+o @ index-B3Kjot4c.js:48
+batch @ index-B3Kjot4c.js:48
+Fi @ index-B3Kjot4c.js:48
+s @ index-B3Kjot4c.js:48
+h @ index-B3Kjot4c.js:48
+(anonymous) @ index-B3Kjot4c.js:48
+Promise.catch
+g @ index-B3Kjot4c.js:48
+start @ index-B3Kjot4c.js:48
+fetch @ index-B3Kjot4c.js:48
+pu @ index-B3Kjot4c.js:48
+onSubscribe @ index-B3Kjot4c.js:48
+subscribe @ index-B3Kjot4c.js:48
+(anonymous) @ index-B3Kjot4c.js:48
+D$ @ index-B3Kjot4c.js:38
+Um @ index-B3Kjot4c.js:40
+ol @ index-B3Kjot4c.js:40
+nP @ index-B3Kjot4c.js:40
+mo @ index-B3Kjot4c.js:38
+xV @ index-B3Kjot4c.js:40
+Oo @ index-B3Kjot4c.js:40
+mM @ index-B3Kjot4c.js:40
+S @ index-B3Kjot4c.js:25
+T @ index-B3Kjot4c.js:25
+inspector.js:7   POST https://app.glory.media/api/analytics/sessions/963/end 500 (Internal Server Error)
+window.fetch @ inspector.js:7
+It @ index-B3Kjot4c.js:48
+endSession @ index-B3Kjot4c.js:410
+(anonymous) @ index-B3Kjot4c.js:410
+index-B3Kjot4c.js:410  Error ending session: Error: 500: {"error":"Failed to end session"}
+    at ZM (index-B3Kjot4c.js:48:42800)
+    at async It (index-B3Kjot4c.js:48:43001)
+    at async rPe.endSession (index-B3Kjot4c.js:410:113831)
+endSession @ index-B3Kjot4c.js:410
+await in endSession
+(anonymous) @ index-B3Kjot4c.js:410
+inspector.js:7   GET https://app.glory.media/api/event-attendees 500 (Internal Server Error)
+window.fetch @ inspector.js:7
+(anonymous) @ index-B3Kjot4c.js:48
+a @ index-B3Kjot4c.js:48
+g @ index-B3Kjot4c.js:48
+start @ index-B3Kjot4c.js:48
+fetch @ index-B3Kjot4c.js:48
+pu @ index-B3Kjot4c.js:48
+(anonymous) @ index-B3Kjot4c.js:48
+setInterval
+I0 @ index-B3Kjot4c.js:48
+R0 @ index-B3Kjot4c.js:48
+onQueryUpdate @ index-B3Kjot4c.js:48
+(anonymous) @ index-B3Kjot4c.js:48
+(anonymous) @ index-B3Kjot4c.js:48
+batch @ index-B3Kjot4c.js:48
+Fi @ index-B3Kjot4c.js:48
+s @ index-B3Kjot4c.js:48
+h @ index-B3Kjot4c.js:48
+(anonymous) @ index-B3Kjot4c.js:48
+Promise.catch
+g @ index-B3Kjot4c.js:48
+start @ index-B3Kjot4c.js:48
+fetch @ index-B3Kjot4c.js:48
+pu @ index-B3Kjot4c.js:48
+onSubscribe @ index-B3Kjot4c.js:48
+subscribe @ index-B3Kjot4c.js:48
+(anonymous) @ index-B3Kjot4c.js:48
+D$ @ index-B3Kjot4c.js:38
+Um @ index-B3Kjot4c.js:40
+ol @ index-B3Kjot4c.js:40
+nP @ index-B3Kjot4c.js:40
+mo @ index-B3Kjot4c.js:38
+xV @ index-B3Kjot4c.js:40
+Oo @ index-B3Kjot4c.js:40
+mM @ index-B3Kjot4c.js:40
+S @ index-B3Kjot4c.js:25
+T @ index-B3Kjot4c.js:25
+index-B3Kjot4c.js:298  [Network] Failed to load attendees: Error: 500: 
+    at ZM (index-B3Kjot4c.js:48:42800)
+    at async index-B3Kjot4c.js:48:43168
