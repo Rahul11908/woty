@@ -38,10 +38,20 @@ export default function Network({ currentUser }: NetworkProps) {
     refetchInterval: 5000,
   });
 
-  const { data: eventAttendees = [], isLoading: attendeesLoading } = useQuery<User[]>({
+  const { 
+    data: eventAttendees = [], 
+    isLoading: attendeesLoading,
+    isError: attendeesError,
+    error: attendeesErrorDetails 
+  } = useQuery<User[]>({
     queryKey: ["/api/event-attendees"],
     refetchInterval: 10000,
   });
+
+  // Debug logging for production
+  if (attendeesError) {
+    console.error("[Network] Failed to load attendees:", attendeesErrorDetails);
+  }
 
   const sendMessageMutation = useMutation({
     mutationFn: async (content: string) => {
@@ -147,6 +157,20 @@ export default function Network({ currentUser }: NetworkProps) {
               <Card className="bg-white shadow-lg" data-testid="card-loading-attendees">
                 <CardContent className="pt-6 pb-6 text-center">
                   <p className="text-gray-600" data-testid="text-loading-attendees">Loading attendees...</p>
+                </CardContent>
+              </Card>
+            ) : attendeesError ? (
+              <Card className="bg-white shadow-lg" data-testid="card-error-attendees">
+                <CardContent className="pt-6 pb-6 text-center">
+                  <p className="text-red-600 font-semibold" data-testid="text-error-attendees">Failed to load attendees</p>
+                  <p className="text-sm text-gray-500 mt-2">{attendeesErrorDetails?.message || 'Please try again later'}</p>
+                </CardContent>
+              </Card>
+            ) : eventAttendees.length === 0 ? (
+              <Card className="bg-white shadow-lg" data-testid="card-empty-attendees">
+                <CardContent className="pt-6 pb-6 text-center">
+                  <Users className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+                  <p className="text-gray-600" data-testid="text-no-attendees">No attendees found</p>
                 </CardContent>
               </Card>
             ) : (
