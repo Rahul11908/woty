@@ -257,13 +257,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get event attendees
   app.get("/api/event-attendees", async (req, res) => {
     try {
-      console.log("Fetching event attendees...");
+      console.log("[EVENT-ATTENDEES] Starting fetch...");
+      console.log("[EVENT-ATTENDEES] DATABASE_URL exists:", !!process.env.DATABASE_URL);
+      
       const attendees = await storage.getEventAttendees();
-      console.log(`Successfully fetched ${attendees.length} attendees`);
+      
+      console.log(`[EVENT-ATTENDEES] Successfully fetched ${attendees.length} attendees`);
       res.json(attendees);
-    } catch (error) {
-      console.error("Error fetching event attendees:", error);
-      res.status(500).json({ error: "Failed to fetch event attendees" });
+    } catch (error: any) {
+      console.error("[EVENT-ATTENDEES] Critical error:", error);
+      console.error("[EVENT-ATTENDEES] Error stack:", error?.stack);
+      console.error("[EVENT-ATTENDEES] Error message:", error?.message);
+      res.status(500).json({ 
+        error: "Failed to fetch event attendees",
+        details: process.env.NODE_ENV === 'development' ? error?.message : undefined
+      });
     }
   });
 
