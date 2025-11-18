@@ -257,9 +257,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get event attendees
   app.get("/api/event-attendees", async (req, res) => {
     try {
+      console.log("Fetching event attendees...");
       const attendees = await storage.getEventAttendees();
+      console.log(`Successfully fetched ${attendees.length} attendees`);
       res.json(attendees);
     } catch (error) {
+      console.error("Error fetching event attendees:", error);
       res.status(500).json({ error: "Failed to fetch event attendees" });
     }
   });
