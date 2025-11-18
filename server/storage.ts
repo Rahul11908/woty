@@ -1065,7 +1065,8 @@ export class MemStorage implements IStorage {
     Array.from(this.userActivities.values())
       .filter(a => a.activityType === 'page_view')
       .forEach(activity => {
-        const page = activity.activityDetails?.page || 'unknown';
+        const details = activity.activityDetails as any;
+        const page = details?.page || 'unknown';
         pageViewCounts.set(page, (pageViewCounts.get(page) || 0) + 1);
       });
 
@@ -1574,10 +1575,10 @@ export class DatabaseStorage implements IStorage {
       .limit(limit);
   }
 
-  async updateDailyMetrics(date: string): Promise<DailyMetrics> {
-    // Simplified implementation
+  async updateDailyMetrics(dateString: string): Promise<DailyMetrics> {
+    // Simplified implementation - using string date format for database
     const [metrics] = await db.insert(dailyMetrics).values({
-      date: new Date(date),
+      date: dateString,
       activeUsers: 0,
       newUsers: 0,
       totalMessages: 0,
@@ -1596,7 +1597,7 @@ export class DatabaseStorage implements IStorage {
     activeUsersToday: number;
     avgSessionDuration: number;
     totalMessages: number;
-    totalClicks: number;
+    totalConnections: number;
     popularPages: Array<{ page: string; views: number }>;
     userEngagement: Array<{ date: string; activeUsers: number; messages: number; questions: number; posts: number }>;
   }> {
@@ -1643,7 +1644,7 @@ export class DatabaseStorage implements IStorage {
         activeUsersToday: userEngagement[userEngagement.length - 1]?.activeUsers || Math.floor(totalUsers * 0.3),
         avgSessionDuration: 0, // Simplified for now
         totalMessages,
-        totalClicks,
+        totalConnections: 0, // Simplified for now
         popularPages: [], // Removed as requested
         userEngagement
       };
@@ -1655,7 +1656,7 @@ export class DatabaseStorage implements IStorage {
         activeUsersToday: 0,
         avgSessionDuration: 0,
         totalMessages: 0,
-        totalClicks: 0,
+        totalConnections: 0,
         popularPages: [],
         userEngagement: []
       };
