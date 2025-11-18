@@ -560,8 +560,12 @@ export class MemStorage implements IStorage {
     // Group chat initialized without default messages
   }
 
-  async getEventAttendees(limit = 50): Promise<User[]> {
-    return Array.from(this.users.values()).slice(0, limit);
+  async getEventAttendees(limit?: number): Promise<User[]> {
+    const allUsers = Array.from(this.users.values());
+    if (limit) {
+      return allUsers.slice(0, limit);
+    }
+    return allUsers;
   }
 
   async deleteUser(id: number): Promise<void> {
@@ -1149,8 +1153,11 @@ export class DatabaseStorage implements IStorage {
     return allUsers.slice(0, limit);
   }
 
-  async getEventAttendees(limit = 50): Promise<User[]> {
-    return await db.select().from(users).limit(limit);
+  async getEventAttendees(limit?: number): Promise<User[]> {
+    if (limit) {
+      return await db.select().from(users).limit(limit);
+    }
+    return await db.select().from(users);
   }
 
   async updateUser(id: number, updates: Partial<User>): Promise<User> {
