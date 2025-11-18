@@ -1154,10 +1154,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getEventAttendees(limit?: number): Promise<User[]> {
+    // Exclude system user (id=1) and only fetch necessary fields for performance
+    const query = db
+      .select({
+        id: users.id,
+        fullName: users.fullName,
+        email: users.email,
+        company: users.company,
+        jobTitle: users.jobTitle,
+        avatar: users.avatar,
+        userRole: users.userRole,
+        isOnline: users.isOnline,
+        linkedinProfileUrl: users.linkedinProfileUrl,
+      })
+      .from(users)
+      .where(ne(users.id, 1)) // Exclude system user
+      .orderBy(users.fullName); // Order alphabetically for consistent display
+    
     if (limit) {
-      return await db.select().from(users).limit(limit);
+      return await query.limit(limit);
     }
-    return await db.select().from(users);
+    return await query;
   }
 
   async updateUser(id: number, updates: Partial<User>): Promise<User> {
