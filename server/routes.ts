@@ -275,6 +275,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Download event attendees as CSV
+  app.get("/api/event-attendees/download", async (req, res) => {
+    try {
+      const attendees = await storage.getEventAttendees();
+      
+      // Generate CSV
+      const csvHeader = "ID,Full Name,Email,Job Title,Company,LinkedIn URL,Bio,Avatar URL\n";
+      const csvRows = attendees.map(attendee => {
+        return [
+          attendee.id,
+          `"${attendee.fullName || ''}"`,
+          `"${attendee.email || ''}"`,
+          `"${attendee.jobTitle || ''}"`,
+          `"${attendee.company || ''}"`,
+          `"${attendee.linkedInUrl || ''}"`,
+          `"${(attendee.bio || '').replace(/"/g, '""')}"`,
+          `"${attendee.avatar || ''}"`
+        ].join(',');
+      }).join('\n');
+      
+      const csv = csvHeader + csvRows;
+      
+      // Set headers for download
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="attendees_export.csv"');
+      res.send(csv);
+    } catch (error: any) {
+      console.error("[EXPORT] Error exporting attendees:", error);
+      res.status(500).json({ 
+        error: "Failed to export attendees",
+        details: process.env.NODE_ENV === 'development' ? error?.message : undefined
+      });
+    }
+  });
+
   // Update user profile by ID
   app.patch("/api/users/:id", async (req, res) => {
     try {
