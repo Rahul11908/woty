@@ -280,18 +280,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const attendees = await storage.getEventAttendees();
       
-      // Generate CSV
-      const csvHeader = "ID,Full Name,Email,Job Title,Company,LinkedIn URL,Bio,Avatar URL\n";
+      // Generate CSV with only name, email, company, and job title
+      const csvHeader = "Name,Email,Company,Job Title\n";
       const csvRows = attendees.map(attendee => {
         return [
-          attendee.id,
           `"${attendee.fullName || ''}"`,
           `"${attendee.email || ''}"`,
-          `"${attendee.jobTitle || ''}"`,
           `"${attendee.company || ''}"`,
-          `"${attendee.linkedInUrl || ''}"`,
-          `"${(attendee.bio || '').replace(/"/g, '""')}"`,
-          `"${attendee.avatar || ''}"`
+          `"${attendee.jobTitle || ''}"`
         ].join(',');
       }).join('\n');
       
@@ -299,7 +295,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Set headers for download
       res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', 'attachment; filename="attendees_export.csv"');
+      res.setHeader('Content-Disposition', 'attachment; filename="attendees_list.csv"');
       res.send(csv);
     } catch (error: any) {
       console.error("[EXPORT] Error exporting attendees:", error);
