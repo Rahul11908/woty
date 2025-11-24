@@ -16,6 +16,8 @@ import {
   loginSchema,
   type User
 } from "@shared/schema";
+import { db } from "./db";
+import { sql } from "drizzle-orm";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
@@ -1099,4 +1101,24 @@ function parseLinkedInHeadline(headline: string): { jobTitle: string | null, com
   // If no separator found, treat entire headline as job title
   return { jobTitle: headline.trim(), company: null };
 }
+
+  // Database health check endpoint for debugging
+  app.get("/api/health/db", async (req, res) => {
+    try {
+      // Test database connection
+      const result = await db.execute(sql`SELECT 1 as test`);
+      res.json({ 
+        status: "ok", 
+        database: "connected",
+        test_query: result.rows[0]
+      });
+    } catch (error) {
+      console.error("Database health check failed:", error);
+      res.status(500).json({ 
+        status: "error", 
+        database: "disconnected",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
 }
