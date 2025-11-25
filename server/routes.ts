@@ -51,19 +51,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   app.post("/api/users", async (req, res) => {
     try {
+      console.log("User creation attempt:", { email: req.body?.email, hasPassword: !!req.body?.password });
+      
+      if (!process.env.DATABASE_URL) {
+        console.error("DATABASE_URL not configured");
+        return res.status(500).json({ message: "Database not configured" });
+      }
+
       const userData = req.body;
       
+      if (!userData.email || !userData.password) {
+        console.error("Missing required fields:", { email: !!userData.email, password: !!userData.password });
+        return res.status(400).json({ message: "Email and password are required" });
+      }
+      
+      console.log("Checking for existing email...");
       // Check if email already exists
       const existingEmail = await storage.getUserByEmail(userData.email);
       if (existingEmail) {
+        console.log("Email already exists:", userData.email);
         return res.status(400).json({ message: "Email already exists" });
       }
       
+      console.log("Creating new user...");
       const user = await storage.createUser(userData);
+      console.log("User created successfully:", { id: user.id, email: user.email });
       res.json(user);
     } catch (error) {
       console.error("User creation error:", error);
-      res.status(500).json({ message: "Internal server error" });
+      console.error("Error stack:", error instanceof Error ? error.stack : 'No stack trace');
+      res.status(500).json({ 
+        message: "Internal server error",
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
   });
 
@@ -1154,6 +1174,41 @@ function parseLinkedInHeadline(headline: string): { jobTitle: string | null, com
       console.error("Debug env error:", error);
       res.status(500).json({ 
         error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
+  // Test user creation endpoint with minimal data
+  app.post("/api/debug/create-user", async (req, res) => {
+    try {
+      console.log("Debug user creation test");
+      
+      if (!process.env.DATABASE_URL) {
+        return res.status(500).json({ error: "DATABASE_URL not configured" });
+      }
+
+      const testUser = {
+        email: `test-${Date.now()}@debug.com`,
+        password: "test123456",
+        fullName: "Debug Test User",
+        company: "Test Company",
+        jobTitle: "Tester"
+      };
+
+      console.log("Creating test user:", testUser.email);
+      const user = await storage.createUser(testUser);
+      console.log("Test user created:", user.id);
+      
+      res.json({ 
+        success: true, 
+        userId: user.id, 
+        email: user.email 
+      });
+    } catch (error) {
+      console.error("Debug create user error:", error);
+      res.status(500).json({ 
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
       });
     }
   });
