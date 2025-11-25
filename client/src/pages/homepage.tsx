@@ -2,7 +2,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarDays, Users, Trophy } from "lucide-react";
-import wotyLogoImage from "@assets/Untitled design-5_1763408655994.png";
+// Using public directory image
 
 export default function Homepage() {
   const [, setLocation] = useLocation();
@@ -13,7 +13,7 @@ export default function Homepage() {
         <div className="text-center space-y-8">
           {/* Logo */}
           <div className="flex justify-center animate-fadeInUp">
-            <img src={wotyLogoImage} alt="GLORY Women of the Year" className="w-64 rounded-xl shadow-lg" />
+            <img src="/woty-logo.png" alt="GLORY Women of the Year" className="w-64 rounded-xl shadow-lg" />
           </div>
 
           {/* Main Title */}

@@ -16,7 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { insertUserSchema } from "@shared/schema";
-import wotyLogoImage from "@assets/Untitled design-5_1763408655994.png";
+// Using public directory image
 
 const createProfileSchema = insertUserSchema.extend({
   confirmPassword: z.string().min(1, "Please confirm your password"),
@@ -165,7 +165,7 @@ export default function CreateProfile() {
           <div className="mb-4 flex justify-center">
             <a href="https://www.glory.media" target="_blank" rel="noopener noreferrer">
               <img 
-                src={wotyLogoImage} 
+                src="/woty-logo.png" 
                 alt="GLORY Women of the Year" 
                 className="w-48 rounded-xl shadow-lg hover:opacity-80 transition-opacity cursor-pointer"
               />
