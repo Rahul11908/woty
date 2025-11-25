@@ -1,5 +1,21 @@
-# Minimal exclusions - only exclude files that are definitely not needed
+# Exclude large files to reduce function size
 .git/
 .DS_Store
 *.tmp
 *.temp
+
+# Exclude large directories that cause function size issues
+attached_assets/
+client/node_modules/
+client/dist/
+client/.next/
+
+# Exclude large media files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.mp4
+*.mov
+*.avi
+*.pdf

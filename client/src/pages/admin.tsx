@@ -284,7 +284,7 @@ export default function Admin() {
               <Card>
                 <CardContent className="pt-6 text-center">
                   <Users className="w-8 h-8 text-primary mx-auto mb-2" />
-                  <h3 className="text-xl font-semibold">{analyticsSummary?.totalUsers || allUsers.length}</h3>
+                  <h3 className="text-xl font-semibold">{(analyticsSummary as any)?.totalUsers || (allUsers as any)?.length || 0}</h3>
                   <p className="text-sm text-gray-600">Total Attendees</p>
                 </CardContent>
               </Card>
@@ -623,7 +623,7 @@ export default function Admin() {
                   </Card>
                 ))}
 
-                {allUsers.length === 0 && (
+                {((allUsers as any)?.length || 0) === 0 && (
                   <Card>
                     <CardContent className="pt-6 text-center">
                       <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />

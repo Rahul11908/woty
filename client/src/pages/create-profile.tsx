@@ -224,7 +224,7 @@ export default function CreateProfile() {
                     <FormControl>
                       <div className="relative">
                         <Building2 className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input placeholder="Enter your company" {...field} className="pl-10" />
+                        <Input placeholder="Enter your company" {...field} value={field.value || ''} className="pl-10" />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -241,7 +241,7 @@ export default function CreateProfile() {
                     <FormControl>
                       <div className="relative">
                         <Briefcase className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input placeholder="Enter your job title" {...field} className="pl-10" />
+                        <Input placeholder="Enter your job title" {...field} value={field.value || ''} className="pl-10" />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -337,7 +337,7 @@ export default function CreateProfile() {
                   <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                     <FormControl>
                       <Checkbox
-                        checked={field.value}
+                        checked={!!field.value}
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>

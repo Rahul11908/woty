@@ -35,7 +35,7 @@ export default function UserProfile({ currentUser }: UserProfileProps) {
         fullName: currentUser.fullName || "",
         jobTitle: currentUser.jobTitle || "",
         company: currentUser.company || "",
-        bio: currentUser.bio || "",
+        bio: (currentUser as any).bio || "",
         avatar: currentUser.avatar || ""
       });
     }
@@ -108,7 +108,7 @@ export default function UserProfile({ currentUser }: UserProfileProps) {
         fullName: currentUser.fullName || "",
         jobTitle: currentUser.jobTitle || "",
         company: currentUser.company || "",
-        bio: currentUser.bio || "",
+        bio: (currentUser as any).bio || "",
         avatar: currentUser.avatar || ""
       });
     }
@@ -302,8 +302,8 @@ export default function UserProfile({ currentUser }: UserProfileProps) {
                     <Label htmlFor="bio" className="text-sm font-medium text-gray-700">Bio</Label>
                     <Textarea
                       id="bio"
-                      value={editForm.bio}
-                      onChange={(e) => setEditForm(prev => ({ ...prev, bio: e.target.value }))}
+                      value={(currentUser as any).bio || ''}
+                      onChange={(e) => setEditForm(prev => ({ ...prev, bio: e.target.value } as any))}
                       className="mt-1"
                       placeholder="Tell us about yourself..."
                       rows={4}
@@ -366,10 +366,10 @@ export default function UserProfile({ currentUser }: UserProfileProps) {
                     )}
                   </div>
 
-                  {currentUser.bio && (
+                  {(currentUser as any).bio && (
                     <div className="bg-gray-50 p-6 rounded-lg">
                       <h3 className="font-semibold text-gray-900 mb-3 text-center">About</h3>
-                      <p className="text-gray-700 text-sm leading-relaxed text-center">{currentUser.bio}</p>
+                      <p className="text-gray-700 text-sm leading-relaxed text-center">{(currentUser as any).bio}</p>
                     </div>
                   )}
 
