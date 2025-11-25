@@ -1138,4 +1138,61 @@ function parseLinkedInHeadline(headline: string): { jobTitle: string | null, com
       });
     }
   });
+
+  // Debug endpoint for Vercel deployment troubleshooting
+  app.get("/api/debug/env", async (req, res) => {
+    try {
+      res.json({
+        nodeEnv: process.env.NODE_ENV,
+        hasDatabaseUrl: !!process.env.DATABASE_URL,
+        hasSessionSecret: !!process.env.SESSION_SECRET,
+        databaseUrlLength: process.env.DATABASE_URL?.length || 0,
+        sessionSecretLength: process.env.SESSION_SECRET?.length || 0,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Debug env error:", error);
+      res.status(500).json({ 
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
+  // Debug login endpoint with detailed error logging
+  app.post("/api/debug/login", async (req, res) => {
+    try {
+      console.log("Debug login attempt:", { email: req.body.email });
+      
+      if (!process.env.DATABASE_URL) {
+        return res.status(500).json({ error: "DATABASE_URL not configured" });
+      }
+      
+      if (!process.env.SESSION_SECRET) {
+        return res.status(500).json({ error: "SESSION_SECRET not configured" });
+      }
+
+      const loginData = loginSchema.parse(req.body);
+      console.log("Login data parsed successfully");
+      
+      const user = await storage.authenticateUser(loginData);
+      console.log("User authentication result:", user ? "success" : "failed");
+      
+      if (!user) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+      
+      res.json({ 
+        success: true, 
+        userId: user.id, 
+        email: user.email,
+        fullName: user.fullName 
+      });
+    } catch (error) {
+      console.error("Debug login error:", error);
+      res.status(500).json({ 
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
+      });
+    }
+  });
 }
