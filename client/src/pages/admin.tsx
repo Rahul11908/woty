@@ -376,7 +376,7 @@ export default function Admin() {
                               {question.panelName}
                             </Badge>
                             <span className="text-xs text-gray-500">
-                              {new Date(question.createdAt).toLocaleDateString()} at {new Date(question.createdAt).toLocaleTimeString()}
+                              {question.createdAt ? new Date(question.createdAt).toLocaleDateString() : 'Unknown'} at {question.createdAt ? new Date(question.createdAt).toLocaleTimeString() : 'Unknown'}
                             </span>
                           </div>
                           <p className="text-gray-900 mb-2">{question.question}</p>
@@ -465,7 +465,7 @@ export default function Admin() {
                           <FormItem>
                             <FormLabel>Description</FormLabel>
                             <FormControl>
-                              <Textarea placeholder="Survey description..." {...field} />
+                              <Textarea placeholder="Survey description..." {...field} value={field.value || ''} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -573,11 +573,11 @@ export default function Admin() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-gray-900">User Management</h2>
-                <Badge variant="outline">{allUsers.length} Total Users</Badge>
+                <Badge variant="outline">{(allUsers as any)?.length || 0} Total Users</Badge>
               </div>
 
               <div className="grid gap-4">
-                {allUsers.map((user: any) => (
+                {((allUsers as any) || []).map((user: any) => (
                   <Card key={user.id}>
                     <CardContent className="pt-6">
                       <div className="flex items-center justify-between">
@@ -657,7 +657,7 @@ export default function Admin() {
                 <Card className="p-4">
                   <h4 className="font-medium text-sm text-muted-foreground">Panel Questions</h4>
                   <p className="text-2xl font-bold">
-                    {analyticsSummary?.userEngagement?.reduce((sum: number, day: any) => sum + (day.questions || 0), 0) || 0}
+                    {(analyticsSummary as any)?.userEngagement?.reduce((sum: number, day: any) => sum + (day.questions || 0), 0) || 0}
                   </p>
                   <p className="text-xs text-muted-foreground">Speaker questions</p>
                 </Card>
