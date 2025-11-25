@@ -1,11 +1,5 @@
 import { Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import torontoTempoLogo from "@assets/3_1763401906247.jpg";
-import cinderellaStoriesLogo from "@assets/4_1763401906248.jpg";
-import bulovaLogo from "@assets/5_1763401906249.jpg";
-import ollyLogo from "@assets/6_1763401906249.jpg";
-import diaLogo from "@assets/13_1763401906254.jpg";
-import canopyLogo from "@assets/14_1763401906255.jpg";
 
 interface Sponsor {
   id: string;
@@ -15,15 +9,15 @@ interface Sponsor {
 }
 
 const hostedBySponsors: Sponsor[] = [
-  { id: '11', name: 'Día Restaurant & Lounge', logo: diaLogo, website: 'https://www.diarestaurant.ca/' },
-  { id: '12', name: 'Canopy Toronto | Yorkville', logo: canopyLogo, website: 'https://www.hilton.com/en/hotels/ytzpypy-canopy-toronto-yorkville/' },
+  { id: '11', name: 'Día Restaurant & Lounge', logo: '/sponsors/dia.jpg', website: 'https://www.diarestaurant.ca/' },
+  { id: '12', name: 'Canopy Toronto | Yorkville', logo: '/sponsors/canopy.jpg', website: 'https://www.hilton.com/en/hotels/ytzpypy-canopy-toronto-yorkville/' },
 ];
 
 const sponsors: Sponsor[] = [
-  { id: '3', name: 'Bulova', logo: bulovaLogo, website: 'https://www.bulova.com/ca/en/home' },
-  { id: '4', name: 'Olly', logo: ollyLogo, website: 'https://www.ollynutrition.ca/' },
-  { id: '2', name: 'Cinderella Stories', logo: cinderellaStoriesLogo, website: 'https://podcasts.apple.com/ca/podcast/the-glory-sports-podcast-network/id1833074258' },
-  { id: '1', name: 'Toronto Tempo', logo: torontoTempoLogo, website: 'https://tempo.wnba.com/' },
+  { id: '3', name: 'Bulova', logo: '/sponsors/bulova.jpg', website: 'https://www.bulova.com/ca/en/home' },
+  { id: '4', name: 'Olly', logo: '/sponsors/olly.jpg', website: 'https://www.ollynutrition.ca/' },
+  { id: '2', name: 'Cinderella Stories', logo: '/sponsors/cinderella-stories.jpg', website: 'https://podcasts.apple.com/ca/podcast/the-glory-sports-podcast-network/id1833074258' },
+  { id: '1', name: 'Toronto Tempo', logo: '/sponsors/toronto-tempo.jpg', website: 'https://tempo.wnba.com/' },
 ];
 
 export default function Sponsors() {
