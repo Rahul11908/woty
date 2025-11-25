@@ -644,31 +644,31 @@ export default function Admin() {
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <Card className="p-4">
                   <h4 className="font-medium text-sm text-muted-foreground">Total Users</h4>
-                  <p className="text-2xl font-bold">{analyticsSummary?.totalUsers || 0}</p>
+                  <p className="text-2xl font-bold">{(analyticsSummary as any)?.totalUsers || 0}</p>
                   <p className="text-xs text-muted-foreground">Platform registrations</p>
                 </Card>
                 <Card className="p-4">
                   <h4 className="font-medium text-sm text-muted-foreground">Group Chat Posts</h4>
                   <p className="text-2xl font-bold">
-                    {analyticsSummary?.userEngagement?.reduce((sum, day) => sum + day.posts, 0) || 0}
+                    {(analyticsSummary as any)?.userEngagement?.reduce((sum: number, day: any) => sum + (day.posts || 0), 0) || 0}
                   </p>
                   <p className="text-xs text-muted-foreground">Network conversations</p>
                 </Card>
                 <Card className="p-4">
                   <h4 className="font-medium text-sm text-muted-foreground">Panel Questions</h4>
                   <p className="text-2xl font-bold">
-                    {analyticsSummary?.userEngagement?.reduce((sum, day) => sum + day.questions, 0) || 0}
+                    {analyticsSummary?.userEngagement?.reduce((sum: number, day: any) => sum + (day.questions || 0), 0) || 0}
                   </p>
                   <p className="text-xs text-muted-foreground">Speaker questions</p>
                 </Card>
                 <Card className="p-4">
                   <h4 className="font-medium text-sm text-muted-foreground">Clicks</h4>
-                  <p className="text-2xl font-bold">{analyticsSummary?.totalClicks || 0}</p>
+                  <p className="text-2xl font-bold">{(analyticsSummary as any)?.totalClicks || 0}</p>
                   <p className="text-xs text-muted-foreground">User interactions</p>
                 </Card>
                 <Card className="p-4">
                   <h4 className="font-medium text-sm text-muted-foreground">Active Today</h4>
-                  <p className="text-2xl font-bold">{analyticsSummary?.activeUsersToday || 0}</p>
+                  <p className="text-2xl font-bold">{(analyticsSummary as any)?.activeUsersToday || 0}</p>
                   <p className="text-xs text-muted-foreground">Daily active users</p>
                 </Card>
               </div>
@@ -698,17 +698,17 @@ export default function Admin() {
                   <div className="space-y-2 mt-2">
                     <div className="flex justify-between">
                       <span className="text-sm">Total Messages</span>
-                      <span className="font-medium">{analyticsSummary?.totalMessages || 0}</span>
+                      <span className="font-medium">{(analyticsSummary as any)?.totalMessages || 0}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm">Network Posts</span>
                       <span className="font-medium">
-                        {analyticsSummary?.userEngagement?.reduce((sum, day) => sum + day.posts, 0) || 0}
+                        {(analyticsSummary as any)?.userEngagement?.reduce((sum: number, day: any) => sum + (day.posts || 0), 0) || 0}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm">Total Clicks</span>
-                      <span className="font-medium">{analyticsSummary?.totalClicks || 0}</span>
+                      <span className="font-medium">{(analyticsSummary as any)?.totalClicks || 0}</span>
                     </div>
                   </div>
                 </Card>
@@ -718,17 +718,17 @@ export default function Admin() {
                   <div className="space-y-2 mt-2">
                     <div className="flex justify-between">
                       <span className="text-sm">Registered Users</span>
-                      <span className="font-medium">{analyticsSummary?.totalUsers || 0}</span>
+                      <span className="font-medium">{(analyticsSummary as any)?.totalUsers || 0}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm">Active Users</span>
-                      <span className="font-medium">{analyticsSummary?.activeUsersToday || 0}</span>
+                      <span className="font-medium">{(analyticsSummary as any)?.activeUsersToday || 0}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm">Engagement Rate</span>
                       <span className="font-medium">
-                        {analyticsSummary?.totalUsers ? 
-                          Math.round((analyticsSummary.activeUsersToday / analyticsSummary.totalUsers) * 100) : 0}%
+                        {(analyticsSummary as any)?.totalUsers ? 
+                          Math.round(((analyticsSummary as any).activeUsersToday / (analyticsSummary as any).totalUsers) * 100) : 0}%
                       </span>
                     </div>
                   </div>
@@ -738,10 +738,10 @@ export default function Admin() {
               {/* User Engagement Chart */}
               <Card className="p-4">
                 <h4 className="font-medium mb-4">User Engagement - Posts, Comments & Questions (Last 7 Days)</h4>
-                {analyticsSummary?.userEngagement && analyticsSummary.userEngagement.length > 0 ? (
+                {(analyticsSummary as any)?.userEngagement && (analyticsSummary as any).userEngagement.length > 0 ? (
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={analyticsSummary.userEngagement}>
+                      <LineChart data={(analyticsSummary as any).userEngagement}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="date" />
                         <YAxis />

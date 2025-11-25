@@ -61,7 +61,7 @@ export default function SuggestedConnection({ user }: SuggestedConnectionProps) 
         className="w-16 h-16 rounded-full mx-auto mb-3 avatar-image-flat"
       />
       <h4 className="font-medium text-gray-900 text-sm">{user.fullName}</h4>
-      <p className="text-xs text-gray-600 mb-3">{user.title || 'Sports Professional'}</p>
+      <p className="text-xs text-gray-600 mb-3">{user.jobTitle || 'Sports Professional'}</p>
       <div className="space-y-2">
         <Button 
           className="w-full text-sm font-medium"
