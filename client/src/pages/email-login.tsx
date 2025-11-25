@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import wotyLogoImage from "@assets/Untitled design-5_1763408655994.png";
+// Using public directory image
 
 const emailLoginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -74,7 +74,7 @@ export default function EmailLogin() {
         <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
             <img 
-              src={wotyLogoImage} 
+              src="/woty-logo.png" 
               alt="GLORY Women of the Year" 
               className="w-48 rounded-xl shadow-lg"
             />

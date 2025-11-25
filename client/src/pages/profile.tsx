@@ -7,10 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import teresaReschImage from "@assets/teresa-resch-woty.png";
-import cinderellaStoriesLogo from "@assets/cinderella-stories-podcast.png";
-import lanceChungImage from "@assets/lancechung_1763403855426.jpg";
-import wotyLogoImage from "@assets/Untitled design-5_1763407874091.png";
+// Using public directory images instead of asset imports
 
 interface ScheduleItem {
   id: string;
@@ -135,7 +132,7 @@ export default function Profile() {
           {/* GLORY WOTY Logo */}
           <div className="flex justify-center mb-4">
             <img 
-              src={wotyLogoImage} 
+              src="/woty-logo.png" 
               alt="GLORY Women of the Year" 
               className="w-full max-w-md rounded-2xl shadow-lg"
             />
@@ -151,7 +148,7 @@ export default function Profile() {
               <div className="flex items-start space-x-3">
                 <div className="w-48 h-48 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
                   <img 
-                    src={lanceChungImage} 
+                    src="/profiles/lance-chung.jpg" 
                     alt="Lance Chung" 
                     className="w-full h-full object-cover"
                   />
@@ -231,7 +228,7 @@ export default function Profile() {
                       <div className="flex flex-col items-center space-y-3">
                         <div className="w-64 h-64 rounded-2xl overflow-hidden bg-gray-200">
                           <img 
-                            src={cinderellaStoriesLogo} 
+                            src="/cinderella-stories.png" 
                             alt="Cinderella Stories Podcast" 
                             className="w-full h-full object-cover"
                           />
@@ -252,7 +249,7 @@ export default function Profile() {
                       <div className="flex flex-col items-center space-y-3">
                         <div className="w-48 h-48 rounded-2xl overflow-hidden bg-gray-200">
                           <img 
-                            src={teresaReschImage} 
+                            src="/profiles/teresa-resch.png" 
                             alt="Teresa Resch" 
                             className="w-full h-full object-cover"
                           />
