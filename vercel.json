@@ -3,14 +3,14 @@
   "builds": [
     {
       "src": "api/index.ts",
-      "use": "@vercel/node",
+      "use": "@vercel/node@3.0.21",
       "config": {
         "includeFiles": ["server/**", "shared/**", "dist/public/**"]
       }
     },
     {
       "src": "package.json",
-      "use": "@vercel/static-build",
+      "use": "@vercel/static-build@2.5.27",
       "config": {
         "distDir": "dist/public"
       }
