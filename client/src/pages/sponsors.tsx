@@ -1,3 +1,4 @@
+// Sponsors page - using public directory images (not asset imports)
 import { Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -37,7 +38,7 @@ export default function Sponsors() {
           </div>
           <div>
             <h1 className="text-xl font-bold text-white">Sponsors</h1>
-            <p className="text-sm text-white/90">Our valued partners</p>
+            <p className="text-sm text-white/90">Our valued partners & sponsors</p>
           </div>
         </div>
       </header>
