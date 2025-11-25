@@ -1,5 +1,5 @@
 # Exclude only the largest directories that cause function size issues
-attached_assets/
+# attached_assets/ - commented out to allow sponsor images
 .git/
 
 # Exclude large media files

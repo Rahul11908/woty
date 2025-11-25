@@ -6,7 +6,7 @@
       "use": "@vercel/node",
       "config": {
         "includeFiles": ["server/**", "shared/**"],
-        "excludeFiles": ["attached_assets/**", "client/**", "dist/**", "*.md", "*.csv", "*.jpg", "*.png", "*.gif"]
+        "excludeFiles": ["attached_assets/**", "client/**", "dist/**", "*.md", "*.csv"]
       }
     },
     {
