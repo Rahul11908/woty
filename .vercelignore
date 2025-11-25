@@ -1,22 +1,12 @@
-# Exclude only the most problematic large files for function size
+# Only exclude development files that aren't needed
 .git/
+.DS_Store
+*.tmp
+*.temp
 
-# Exclude large media files that aren't needed for the app
+# Exclude only truly unnecessary large media files
 *.mp4
 *.mov
 *.avi
 *.zip
 *.tar.gz
-
-# Exclude development files
-.DS_Store
-*.tmp
-*.temp
-
-# Exclude specific large image files from attached_assets (keep only essential sponsor JPGs)
-attached_assets/*.png
-attached_assets/*.pdf
-attached_assets/*.jpeg
-attached_assets/*_176296*.png
-attached_assets/*WOTY*.png
-attached_assets/*woty*.png
