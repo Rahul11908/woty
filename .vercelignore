@@ -1,12 +1,5 @@
-# Only exclude development files that aren't needed
+# Minimal exclusions - only exclude files that are definitely not needed
 .git/
 .DS_Store
 *.tmp
 *.temp
-
-# Exclude only truly unnecessary large media files
-*.mp4
-*.mov
-*.avi
-*.zip
-*.tar.gz

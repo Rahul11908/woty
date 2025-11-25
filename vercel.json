@@ -5,9 +5,7 @@
       "src": "api/index.ts",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["server/**", "shared/**"],
-        "excludeFiles": ["attached_assets/**"],
-        "maxLambdaSize": "50mb"
+        "maxLambdaSize": "300mb"
       }
     },
     {
