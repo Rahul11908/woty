@@ -1,8 +1,7 @@
-# Exclude only the largest directories that cause function size issues
-# attached_assets/ - commented out to allow sponsor images
+# Exclude only the most problematic large files for function size
 .git/
 
-# Exclude large media files
+# Exclude large media files that aren't needed for the app
 *.mp4
 *.mov
 *.avi
@@ -13,3 +12,11 @@
 .DS_Store
 *.tmp
 *.temp
+
+# Exclude specific large image files from attached_assets (keep only essential sponsor JPGs)
+attached_assets/*.png
+attached_assets/*.pdf
+attached_assets/*.jpeg
+attached_assets/*_176296*.png
+attached_assets/*WOTY*.png
+attached_assets/*woty*.png
