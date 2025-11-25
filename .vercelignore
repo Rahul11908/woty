@@ -1,30 +1,15 @@
-# Exclude large directories and files from Vercel functions
+# Exclude only the largest directories that cause function size issues
 attached_assets/
-client/
-dist/
-node_modules/
 .git/
 
-# Exclude large file types
-*.jpg
-*.jpeg
-*.png
-*.gif
-*.pdf
+# Exclude large media files
 *.mp4
 *.mov
 *.avi
 *.zip
 *.tar.gz
 
-# Exclude documentation and logs
-*.md
-*.txt
-*.log
-*.csv
-
 # Exclude development files
-.env*
 .DS_Store
 *.tmp
 *.temp
