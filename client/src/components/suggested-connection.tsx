@@ -55,7 +55,7 @@ export default function SuggestedConnection({ user }: SuggestedConnectionProps) 
   return (
     <div className="bg-white rounded-xl p-4 border border-gray-100 text-center">
       <img 
-        src={user.avatar || `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150`}
+        src={(user.avatar && user.avatar.trim() !== '') ? user.avatar : `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150`}
         alt={`${user.fullName} profile`}
         loading="lazy"
         className="w-16 h-16 rounded-full mx-auto mb-3 avatar-image-flat"

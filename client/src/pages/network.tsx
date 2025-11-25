@@ -157,7 +157,7 @@ export default function Network({ currentUser }: NetworkProps) {
                 <Card key={attendee.id} className="bg-white shadow-lg" data-testid={`card-attendee-${attendee.id}`}>
                   <CardContent className="pt-4 pb-4">
                     <div className="flex items-start space-x-3 mb-3">
-                      {attendee.avatar ? (
+                      {attendee.avatar && attendee.avatar.trim() !== '' ? (
                         <img 
                           src={attendee.avatar} 
                           alt={attendee.fullName}
@@ -228,7 +228,7 @@ export default function Network({ currentUser }: NetworkProps) {
                   <Card key={message.id} className="bg-white shadow-lg" data-testid={`card-message-${message.id}`}>
                     <CardContent className="pt-3 pb-3">
                       <div className="flex items-start space-x-3">
-                        {message.sender.avatar ? (
+                        {message.sender.avatar && message.sender.avatar.trim() !== '' ? (
                           <img 
                             src={message.sender.avatar} 
                             alt={message.sender.fullName}

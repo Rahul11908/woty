@@ -14,7 +14,7 @@ export default function ConversationItem({ conversation }: ConversationItemProps
       <a className="flex items-center space-x-3 p-3 bg-white rounded-xl border border-gray-100 hover:border-primary/20 transition-colors cursor-pointer">
         <div className="relative">
           <img 
-            src={participant.avatar || `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150`}
+            src={(participant.avatar && participant.avatar.trim() !== '') ? participant.avatar : `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150`}
             alt={`${participant.fullName} profile`}
             loading="lazy"
             className="w-12 h-12 rounded-full avatar-image-flat"

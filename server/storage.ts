@@ -1745,6 +1745,16 @@ export class DatabaseStorage implements IStorage {
     const hashedPassword = await bcrypt.hash(password, 10);
     return this.updateUser(userId, { password: hashedPassword });
   }
+
+  async fixEmptyAvatars(): Promise<{ updatedCount: number }> {
+    const result = await db.execute(sql`
+      UPDATE users 
+      SET avatar = NULL 
+      WHERE avatar = '' OR avatar = 'null' OR avatar = 'undefined'
+    `);
+    
+    return { updatedCount: result.rowCount || 0 };
+  }
 }
 
 export const storage = new DatabaseStorage();

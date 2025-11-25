@@ -1121,4 +1121,21 @@ function parseLinkedInHeadline(headline: string): { jobTitle: string | null, com
       });
     }
   });
+
+  // Fix empty avatar strings - set them to null for proper fallback handling
+  app.post("/api/fix-avatars", async (req, res) => {
+    try {
+      const result = await storage.fixEmptyAvatars();
+      res.json({ 
+        message: "Avatar fields updated successfully",
+        updatedCount: result.updatedCount 
+      });
+    } catch (error) {
+      console.error("Fix avatars error:", error);
+      res.status(500).json({ 
+        message: "Failed to fix avatars",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
 }
