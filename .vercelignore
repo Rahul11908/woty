@@ -1,0 +1,30 @@
+# Exclude large directories and files from Vercel functions
+attached_assets/
+client/
+dist/
+node_modules/
+.git/
+
+# Exclude large file types
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.pdf
+*.mp4
+*.mov
+*.avi
+*.zip
+*.tar.gz
+
+# Exclude documentation and logs
+*.md
+*.txt
+*.log
+*.csv
+
+# Exclude development files
+.env*
+.DS_Store
+*.tmp
+*.temp

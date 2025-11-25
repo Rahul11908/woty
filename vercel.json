@@ -5,8 +5,7 @@
       "src": "api/index.ts",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["server/**", "shared/**"],
-        "excludeFiles": ["node_modules/**", "dist/**", "client/**", "attached_assets/**", "*.md", "*.txt", "*.csv"]
+        "includeFiles": ["server/**", "shared/**"]
       }
     },
     {
